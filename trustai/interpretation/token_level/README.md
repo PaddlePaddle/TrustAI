@@ -5,16 +5,14 @@ Token级证据分析给出模型预测所依据的来自预测文本的若干重
 本工具提供了3种主流的证据分析方法，分别是LIME、Attention、Integrated Gradient。同时，我们也封装了InterpretDL中的NormLime、GradShap方法。
 
 ## 使用示例
-初始化待分析模型
+初始化待分析模型。
 ```python
 from paddlenlp.transformers import ErnieForSequenceClassification, ErnieTokenizer
 model = ErnieForSequenceClassification.from_pretrained('ernie-1.0', num_classes=2)
 tokenizer = ErnieTokenizer.from_pretrained('ernie-1.0')
 ```
 
-</br>
-
-准备好要分析数据，将文本转化为开发者模型的输入
+准备好要分析数据，将文本转化为开发者模型的输入。
 ```python
 data = [{ "text": '这个宾馆比较陈旧了，特价的房间也很一般。总体来说一般'}]
 
@@ -22,9 +20,7 @@ data = [{ "text": '这个宾馆比较陈旧了，特价的房间也很一般。�
 model_inputs = preprocess_fn(data)
 ```
 
-</br>
-
-初始化分析接口，输入待分析数据
+初始化分析接口，输入待分析数据。
 ```python
 from interpretation.token_level import IntGradInterpreter
 ig = IntGradInterpreter(model, device="gpu")
@@ -40,7 +36,6 @@ print(result[0].attributions)
 #  0.03771218  0.01511401 -0.01349011  0.01542336]
 ```
 
-</br>
 
 TrustAI支持将输出的重要度分数映射到更大粒度的切分结果上，并进行可视化输出。这里给出了一个基于jieba分词的使用示例。
 
@@ -89,18 +84,14 @@ print(aligns[0].non_rationale_tokens)
 
 ```
 
-</br>
-
 可视化示例
 ```python
 # html为HTML格式的文本，可以保存为html文件
 html = visualize_text(VisualizationTextRecord(aligns[0], true_label=0))
 ```
-<center>
-
-<img src="../../../imgs/visual2.png" width="700"  alt="visual2"/><br>
+<p align="center">
+<img align="center" src="../../../imgs/visual2.png", width=1600><br>
 图1 可视化实例：实例来自情感分析任务
+</p>
 
-</center>
-
-详细示例见[tutorials](../../../tutorials/interpretation/token_level) 
+详细示例见[tutorials](../../../tutorials/interpretation/token_level)。

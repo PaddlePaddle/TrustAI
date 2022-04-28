@@ -13,15 +13,11 @@ TrustAI提供基于证据分析结果增强模型的示例，我们在该目录�
 
 我们使用LCQMC数据集做了实验验证。其中，相似度计算模型是基于ERNIE-1.0微调，MAP指标阈值设为0.3，识别出3.4%困难数据，相比于模型在全量数据上效果，模型在该类数据上效果下降了9.67%。
 
-<center>
-
 |   数据集   | acc    |
 | :-------:  | :-----: |
 | 全部数据   | 89.53% |
 | 困难数据 | 79.86% |
 
-</center>
-
 基于困难数据，自动生成强正负例，通过数据增强方式重训模型，模型在该类数据上准确率提升7%。
 
-应用的详细示例见[tutorials](../../tutorials/application/zh-similarity-application.ipynb) 
+应用的详细示例见[tutorials](../../tutorials/application/zh-similarity-application.ipynb)。

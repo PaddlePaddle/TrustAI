@@ -15,12 +15,10 @@
 ## 项目介绍
 TrustAI是百度基于产业级深度学习平台『飞桨』([PaddlePaddle](https://github.com/PaddlePaddle/Paddle))开发的集评测、分析、增强于一体的可信AI工具集，助力开发者提升模型效果和可信度，推动模型安全、可靠的落地于应用。
 
-<center>
-
-![overview](./imgs/overview.png)<br>
+<p align="center">
+<img align="center" src="./imgs/overview.png", width=1600><br>
 图1 TrustAI功能概览
-
-</center>
+</p>
 
 
 ## 为什么选择TrustAI
@@ -33,15 +31,12 @@ TrustAI从模型可解释性角度出发，旨在通过分析模型预测证据�
 - **可信分析工具**旨在分析模型预测依赖的证据，提供了两类分析工具，分别为从预测输入中找出对预测结果影响最重要的token集合(token级证据分析)、及从训练数据中找出对预测影响最大的实例集合(实例级证据分析)。
 - **可信增强工具**提供了基于可信分析的通用增强方案，旨在提升模型本身效果和可信度。
 
-<center>
-
-![why_trustai](./imgs/why_trustai.png)<br>
+<p align="center">
+<img align="center" src="./imgs/why_trustai.png", width=1600><br>
 图2 基于实例演示TrustAI服务能力
-
-</center>
+</p>
 
 ## 功能介绍
-
 
 ### 可信评测
 
@@ -49,24 +44,27 @@ TrustAI从模型可解释性角度出发，旨在通过分析模型预测证据�
 
 我们提供了3个任务的评测数据，分别是情感分析、相似度计算和阅读理解，图3给出了情感分析任务上的评测数据实例；同时，我们还提供了预训练模型评测数据，分别从语法、语义、知识、推理、计算等维度评测预训练语言模型的能力，标注实例见图4。
 
-<center>
 
-<img src="./imgs/sentiment_labeled_case.png" width="1000"  alt="sentiment_labeled_case"/><br/>
+
+<p align="center">
+<img align="center" src="./imgs/sentiment_labeled_case.png", width=800><br>
 图3 情感分析标注数据
-
+</p>
 <br>
 
-<img src="./imgs/pretrained_labeled_case.png" width="1000"  alt="pretrained_labeled_case"/><br/>
+<p align="center">
+<img align="center" src="./imgs/pretrained_labeled_case.png", width=800><br>
 图4 预训练模型标注数据
+</p>
 
-</center>
+
 
 *注：颜色表示证据，同一个颜色表示同一个证据集合*<br>
 
-TrustAI既可以评测模型的可解释性，又可以评估证据抽取方法的可解释性。我们从合理性和忠诚性两个维度对模型的提供的证据进行评估。
+**TrustAI**既可以评测模型的可解释性，又可以评估证据抽取方法的可解释性。我们从合理性和忠诚性两个维度对模型的提供的证据进行评估。
 
-- 合理性： 模型给出证据是否符合人类认知和理解，即模型提供证据与人工标注证据的拟合程度。
-- 忠诚性：模型实际上是否依赖提供的证据做的预测，以及模型提供的证据是否是稳定的。
+- **合理性**： 模型给出证据是否符合人类认知和理解，即模型提供证据与人工标注证据的拟合程度。
+- **忠诚性**：模型实际上是否依赖提供的证据做的预测，以及模型提供的证据是否是稳定的。
 
 对于合理性，我们提供了2个评测指标，对于忠诚性，我们提供了3个评测指标，具体见[evluation](./trustai/evaluation/README.md)。
 
@@ -76,13 +74,10 @@ TrustAI既可以评测模型的可解释性，又可以评估证据抽取方法�
 
 **Token级证据**：由输入中若干重要tokens（字或词）构成证据。Token的重要度分数由显著性方法（saliency methods）给出。我们的工具集提供了3种常用的显著性分析方法，分别是基于梯度的（Gradient-based中的integrated Gradient）、基于注意力权重的（Attention-based，与具体模型结构相关）、以及基于线性模型（Linear-based中的LIME）的，如图1**可信分析**中**Token级证据分析**部分所示。
 其中，证据一般由top N重要词构成，该N的选择依赖经验或实际数据。
-<center>
-
-<img src="./imgs/saliency_map.png" width="900"  alt="saliency_map"/><br/>
+<p align="center">
+<img align="center" src="./imgs/saliency_map.png", width=700><br>
 图5 基于IG方法给出的token重要度，红色标注的token就是选择的证据
-
-</center>
-
+</p>
 
 **实例级证据**：由训练数据中对该预测影响重大的若干条实例数据构成。实例的影响度一般由influence function（影响函数）确定。我们的工具集提供了基于表示点学习的实例级证据分析方法。
 
@@ -111,7 +106,6 @@ TrustAI提供基于可解释性结果指导模型优化的示例，可以帮助�
 #### 依赖
 * `python`: >=3.6.0
 * [`paddlepaddle`](https://www.paddlepaddle.org.cn/): >=2.0
-<br>
 
 #### 一键安装
 用户可以使用以下方式进行一键安装：
@@ -180,14 +174,10 @@ html = visualize_text(VisualizationTextRecord(align_res[i],true_label=true_label
 
 可视化展示：
 
-<center>
-
-<img src="./imgs/visual.png" width="1500"  alt="visual"/><br/>
+<p align="center">
+<img align="center" src="./imgs/visual.png", width=1200><br>
 图6 可视化实例：实例来自情感分析任务
-
-</center>
-
-</br>
+</p>
 
 **实例级证据分析**
 
@@ -203,14 +193,11 @@ representer_model = RepresenterPointModel(model, train_data_loader)
 predict_labels, pos_examples, neg_examples = representer_model.interpret(test_dataloader)
 ```
 
-<center>
 
-![example_case](./imgs/example_case.png)<br>
+<p align="center">
+<img align="center" src="./imgs/example_case.png", width=600><br>
 图7 可信分析实例
-
-</center>
-
-</br>
+</p>
 
 ## 参考资料
 
