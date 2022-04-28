@@ -75,7 +75,7 @@ TrustAI从模型可解释性角度出发，旨在通过分析模型预测证据�
 **Token级证据**：由输入中若干重要tokens（字或词）构成证据。Token的重要度分数由显著性方法（saliency methods）给出。我们的工具集提供了3种常用的显著性分析方法，分别是基于梯度的（Gradient-based中的integrated Gradient）、基于注意力权重的（Attention-based，与具体模型结构相关）、以及基于线性模型（Linear-based中的LIME）的，如图1**可信分析**中**Token级证据分析**部分所示。
 其中，证据一般由top N重要词构成，该N的选择依赖经验或实际数据。
 <p align="center">
-<img align="center" src="./imgs/saliency_map.png", width=700><br>
+<img align="center" src="./imgs/saliency_map.png", width=500><br>
 图5 基于IG方法给出的token重要度，红色标注的token就是选择的证据
 </p>
 
@@ -195,7 +195,7 @@ predict_labels, pos_examples, neg_examples = representer_model.interpret(test_da
 
 
 <p align="center">
-<img align="center" src="./imgs/example_case.png", width=600><br>
+<img align="center" src="./imgs/example_case.png", width=500><br>
 图7 可信分析实例
 </p>
 

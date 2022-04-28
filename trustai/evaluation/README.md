@@ -9,12 +9,12 @@
 具体计算见公式一和公式二：<br>
 公式一：
 <p align="center">
-<img align="center" src="../..//imgs/equation1.png", width=800><br>
+<img align="center" src="../..//imgs/equation1.png", width=600><br>
 </p>
 
 公式二：
 <p align="center">
-<img align="center" src="../..//imgs/equation2.png", width=800><br>
+<img align="center" src="../..//imgs/equation2.png", width=600><br>
 </p>
 
 其中 S<sub>i</sub><sup>p</sup>和S<sub>i</sub><sup>g</sup>分别代表针对第i条输入模型预测证据和人工标注证据，N代表数据集中数据的数量。<br>
@@ -32,7 +32,7 @@
 
 公式三：
 <p align="center">
-<img align="center" src="../..//imgs/equation3.png", width=800><br>
+<img align="center" src="../..//imgs/equation3.png", width=600><br>
 </p>
 
 其中X<sup>o</sup>和X<sup>p</sup>分别代表原始输入和扰动输入的词重要度排序序列。|X<sup>p</sup>|代表X<sup>p</sup>中词的个数，X<sup>o</sup><sub>1:j</sub>表示X<sup>o</sup>中前j最重要的词。函数G(x, Y)检查词x是否存在于列表Y中，如果存在则G(x, Y)=1。MAP越高表示两个序列排序一致性越高
@@ -45,12 +45,12 @@
 具体计算方式如下：<br>
 公式四(充分性)：
 <p align="center">
-<img align="center" src="../..//imgs/equation4.png", width=800><br>
+<img align="center" src="../..//imgs/equation4.png", width=600><br>
 </p>
 公式五(完备性)：
 
 <p align="center">
-<img align="center" src="../..//imgs/equation5.png", width=800><br>
+<img align="center" src="../..//imgs/equation5.png", width=600><br>
 </p>
 
 F(x<sub>i</sub>)<sub>j</sub>表示模型F对于输入x<sub>i</sub>预测为label j的概率，r<sub>i</sub>表示输入x<sub>i</sub>的证据，相应地，x<sub>i</sub>\r<sub>i</sub>表示x<sub>i</sub>的非证据部分，即把r<sub>i</sub>从输出x<sub>i</sub>中去除。充分性得分越低、完备性得分越高，表示证据的忠诚性越高。
