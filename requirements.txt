@@ -1,0 +1,7 @@
+numpy
+paddlenlp
+paddlepaddle-gpu >= 2.0.0
+scikit-learn
+tqdm
+matplotlib
+IPython
