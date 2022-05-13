@@ -76,5 +76,3 @@ sufficient, comprehensive = evaluator.cal_suf_com(goldens, predicts)
 map_score = evaluator.cal_map(goldens, predicts)
 ```
 更多使用示列详见[tutorials](../../tutorials/evaluation/)。
-
- 

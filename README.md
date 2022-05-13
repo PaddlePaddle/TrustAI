@@ -116,7 +116,7 @@ pip install -U paddlepaddle-gpu
 # pip install -U paddlepaddle
 
 # pip 安装trustai
-pip install trustai 
+pip install trustai
 
 
 # 源码安装
@@ -214,4 +214,3 @@ predict_labels, pos_examples, neg_examples = representer_model.interpret(test_da
 
 ## LICENSE
 TrustAI由[Apache-2.0 license](./LICENSE)提供。
-  
