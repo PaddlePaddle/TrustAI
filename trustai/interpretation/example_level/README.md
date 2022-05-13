@@ -15,6 +15,7 @@
 传入训练好的模型、模型对应的训练数据来初始化表示点模型。基于该表示点模型对预测数据进行证据抽取，需用户指定返回的支持数据和不支持数据条数，由sample_num指定。
 
 ```python
+from trustai.interpretation import RepresenterPointModel
 # initialization
 # 开发者需要传入模型及对应的训练数据，以及模型输出层中最后一层的layer name
 representer_model = RepresenterPointModel(model, train_data_loader, classifier_layer_name="classifier")

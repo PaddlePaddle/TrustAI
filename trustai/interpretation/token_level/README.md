@@ -22,7 +22,7 @@ model_inputs = preprocess_fn(data)
 
 初始化分析接口，输入待分析数据。
 ```python
-from interpretation.token_level import IntGradInterpreter
+from trustai.interpretation.token_level import IntGradInterpreter
 ig = IntGradInterpreter(model, device="gpu")
 result = ig(preprocess_fn(data), steps=100)
 
