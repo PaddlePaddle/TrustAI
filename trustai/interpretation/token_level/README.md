@@ -1,7 +1,7 @@
-# Token级证据分析
+# 特征级证据分析
 
 ## 背景介绍
-Token级证据分析给出模型预测所依据的来自预测文本的若干重要tokens。
+特征级证据分析给出模型预测所依据的来自预测文本的若干重要特征。
 本工具提供了3种主流的证据分析方法，分别是LIME、Attention、Integrated Gradient。同时，我们也封装了InterpretDL中的NormLime、GradShap方法。
 
 ## 使用示例
@@ -27,7 +27,7 @@ ig = IntGradInterpreter(model, device="gpu")
 result = ig(preprocess_fn(data), steps=100)
 
 # attributions的长度与用户切词相同
-# 数值的大小表示对应token对预测结果支持的程度
+# 数值的大小表示对应特征对预测结果支持的程度
 print(result[0].attributions)
 # [ 0.02149865  0.13750568  0.03729623  0.20981199  0.11474895  0.00191162
 #  0.01166647  0.01939347  0.00499799 -0.01771647  0.05467343 -0.05574901

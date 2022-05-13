@@ -28,7 +28,7 @@ TrustAI是百度基于产业级深度学习平台『飞桨』([PaddlePaddle](htt
 TrustAI从模型可解释性角度出发，旨在通过分析模型预测证据，发现模型缺陷及提出模型增强方案。本工具集提供了可信评测、可信分析及可信增强等工具。
 
 - **可信评测工具**提供了细粒度人工标注证据，覆盖3个语言理解任务和预训练模型的评测数据，从多维度全面评估模型的可信度。
-- **可信分析工具**旨在分析模型预测依赖的证据，提供了两类分析工具，分别为从预测输入中找出对预测结果影响最重要的token集合(token级证据分析)、及从训练数据中找出对预测影响最大的实例集合(实例级证据分析)。
+- **可信分析工具**旨在分析模型预测依赖的证据，提供了两类分析工具，分别为从预测输入中找出对预测结果影响最重要的特征集合(特征级证据分析)、及从训练数据中找出对预测影响最大的实例集合(实例级证据分析)。
 - **可信增强工具**提供了基于可信分析的通用增强方案，旨在提升模型本身效果和可信度。
 
 <p align="center">
@@ -47,13 +47,13 @@ TrustAI从模型可解释性角度出发，旨在通过分析模型预测证据�
 
 
 <p align="center">
-<img align="center" src="./imgs/sentiment_labeled_case.png", width=600><br>
+<img align="center" src="./imgs/sentiment_labeled_case.png", style="zoom:45%"><br>
 图3 情感分析标注数据
 </p>
 <br>
 
 <p align="center">
-<img align="center" src="./imgs/pretrained_labeled_case.png", width=600><br>
+<img align="center" src="./imgs/pretrained_labeled_case.png", style="zoom:40%" ><br>
 图4 预训练模型标注数据
 </p>
 
@@ -70,18 +70,18 @@ TrustAI从模型可解释性角度出发，旨在通过分析模型预测证据�
 
 ### 可信分析
 
-可信分析给出模型预测依赖的证据，是一种Post-hoc Explanation（后验解释分析）。本工具提供了Token级和实例级两种粒度的证据分析方法。
+可信分析给出模型预测依赖的证据，是一种Post-hoc Explanation（后验解释分析）。本工具提供了特征级和实例级两种粒度的证据分析方法。
 
-**Token级证据**：由输入中若干重要tokens（字或词）构成证据。Token的重要度分数由显著性方法（saliency methods）给出。我们的工具集提供了3种常用的显著性分析方法，分别是基于梯度的（Gradient-based中的integrated Gradient）、基于注意力权重的（Attention-based，与具体模型结构相关）、以及基于线性模型（Linear-based中的LIME）的，如图1**可信分析**中**Token级证据分析**部分所示。
+**特征级证据**：由输入中若干重要特征（字或词）构成证据。特征的重要度分数由显著性方法（saliency methods）给出。我们的工具集提供了3种常用的显著性分析方法，分别是基于梯度的（Gradient-based中的integrated Gradient）、基于注意力权重的（Attention-based，与具体模型结构相关）、以及基于线性模型（Linear-based中的LIME）的，如图1**可信分析**中**特征级证据分析**部分所示。
 其中，证据一般由top N重要词构成，该N的选择依赖经验或实际数据。
 <p align="center">
 <img align="center" src="./imgs/saliency_map.png", width=550><br>
-图5 基于IG方法给出的token重要度，红色标注的token就是选择的证据
+图5 基于IG方法给出的特征重要度，红色标注的特征就是选择的证据
 </p>
 
 **实例级证据**：由训练数据中对该预测影响重大的若干条实例数据构成。实例的影响度一般由influence function（影响函数）确定。我们的工具集提供了基于表示点学习的实例级证据分析方法。
 
-关于Token级证据和实例级证据使用示例分别见[token_level](./trustai/interpretation/token_level/README.md)和[example_level](./trustai/interpretation/example_level/README.md)。
+关于特征级证据和实例级证据使用示例分别见[token_level](./trustai/interpretation/token_level/README.md)和[example_level](./trustai/interpretation/example_level/README.md)。
 
 其他更多的证据分析方法参考[InterpretDL](https://github.com/PaddlePaddle/InterpretDL)。
 
@@ -148,7 +148,7 @@ map_score = evaluator.cal_map(goldens, predicts)
 
 #### 可信分析
 
-**Token级证据分析**
+**特征级证据分析**
 
 以Integrated Gradient方法为例，其调用方法如下所示：
 ```python
@@ -164,7 +164,7 @@ align_res = ig.alignment(result, contexts, batch_words, word_offset_maps, subwor
 
 </br>
 
-TrustAI提供可视化输出，即根据输入token的重要度，以不同颜色深度展示结果。颜色越深表示重要度越大，越浅表示重要度越小。
+TrustAI提供可视化输出，即根据输入特征的重要度，以不同颜色深度展示结果。颜色越深表示重要度越大，越浅表示重要度越小。
 ```python
 # 可视化结果
 html = visualize_text(VisualizationTextRecord(align_res[i],true_label=true_labels[i]))
