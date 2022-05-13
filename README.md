@@ -47,13 +47,13 @@ TrustAI从模型可解释性角度出发，旨在通过分析模型预测证据�
 
 
 <p align="center">
-<img align="center" src="./imgs/sentiment_labeled_case.png", style="zoom:45%"><br>
+<img align="center" src="./imgs/sentiment_labeled_case.png", style="zoom:40%"><br>
 图3 情感分析标注数据
 </p>
 <br>
 
 <p align="center">
-<img align="center" src="./imgs/pretrained_labeled_case.png", style="zoom:40%" ><br>
+<img align="center" src="./imgs/pretrained_labeled_case.png", style="zoom:35%" ><br>
 图4 预训练模型标注数据
 </p>
 
