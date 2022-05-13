@@ -5,3 +5,4 @@ scikit-learn
 tqdm
 matplotlib
 IPython
+pre-commit
