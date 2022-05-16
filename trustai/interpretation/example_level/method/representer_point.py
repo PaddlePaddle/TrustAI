@@ -38,7 +38,7 @@ class SoftmaxClassifier(nn.Layer):
         self.linear = paddle.nn.Linear(in_feature, out_feature, bias_attr=False)
         self.linear.weight.set_value(params)
 
-    def forward(self, features, labels):
+    def forward(self, features, probas):
         """
         Calculate loss for the loss function and L2 regularizer.
         """
@@ -46,7 +46,7 @@ class SoftmaxClassifier(nn.Layer):
         logits_max = paddle.max(logits, axis=1, keepdim=True)
         logits = logits - logits_max
         A = paddle.log(paddle.sum(paddle.exp(logits), axis=1))
-        B = paddle.sum(logits * labels, axis=1)
+        B = paddle.sum(logits * probas, axis=1)
         loss = paddle.sum(A - B)
         l2 = paddle.sum(paddle.square(self.linear.weight))
         return (loss, l2)
@@ -86,21 +86,21 @@ class RepresenterPointBase(nn.Layer):
         params = paddle.concat([weight, paddle.unsqueeze(bias, axis=0)], axis=0)
         return weight, params
 
-    def train(self, input_feature, input_logits):
+    def train(self, input_feature, input_probas):
         """
         Train a representer point model.
         """
-        # input_feature is the feature of a given model, input_logits is the logits of input_feature
+        # input_feature is the feature of a given model, input_probas is the probabilities of input_feature
         input_feature = paddle.concat(
             [input_feature, paddle.ones((input_feature.shape[0], 1), dtype=input_feature.dtype)], axis=1)
 
-        input_num = len(input_logits)
+        input_num = len(input_probas)
         min_loss = float('inf')
         optimizer = self.optimizer(learning_rate=self.learning_rate,
                                    parameters=self.softmax_classifier.linear.parameters())
         print('Training representer point model, it will take several minutes...')
         for epoch in range(self.epochs):
-            classifier_loss, L2 = self.softmax_classifier(input_feature, input_logits)
+            classifier_loss, L2 = self.softmax_classifier(input_feature, input_probas)
             loss = L2 * self.lmbd + classifier_loss / input_num
             classifier_mean_loss = classifier_loss / input_num
             loss.backward()
@@ -129,12 +129,13 @@ class RepresenterPointBase(nn.Layer):
         softmax_value = F.softmax(logits)
 
         # derivative of softmax cross entropy
-        weight_matrix = softmax_value - input_logits
+        weight_matrix = softmax_value - input_probas
         weight_matrix = weight_matrix / (-2.0 * self.lmbd * input_num)  # alpha
 
-        best_w = paddle.matmul(paddle.t(input_feature), weight_matrix)  # alpha * f_i^T
+        
 
         if self.correlation:
+            best_w = paddle.matmul(paddle.t(input_feature), weight_matrix)  # alpha * f_i^T
             # calculate y_p, which is the prediction based on decomposition of w by representer theorem
             logits = paddle.matmul(input_feature, best_w)  # alpha * f_i^T * f_t
             logits_max = paddle.max(logits, axis=1, keepdim=True)
@@ -142,12 +143,12 @@ class RepresenterPointBase(nn.Layer):
             y_p = F.softmax(logits)
 
             print('L1 difference between ground truth prediction and prediction by representer theorem decomposition')
-            print(F.l1_loss(input_logits, y_p).numpy())
+            print(F.l1_loss(input_probas, y_p).numpy())
 
             print('pearson correlation between ground truth  prediction and prediciton by representer theorem')
-            corr, _ = (pearsonr(input_logits.flatten().numpy(), (y_p).flatten().numpy()))
+            corr, _ = (pearsonr(input_probas.flatten().numpy(), (y_p).flatten().numpy()))
             print(corr)
-        return weight_matrix, best_w
+        return weight_matrix
 
 
 class RepresenterPointModel(Interpreter):
@@ -187,8 +188,8 @@ class RepresenterPointModel(Interpreter):
                                                       learning_rate=learning_rate,
                                                       lmbd=lmbd,
                                                       epochs=epochs)
-        self.train_feature, self.train_logits, _ = self.extract_featue(paddle_model, train_dataloader)
-        self.weight_matrix, self.best_W = self.represerter_point.train(self.train_feature, self.train_logits)
+        self.train_feature, self.train_probas, _ = self.extract_feature(paddle_model, train_dataloader)
+        self.weight_matrix = self.represerter_point.train(self.train_feature, self.train_probas)
 
     def interpret(self, data, sample_num=3):
         """
@@ -199,8 +200,8 @@ class RepresenterPointModel(Interpreter):
         """
         pos_examples = []
         neg_examples = []
-        val_feature, _, results = self.extract_featue(self.paddle_model, data)
-        for index, target_class in enumerate(results):
+        val_feature, _, preds = self.extract_feature(self.paddle_model, data)
+        for index, target_class in enumerate(preds):
             tmp = self.weight_matrix[:, target_class] * paddle.sum(
                 self.train_feature * paddle.to_tensor(val_feature[index]), axis=1)
             idx = paddle.flip(paddle.argsort(tmp), axis=0)
@@ -208,7 +209,7 @@ class RepresenterPointModel(Interpreter):
             neg_idx = idx[-sample_num:].tolist()
             pos_examples.append(pos_idx)
             neg_examples.append(neg_idx)
-        return results.tolist(), pos_examples, neg_examples
+        return preds.tolist(), pos_examples, neg_examples
 
     def _build_predict_fn(self, predict_fn=None):
         if predict_fn is not None:
@@ -220,43 +221,49 @@ class RepresenterPointModel(Interpreter):
             if paddle_model is None:
                 paddle_model = self.paddle_model
 
-            x_feature = []
-
+            cached_features = []
+            
             def forward_pre_hook(layer, input):
                 """
-                Hook for a given layer in model.
+                Pre_hook for a given layer in model.
                 """
-                x_feature.extend(input[0])
+                cached_features.extend(input[0])
+            
+            cached_logits = []
+            
+            def forward_post_hook(layer, input, output):
+                """
+                Post_hook for a given layer in model.
+                """
+                cached_logits.append(output)
 
             classifier = get_sublayer(paddle_model, self.classifier_layer_name)
 
             forward_pre_hook_handle = classifier.register_forward_pre_hook(forward_pre_hook)
+            forward_post_hook_handle = classifier.register_forward_post_hook(forward_post_hook)
 
             if isinstance(inputs, (tuple, list)):
-                logits = paddle_model(*inputs)  # get logits, [bs, num_c]
+                res = paddle_model(*inputs)  # get logits, [bs, num_c]
             else:
-                logits = paddle_model(inputs)  # get logits, [bs, num_c]
+                res = paddle_model(inputs)  # get logits, [bs, num_c]
 
             forward_pre_hook_handle.remove()
+            forward_post_hook_handle.remove()
 
-            probas = paddle.nn.functional.softmax(logits, axis=1)  # get probabilities.
+            probas = paddle.nn.functional.softmax(cached_logits[-1], axis=1)  # get probabilities.
             preds = paddle.argmax(probas, axis=1).tolist()  # get predictions.
-            x_feature = paddle.to_tensor(x_feature)
-            return x_feature, probas, preds
+            return paddle.to_tensor(cached_features), probas, preds
 
         self.predict_fn = predict_fn
 
     @paddle.no_grad()
-    def extract_featue(self, paddle_model, data_loader):
-        print('Extracting feature for dataloader, it will take some time...')
-        x_features, y_logits, y_preds = [], [], []
+    def extract_feature(self, paddle_model, data_loader):
+        print('Extracting feature for given dataloader, it will take some time...')
+        features, probas, preds = [], [], []
 
         for step, batch in enumerate(data_loader, start=1):
-            x_feature, prob, pred = self.predict_fn(batch)
-            x_features.extend(x_feature)
-            y_logits.extend(prob)
-            y_preds.extend(pred)
-        x_features = paddle.to_tensor(x_features)
-        y_logits = paddle.to_tensor(y_logits)
-        y_preds = paddle.to_tensor(y_preds)
-        return x_features, y_logits, y_preds
+            feature, prob, pred = self.predict_fn(batch)
+            features.extend(feature)
+            probas.extend(prob)
+            preds.extend(pred)
+        return paddle.to_tensor(features), paddle.to_tensor(probas), paddle.to_tensor(preds)
