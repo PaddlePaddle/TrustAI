@@ -275,7 +275,7 @@ def set_seed(seed):
     paddle.seed(seed)
 
 
-def preprocess_fn(data, tokenizer):
+def preprocess_fn(data, tokenizer, with_label=False):
     """
     Preprocess input data to satisfy the demand of a given model.
     Args:
@@ -287,17 +287,39 @@ def preprocess_fn(data, tokenizer):
         token_type_ids(obj: `list[int]`): List of sequence pair mask.
     """
     examples = []
-    for text in data:
-        input_ids, segment_ids = convert_example(text, tokenizer, max_seq_length=128, is_test=True)
-        examples.append((input_ids, segment_ids))
+    if with_label:
+        for text in data:
+            input_ids, segment_ids, labels = convert_example(
+                text, tokenizer, max_seq_length=128, is_test=False)
+            examples.append((input_ids, segment_ids, labels))
 
-    batchify_fn = lambda samples, fn=Tuple(
-        Pad(axis=0, pad_val=tokenizer.pad_token_id),  # input id
-        Pad(axis=0, pad_val=tokenizer.pad_token_id),  # segment id
-    ): fn(samples)
+        batchify_fn = lambda samples, fn=Tuple(
+            Pad(axis=0, pad_val=tokenizer.pad_token_id),  # input id
+            Pad(axis=0, pad_val=tokenizer.pad_token_id),  # segment id
+            Stack(dtype="int64")  # label
+        ): fn(samples)
+        input_ids, segment_ids, labels = batchify_fn(examples)
+        return paddle.to_tensor(
+            input_ids, stop_gradient=False), paddle.to_tensor(
+                segment_ids,
+                stop_gradient=False), paddle.to_tensor(labels,
+                                                       stop_gradient=False)
+    else:
+        for text in data:
+            input_ids, segment_ids = convert_example(text,
+                                                     tokenizer,
+                                                     max_seq_length=128,
+                                                     is_test=True)
+            examples.append((input_ids, segment_ids))
 
-    input_ids, segment_ids = batchify_fn(examples)
-    return paddle.to_tensor(input_ids, stop_gradient=False), paddle.to_tensor(segment_ids, stop_gradient=False)
+        batchify_fn = lambda samples, fn=Tuple(
+            Pad(axis=0, pad_val=tokenizer.pad_token_id),  # input id
+            Pad(axis=0, pad_val=tokenizer.pad_token_id),  # segment id
+        ): fn(samples)
+        input_ids, segment_ids = batchify_fn(examples)
+        return paddle.to_tensor(input_ids,
+                                stop_gradient=False), paddle.to_tensor(
+                                    segment_ids, stop_gradient=False)
 
 
 def get_batches(data, batch_size=1):
@@ -317,14 +339,20 @@ def get_batches(data, batch_size=1):
     return batches
 
 
-def create_dataloader_from_scratch(data, tokenizer, batch_size=1):
+def create_dataloader_from_scratch(data,
+                                   tokenizer,
+                                   batch_size=1,
+                                   with_label=False):
     """
     Create dataloader from scratch.
     """
     dataloader = []
     # Seperates data into some batches.
     batches = get_batches(data, batch_size=batch_size)
-    dataloader = [preprocess_fn(batch, tokenizer) for batch in batches]
+    dataloader = [
+        preprocess_fn(batch, tokenizer, with_label=with_label)
+        for batch in batches
+    ]
     return dataloader
 
 
