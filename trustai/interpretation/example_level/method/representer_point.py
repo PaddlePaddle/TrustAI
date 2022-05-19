@@ -19,7 +19,6 @@ import functools
 import paddle
 import paddle.nn as nn
 import paddle.nn.functional as F
-from scipy.stats.stats import pearsonr
 
 from ...base_interpret import Interpreter
 from .example_base_interpreter import ExampleBaseInterpreter
@@ -73,9 +72,7 @@ class RepresenterPointBase(nn.Layer):
         """
         super().__init__()
         weight, params = self._get_params(paddle_model, classifier_layer_name)
-        self.softmax_classifier = SoftmaxClassifier(
-            weight.shape[0] + 1, weight.shape[1], params
-        )
+        self.softmax_classifier = SoftmaxClassifier(weight.shape[0] + 1, weight.shape[1], params)
         self.learning_rate = learning_rate
         self.lmbd = lmbd
         self.epochs = epochs
@@ -116,9 +113,7 @@ class RepresenterPointBase(nn.Layer):
             loss = L2 * self.lmbd + classifier_loss / input_num
             classifier_mean_loss = classifier_loss / input_num
             loss.backward()
-            grad_loss = paddle.mean(
-                paddle.abs(self.softmax_classifier.linear.weight.grad)
-            ).numpy()
+            grad_loss = paddle.mean(paddle.abs(self.softmax_classifier.linear.weight.grad)).numpy()
             # save the W with the lowest grad_loss
             if grad_loss < min_loss:
                 if epoch == 0:
@@ -134,8 +129,7 @@ class RepresenterPointBase(nn.Layer):
 
             if epoch % 1000 == 0:
                 logging.info(
-                    f"Eopch:{epoch:4d}\tloss:{loss.numpy()}\tphi_loss:{classifier_mean_loss.numpy()}\tgrad:{grad_loss}"
-                )
+                    f"Eopch:{epoch:4d}\tloss:{loss.numpy()}\tphi_loss:{classifier_mean_loss.numpy()}\tgrad:{grad_loss}")
 
         # caluculate w based on the representer theorem's decomposition
         logits = paddle.matmul(input_feature, best_W)
@@ -148,23 +142,23 @@ class RepresenterPointBase(nn.Layer):
         weight_matrix = weight_matrix / (-2.0 * self.lmbd * input_num)  # alpha
 
         if self.correlation:
-            best_w = paddle.matmul(
-                paddle.t(input_feature), weight_matrix
-            )  # alpha * f_i^T
+            try:
+                from scipy.stats.stats import pearsonr
+            except ImportError as e:
+                import sys
+                sys.stderr.write('''Warning with import scipy: please install scipy firstly. cmd: pip install scipy''')
+                return weight_matrix
+            best_w = paddle.matmul(paddle.t(input_feature), weight_matrix)  # alpha * f_i^T
             # calculate y_p, which is the prediction based on decomposition of w by representer theorem
             logits = paddle.matmul(input_feature, best_w)  # alpha * f_i^T * f_t
             logits_max = paddle.max(logits, axis=1, keepdim=True)
             logits = logits - logits_max
             y_p = F.softmax(logits)
 
-            print(
-                "L1 difference between ground truth prediction and prediction by representer theorem decomposition"
-            )
+            print("L1 difference between ground truth prediction and prediction by representer theorem decomposition")
             print(F.l1_loss(input_probas, y_p).numpy())
 
-            print(
-                "pearson correlation between ground truth  prediction and prediciton by representer theorem"
-            )
+            print("pearson correlation between ground truth  prediction and prediciton by representer theorem")
             corr, _ = pearsonr(input_probas.flatten().numpy(), (y_p).flatten().numpy())
             print(corr)
         return weight_matrix
@@ -200,9 +194,7 @@ class RepresenterPointModel(ExampleBaseInterpreter):
             lmbd(float: default=0.03): The coefficient of l2 regularization.
             epochs(int: default=4000): The total epochs to trianing representer point model.
         """
-        ExampleBaseInterpreter.__init__(
-            self, paddle_model, device, predict_fn, classifier_layer_name
-        )
+        ExampleBaseInterpreter.__init__(self, paddle_model, device, predict_fn, classifier_layer_name)
         self.paddle_model = paddle_model
         self.classifier_layer_name = classifier_layer_name
         self.represerter_point = RepresenterPointBase(
@@ -212,12 +204,8 @@ class RepresenterPointModel(ExampleBaseInterpreter):
             lmbd=lmbd,
             epochs=epochs,
         )
-        self.train_feature, self.train_probas, _ = self.extract_feature(
-            paddle_model, train_dataloader
-        )
-        self.weight_matrix = self.represerter_point.train(
-            self.train_feature, self.train_probas
-        )
+        self.train_feature, self.train_probas, _ = self.extract_feature(paddle_model, train_dataloader)
+        self.weight_matrix = self.represerter_point.train(self.train_feature, self.train_probas)
 
     def interpret(self, data, sample_num=3):
         """
@@ -231,8 +219,7 @@ class RepresenterPointModel(ExampleBaseInterpreter):
         val_feature, _, preds = self.extract_feature(self.paddle_model, data)
         for index, target_class in enumerate(preds):
             tmp = self.weight_matrix[:, target_class] * paddle.sum(
-                self.train_feature * paddle.to_tensor(val_feature[index]), axis=1
-            )
+                self.train_feature * paddle.to_tensor(val_feature[index]), axis=1)
             idx = paddle.flip(paddle.argsort(tmp), axis=0)
             pos_idx = idx[:sample_num].tolist()
             neg_idx = idx[-sample_num:].tolist()

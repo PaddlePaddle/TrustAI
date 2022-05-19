@@ -16,14 +16,12 @@ class ExampleBaseInterpreter(Interpreter):
         classifier_layer_name(str: default=classifier): Name of the classifier layer in paddle_model.
     """
 
-    def __init__(
-        self,
-        paddle_model: callable,
-        device: str = "gpu",
-        predict_fn=None,
-        classifier_layer_name="classifier",
-        **kwargs
-    ):
+    def __init__(self,
+                 paddle_model: callable,
+                 device: str = "gpu",
+                 predict_fn=None,
+                 classifier_layer_name="classifier",
+                 **kwargs):
         Interpreter.__init__(self, paddle_model, device)
         self.paddle_model = paddle_model
         self._build_predict_fn(predict_fn=predict_fn)
@@ -34,9 +32,7 @@ class ExampleBaseInterpreter(Interpreter):
 
     def _build_predict_fn(self, predict_fn=None):
         if predict_fn is not None:
-            self.predict_fn = functools.partial(
-                predict_fn, paddle_model=self.paddle_model
-            )
+            self.predict_fn = functools.partial(predict_fn, paddle_model=self.paddle_model)
             return
 
         def predict_fn(inputs, paddle_model=None):
@@ -62,12 +58,8 @@ class ExampleBaseInterpreter(Interpreter):
 
             classifier = get_sublayer(paddle_model, self.classifier_layer_name)
 
-            forward_pre_hook_handle = classifier.register_forward_pre_hook(
-                forward_pre_hook
-            )
-            forward_post_hook_handle = classifier.register_forward_post_hook(
-                forward_post_hook
-            )
+            forward_pre_hook_handle = classifier.register_forward_pre_hook(forward_pre_hook)
+            forward_post_hook_handle = classifier.register_forward_post_hook(forward_post_hook)
 
             if isinstance(inputs, (tuple, list)):
                 res = paddle_model(*inputs)  # get logits, [bs, num_c]
@@ -81,9 +73,7 @@ class ExampleBaseInterpreter(Interpreter):
             if len(logits.shape) < 2:
                 logits = logits.unsqueeze(0)
 
-            probas = paddle.nn.functional.softmax(
-                cached_logits[-1], axis=1
-            )  # get probabilities.
+            probas = paddle.nn.functional.softmax(cached_logits[-1], axis=1)  # get probabilities.
             preds = paddle.argmax(probas, axis=1).tolist()  # get predictions.
             return paddle.to_tensor(cached_features), probas, preds
 

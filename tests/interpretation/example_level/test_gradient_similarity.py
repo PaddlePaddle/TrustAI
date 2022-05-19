@@ -69,6 +69,49 @@ class TestGradientSimilarity(unittest.TestCase):
             cached_train_grad="../assets/cached_train_grad.tensor",
         )
 
+    def test_cached_train_grad(self):
+        MODEL_NAME = "ernie-1.0"
+        DATASET_NAME = "chnsenticorp"
+        paddle_model = ErnieForSequenceClassification.from_pretrained(
+            MODEL_NAME, num_classes=2
+        )
+        tokenizer = ErnieTokenizer.from_pretrained(MODEL_NAME)
+        state_dict = paddle.load(
+            f"../assets/{DATASET_NAME}-{MODEL_NAME}/model_state.pdparams"
+        )
+        paddle_model.set_dict(state_dict)
+
+        train_ds, dev_ds, test_ds = load_dataset(
+            DATASET_NAME, splits=["train", "dev", "test"]
+        )
+
+        batch_size = 1
+        max_seq_length = 128
+
+        trans_func = partial(
+            convert_example, tokenizer=tokenizer, max_seq_length=max_seq_length
+        )
+        batchify_fn = lambda samples, fn=Tuple(
+            Pad(axis=0, pad_val=tokenizer.pad_token_id),  # input
+            Pad(axis=0, pad_val=tokenizer.pad_token_type_id),  # segment
+            Stack(dtype="int64"),  # label
+        ): [data for data in fn(samples)]
+        train_data_loader = create_dataloader(
+            train_ds,
+            mode="train",
+            batch_size=batch_size,
+            batchify_fn=batchify_fn,
+            trans_fn=trans_func,
+            shuffle=False,
+        )
+
+        grad_sim_model = GradientSimilarityModel(
+            paddle_model,
+            train_data_loader,
+            classifier_layer_name="classifier",
+            cached_train_grad="./cached_train_grad.tensor",
+        )
+
     def test_predict_fn(self):
         def predict_fn(inputs, paddle_model, classifier_layer_name="classifier"):
             """predict_fn"""
