@@ -10,7 +10,7 @@ import warnings
 import paddle
 import paddle.nn.functional as F
 
-from ..common.utils import get_sublayer
+from ..common.utils import get_sublayer, dot_similarity, cos_similarity, euc_similarity, get_top_and_bottom_n_examples
 from .example_base_interpreter import ExampleBaseInterpreter
 
 
@@ -27,7 +27,7 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         classifier_layer_name="classifier",
         predict_fn=None,
         criterion=None,
-        cached_train_grad="./cached_train_grad.tensor",
+        cached_train_grad=None,
     ):
         """
         Initialization.
@@ -38,21 +38,22 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
             classifier_layer_name(str: default=classifier): Name of the classifier layer in paddle_model.
             predict_fn(callabel: default=None): If the paddle_model prediction has special process, user can customize the prediction function.
             criterion(paddle.nn.layer.loss: default=None): criterion to calculate model loss.
-            cached_train_grad(str: default="./cached_train_grad.tensor"): path of the cached train_dataloader gradient.
+            cached_train_grad(str: default=None): Path of the cached train_dataloader gradient. In the first training time, it will take some time to generate the train_grad
         """
         ExampleBaseInterpreter.__init__(self, paddle_model, device, predict_fn, classifier_layer_name)
         self.paddle_model = paddle_model
         self.classifier_layer_name = classifier_layer_name
         self.criterion = (criterion if criterion is not None else paddle.nn.loss.CrossEntropyLoss())
-        if os.path.exists(cached_train_grad) and os.path.isfile(cached_train_grad):
+        if cached_train_grad is not None and os.path.exists(cached_train_grad) and os.path.isfile(cached_train_grad):
             self.train_grad = paddle.load(cached_train_grad)
         else:
             self.train_grad, *_ = self.get_grad(paddle_model, train_dataloader)
-            try:
-                paddle.save(self.train_grad, cached_train_grad)
-            except IOError as e:
-                import sys
-                sys.stderr.write("save cached_train_grad fail")
+            if cached_train_grad is not None:
+                try:
+                    paddle.save(self.train_grad, cached_train_grad)
+                except IOError as e:
+                    import sys
+                    sys.stderr.write("save cached_train_grad fail")
 
     def interpret(self, data, sample_num=3, sim_fn="dot"):
         """
@@ -62,39 +63,23 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
             sample_sum(int: default=3): the number of positive examples and negtive examples selected for each instance.
             sim_fn(str: default=dot): the similarity metric to select examples.
         """
-        examples = []
+        pos_examples = []
+        neg_examples = []
         val_feature, _, preds = self.get_grad(self.paddle_model, data)
 
         if sim_fn == "dot":
-            similarity_fn = self._dot_similarity
+            similarity_fn = dot_similarity
         elif sim_fn == "cos":
-            similarity_fn = self._cos_similarity
+            similarity_fn = cos_similarity
         else:
             warnings.warn("only support ['dot', 'cos']")
             exit()
         for index, target_class in enumerate(preds):
-            tmp = similarity_fn(val_feature[index])
-            example_index = self._get_similarity_index(tmp, sample_num=sample_num)
-            examples.append(example_index)
-        return preds.tolist(), examples
-
-    def _get_similarity_index(self, scores, sample_num=3):
-        """
-        get index of the most similarity examples
-        """
-        index = paddle.flip(paddle.argsort(scores), axis=0)
-        sim_index = index[:sample_num].tolist()
-        dis_sim_index = index[-sample_num:].tolist()
-        return sim_index, dis_sim_index
-
-    def _dot_similarity(self, inputs):
-        return paddle.sum(self.train_grad * paddle.to_tensor(inputs), axis=1)
-
-    def _cos_similarity(self, inputs):
-        return F.cosine_similarity(self.train_grad, paddle.to_tensor(inputs).unsqueeze(0))
-
-    def _euc_similarity(self, inputs):
-        return -paddle.linalg.norm(self.train_grad - paddle.to_tensor(inputs).unsqueeze(0), axis=-1).squeeze(-1)
+            tmp = similarity_fn(self.train_grad, paddle.to_tensor(val_feature[index]))
+            pos_idx, neg_idx = get_top_and_bottom_n_examples(tmp, sample_num=sample_num)
+            pos_examples.append(pos_idx)
+            neg_examples.append(neg_idx)
+        return preds.tolist(), pos_examples, neg_examples
 
     def get_grad(self, paddle_model, data_loader):
         """
@@ -105,9 +90,8 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         features, probas, preds, grads = [], [], [], []
 
         for step, batch in enumerate(data_loader, start=1):
-            *input, label = batch
-            _, prob, pred = self.predict_fn(input)
-            loss = self.criterion(prob, label)
+            _, prob, pred = self.predict_fn(batch)
+            loss = self.criterion(prob, paddle.to_tensor(pred))
             loss.backward()
             grad = self._get_flat_param_grad()
             grads.append(grad)

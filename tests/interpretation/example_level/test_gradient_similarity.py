@@ -21,37 +21,28 @@ from assets.utils import (
     get_sublayer,
 )
 from trustai.interpretation.example_level.method.gradient_similarity import (
-    GradientSimilarityModel,
-)
+    GradientSimilarityModel, )
 
 
 class TestGradientSimilarity(unittest.TestCase):
+
     def test_bert_model(self):
         MODEL_NAME = "ernie-1.0"
         DATASET_NAME = "chnsenticorp"
-        paddle_model = ErnieForSequenceClassification.from_pretrained(
-            MODEL_NAME, num_classes=2
-        )
+        paddle_model = ErnieForSequenceClassification.from_pretrained(MODEL_NAME, num_classes=2)
         tokenizer = ErnieTokenizer.from_pretrained(MODEL_NAME)
-        state_dict = paddle.load(
-            f"../assets/{DATASET_NAME}-{MODEL_NAME}/model_state.pdparams"
-        )
+        state_dict = paddle.load(f"../assets/{DATASET_NAME}-{MODEL_NAME}/model_state.pdparams")
         paddle_model.set_dict(state_dict)
 
-        train_ds, dev_ds, test_ds = load_dataset(
-            DATASET_NAME, splits=["train", "dev", "test"]
-        )
+        train_ds, dev_ds, test_ds = load_dataset(DATASET_NAME, splits=["train", "dev", "test"])
 
         batch_size = 1
         max_seq_length = 128
 
-        trans_func = partial(
-            convert_example, tokenizer=tokenizer, max_seq_length=max_seq_length
-        )
+        trans_func = partial(convert_example, tokenizer=tokenizer, max_seq_length=max_seq_length)
         batchify_fn = lambda samples, fn=Tuple(
             Pad(axis=0, pad_val=tokenizer.pad_token_id),  # input
             Pad(axis=0, pad_val=tokenizer.pad_token_type_id),  # segment
-            Stack(dtype="int64"),  # label
         ): [data for data in fn(samples)]
         train_data_loader = create_dataloader(
             train_ds,
@@ -72,29 +63,20 @@ class TestGradientSimilarity(unittest.TestCase):
     def test_cached_train_grad(self):
         MODEL_NAME = "ernie-1.0"
         DATASET_NAME = "chnsenticorp"
-        paddle_model = ErnieForSequenceClassification.from_pretrained(
-            MODEL_NAME, num_classes=2
-        )
+        paddle_model = ErnieForSequenceClassification.from_pretrained(MODEL_NAME, num_classes=2)
         tokenizer = ErnieTokenizer.from_pretrained(MODEL_NAME)
-        state_dict = paddle.load(
-            f"../assets/{DATASET_NAME}-{MODEL_NAME}/model_state.pdparams"
-        )
+        state_dict = paddle.load(f"../assets/{DATASET_NAME}-{MODEL_NAME}/model_state.pdparams")
         paddle_model.set_dict(state_dict)
 
-        train_ds, dev_ds, test_ds = load_dataset(
-            DATASET_NAME, splits=["train", "dev", "test"]
-        )
+        train_ds, dev_ds, test_ds = load_dataset(DATASET_NAME, splits=["train", "dev", "test"])
 
         batch_size = 1
         max_seq_length = 128
 
-        trans_func = partial(
-            convert_example, tokenizer=tokenizer, max_seq_length=max_seq_length
-        )
+        trans_func = partial(convert_example, tokenizer=tokenizer, max_seq_length=max_seq_length, is_test=True)
         batchify_fn = lambda samples, fn=Tuple(
             Pad(axis=0, pad_val=tokenizer.pad_token_id),  # input
             Pad(axis=0, pad_val=tokenizer.pad_token_type_id),  # segment
-            Stack(dtype="int64"),  # label
         ): [data for data in fn(samples)]
         train_data_loader = create_dataloader(
             train_ds,
@@ -109,10 +91,11 @@ class TestGradientSimilarity(unittest.TestCase):
             paddle_model,
             train_data_loader,
             classifier_layer_name="classifier",
-            cached_train_grad="./cached_train_grad.tensor",
+            cached_train_grad=None,
         )
 
     def test_predict_fn(self):
+
         def predict_fn(inputs, paddle_model, classifier_layer_name="classifier"):
             """predict_fn"""
 
@@ -126,9 +109,7 @@ class TestGradientSimilarity(unittest.TestCase):
 
             classifier = get_sublayer(paddle_model, classifier_layer_name)
 
-            forward_pre_hook_handle = classifier.register_forward_pre_hook(
-                forward_pre_hook
-            )
+            forward_pre_hook_handle = classifier.register_forward_pre_hook(forward_pre_hook)
 
             if isinstance(inputs, (tuple, list)):
                 logits = paddle_model(*inputs)  # get logits, [bs, num_c]
@@ -144,29 +125,20 @@ class TestGradientSimilarity(unittest.TestCase):
 
         MODEL_NAME = "ernie-1.0"
         DATASET_NAME = "chnsenticorp"
-        paddle_model = ErnieForSequenceClassification.from_pretrained(
-            MODEL_NAME, num_classes=2
-        )
+        paddle_model = ErnieForSequenceClassification.from_pretrained(MODEL_NAME, num_classes=2)
         tokenizer = ErnieTokenizer.from_pretrained(MODEL_NAME)
-        state_dict = paddle.load(
-            f"../assets/{DATASET_NAME}-{MODEL_NAME}/model_state.pdparams"
-        )
+        state_dict = paddle.load(f"../assets/{DATASET_NAME}-{MODEL_NAME}/model_state.pdparams")
         paddle_model.set_dict(state_dict)
 
-        train_ds, dev_ds, test_ds = load_dataset(
-            DATASET_NAME, splits=["train", "dev", "test"]
-        )
+        train_ds, dev_ds, test_ds = load_dataset(DATASET_NAME, splits=["train", "dev", "test"])
 
         batch_size = 1
         max_seq_length = 128
 
-        trans_func = partial(
-            convert_example, tokenizer=tokenizer, max_seq_length=max_seq_length
-        )
+        trans_func = partial(convert_example, tokenizer=tokenizer, max_seq_length=max_seq_length, is_test=True)
         batchify_fn = lambda samples, fn=Tuple(
             Pad(axis=0, pad_val=tokenizer.pad_token_id),  # input
             Pad(axis=0, pad_val=tokenizer.pad_token_type_id),  # segment
-            Stack(dtype="int64"),  # label
         ): [data for data in fn(samples)]
         train_data_loader = create_dataloader(
             train_ds,
@@ -198,24 +170,19 @@ class TestGradientSimilarity(unittest.TestCase):
         pad_token_id = vocab.to_indices("[PAD]")
 
         DATASET_NAME = "chnsenticorp"
-        paddle_model = model = LSTMModel(
-            vocab_size, num_classes, direction="bidirect", padding_idx=pad_token_id
-        )
+        paddle_model = model = LSTMModel(vocab_size, num_classes, direction="bidirect", padding_idx=pad_token_id)
         state_dict = paddle.load(PARAMS_PATH)
         paddle_model.set_dict(state_dict)
 
-        train_ds, dev_ds, test_ds = load_dataset(
-            DATASET_NAME, splits=["train", "dev", "test"]
-        )
+        train_ds, dev_ds, test_ds = load_dataset(DATASET_NAME, splits=["train", "dev", "test"])
 
         batch_size = 1
         max_seq_length = 128
 
-        trans_func = partial(preprocess_fn_lstm, tokenizer=tokenizer, is_test=False)
+        trans_func = partial(preprocess_fn_lstm, tokenizer=tokenizer, is_test=True)
         batchify_fn = lambda samples, fn=Tuple(
             Pad(axis=0, pad_val=pad_token_id),  # input
             Pad(axis=0, pad_val=pad_token_id),  # segment
-            Stack(dtype="int64"),  # label
         ): [data for data in fn(samples)]
         train_data_loader = create_dataloader(
             train_ds,
@@ -226,9 +193,7 @@ class TestGradientSimilarity(unittest.TestCase):
             shuffle=False,
         )
 
-        grad_sim_model = GradientSimilarityModel(
-            paddle_model, train_data_loader, classifier_layer_name="output_layer"
-        )
+        grad_sim_model = GradientSimilarityModel(paddle_model, train_data_loader, classifier_layer_name="output_layer")
 
 
 if __name__ == "__main__":

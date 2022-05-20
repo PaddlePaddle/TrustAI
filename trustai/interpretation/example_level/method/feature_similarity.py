@@ -9,7 +9,7 @@ import warnings
 import paddle
 import paddle.nn.functional as F
 
-from ..common.utils import get_sublayer
+from ..common.utils import get_sublayer, dot_similarity, cos_similarity, euc_similarity, get_top_and_bottom_n_examples
 from .example_base_interpreter import ExampleBaseInterpreter
 
 
@@ -48,40 +48,24 @@ class FeatureSimilarityModel(ExampleBaseInterpreter):
             sample_sum(int: default=3): the number of positive examples and negtive examples selected for each instance.
             sim_fn(str: default=dot): the similarity metric to select examples.
         """
-        examples = []
+        pos_examples = []
+        neg_examples = []
         val_feature, preds = self.extract_featue(self.paddle_model, data)
         if sim_fn == "dot":
-            similarity_fn = self._dot_similarity
+            similarity_fn = dot_similarity
         elif sim_fn == "cos":
-            similarity_fn = self._cos_similarity
+            similarity_fn = cos_similarity
         elif sim_fn == "euc":
-            similarity_fn = self._euc_similarity
+            similarity_fn = euc_similarity
         else:
             warnings.warn("only support ['dot', 'cos', 'eud']")
             exit()
         for index, target_class in enumerate(preds):
-            tmp = similarity_fn(val_feature[index])
-            example_index = self._get_similarity_index(tmp, sample_num=sample_num)
-            examples.append(example_index)
-        return preds.tolist(), examples
-
-    def _get_similarity_index(self, scores, sample_num=3):
-        """
-        get index of the most similarity examples
-        """
-        index = paddle.flip(paddle.argsort(scores), axis=0)
-        sim_index = index[:sample_num].tolist()
-        dis_sim_index = index[-sample_num:].tolist()
-        return sim_index, dis_sim_index
-
-    def _dot_similarity(self, inputs):
-        return paddle.sum(self.train_feature * paddle.to_tensor(inputs), axis=1)
-
-    def _cos_similarity(self, inputs):
-        return F.cosine_similarity(self.train_feature, paddle.to_tensor(inputs).unsqueeze(0))
-
-    def _euc_similarity(self, inputs):
-        return -paddle.linalg.norm(self.train_feature - paddle.to_tensor(inputs).unsqueeze(0), axis=-1).squeeze(-1)
+            tmp = similarity_fn(self.train_feature, paddle.to_tensor(val_feature[index]))
+            pos_idx, neg_idx = get_top_and_bottom_n_examples(tmp, sample_num=sample_num)
+            pos_examples.append(pos_idx)
+            neg_examples.append(neg_idx)
+        return preds.tolist(), pos_examples, neg_examples
 
     @paddle.no_grad()
     def extract_featue(self, paddle_model, data_loader):

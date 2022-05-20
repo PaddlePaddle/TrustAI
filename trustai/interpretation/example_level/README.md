@@ -45,80 +45,82 @@ text: 价格确实比较高，而且还没有早餐提供。 携程拿到的价�
 
 详细示例见[tutorials](../../../tutorials/interpretation/example_level/)。
 ### 基于梯度的相似度方法
-基于梯度的相似度方法([GC, GD](https://proceedings.neurips.cc/paper/2019/hash/c61f571dbd2fb949d3fe5ae1608dd48b-Abstract.html))通过模型的梯度挑选与当前测试数据最相似或不相似的数据。
+基于梯度的相似度方法([GC, GD](https://proceedings.neurips.cc/paper/2019/hash/c61f571dbd2fb949d3fe5ae1608dd48b-Abstract.html))通过模型的梯度挑选对当前测试数据产生正影响和负影响的数据。
 
 #### 输入
 - 给定的训练好的模型
 - 该模型的训练数据
 - 测试数据
 #### 输出
-- 每一条测试数据对应的梯度意义上最相似的数据和最不相似的数据
+- 每一条测试数据对应的梯度意义上对其产生正影响和负影响的数据
 #### 示例
-传入训练好的模型、模型对应的训练数据来初始化梯度相似度模型。基于该梯度相似度模型对预测数据进行证据抽取，需用户指定返回的相似数据和不相似数据条数，由sample_num指定。
+传入训练好的模型、模型对应的训练数据来初始化梯度相似度模型。基于该梯度相似度模型对预测数据进行证据抽取，需用户指定返回的正影响数据和负影响数据条数，由sample_num指定。
 
 ```python
 from trustai.interpretation import GradientSimilarityModel
 # initialization
 # 开发者需要传入模型及对应的训练数据，以及模型输出层中最后一层的layer name
+# 注意因为需要计算每一条数据对于模型参数的梯度，所以train_dataloader的batch_size需要设置为1
 grad_sim_model = GradientSimilarityModel(model, train_data_loader, classifier_layer_name="classifier")
-# 开发者可以通过sim_fn参数指定相似度计算方式，目前支持cos、dot（分别是余弦距离，点积距离和欧式距离）
+# 开发者可以通过sim_fn参数指定相似度计算方式，目前支持cos、dot（分别是余弦距离，点积距离）
 # predict_labels为测试数据预测标签
-# most_similar_examples为训练数据中在梯度意义上预测数据最相似的实例id
-# most_dissimilar_examples为训练数据中在梯度意义上预测数据最相似的实例id
-predict_labels, most_similar_examples, most_dissimilar_examples = grad_sim_model(test_dataloader, sample_num=3, sim_fn='cos')
+# pos_examples为训练数据中在梯度意义上对预测数据有正影响的实例id
+# neg_examples为训练数据中在梯度意义上对预测数据有负影响的实例id
+predict_labels, pos_examples, neg_examples = grad_sim_model(test_dataloader, sample_num=3, sim_fn='cos')
 ```
 
 结果示例：
 ```txt
+test data
 text: 没有光驱,重装Windows需要外接光驱,对于电脑新手会很麻烦(没什么人会用Linux吧)    predict label: 0
-most similar examples
+examples with positive influence
 text: Linux系统不太好用,平时习惯用Windows xp 系统,一下子用这个系统感觉很不习惯,建议开发或预装Windows xp系统.    gold label: 0
 text: 1、机器较沉 2、VISTA用起来不习惯，且占系统较多 3、音频插口、右前侧的二个USB口在用鼠标时感觉手靠得太近了    gold label: 0
 text: vista系统下也没有无线网卡驱动，用驱动精灵可解决。 机器稍有点重。 散热有待改进。    gold label: 0
-most dissimilar examples
-text: 分区时出现拒绝访问，怎么分都不行，请求帮助！ 送的1G内存条，怎么安装呢？应该不能自己擅自安装吧    gold label: 1
-text: 进BIOS，configuration 改成IDE接口就行！ 散热不好！太热了，建议价钱或者少出点钱购买其他款机器！    gold label: 1
-text: 没有配置驱动光盘。这点很不好。虽然说笔记本本身带刻录。可是也麻烦了客户啊。    gold label: 1
+examples with negative influence
+text: 价格确实比较高，而且还没有早餐提供。 携程拿到的价格不好？还是自己保留起来不愿意让利给我们这些客户呢？ 到前台搞价格，430就可以了。    gold label: 1
+text: 买机器送的移动硬盘2.5寸250G的，没开封，想卖出，感兴趣短息联系，北京13901019711    gold label: 1
+text: 买机器送的移动硬盘2.5寸250G的，没开封，想卖出，感兴趣短息联系，北京13901019711    gold label: 0
 ```
 
 
-基于梯度的相似度方法召回了在梯度意义上与测试数据最相似和最不相似的实例数据。
+基于梯度的相似度方法召回了在梯度意义上对测试数据有正影响和负影响的实例数据。
 
 详细示例见[tutorials](../../../tutorials/interpretation/example_level/)。
 ### 基于特征的相似度方法
-基于特征的相似度方法([FC, FD, FU](https://arxiv.org/abs/2104.04128))通过模型的特征挑选与当前测试数据最相似或不相似的数据。
+基于特征的相似度方法([FC, FD, FU](https://arxiv.org/abs/2104.04128))通过模型的特征挑选对当前测试数据有正影响和负影响的数据。
 
 #### 输入
 - 给定的训练好的模型
 - 该模型的训练数据
 - 测试数据
 #### 输出
-- 每一条测试数据对应的特征意义上最相似的数据和最不相似的数据
+- 每一条测试数据对应的特征意义上对其有正影响和负影响的数据
 #### 示例
-传入训练好的模型、模型对应的训练数据来初始化特征相似度模型。基于该特征相似度模型对预测数据进行证据抽取，需用户指定返回的相似数据和不相似数据条数，由sample_num指定。
+传入训练好的模型、模型对应的训练数据来初始化特征相似度模型。基于该特征相似度模型对预测数据进行证据抽取，需用户指定返回的正影响数据和负影响数据条数，由sample_num指定。
 
 ```python
 from trustai.interpretation import FeatureSimilarityModel
 # initialization
 # 开发者需要传入模型及对应的训练数据，以及模型输出层中最后一层的layer name
-# 注意因为需要计算每一条数据对于模型参数的梯度，所以train_dataloader的batch_size需要设置为1，且需要提供label
 feature_sim_model = FeatureSimilarityModel(model, train_data_loader, classifier_layer_name="classifier")
 # 开发者可以通过sim_fn参数指定相似度计算方式，目前支持cos、dot、euc（分别是余弦距离，点积距离和欧式距离）
 # test_dataloader的标签应是模型的预测标签
 # predict_labels为测试数据预测标签
-# most_similar_examples为训练数据中在特征意义上预测数据最相似的实例id
-# most_dissimilar_examples为训练数据中在特征意义上预测数据最相似的实例id
-predict_labels, most_similar_examples, most_dissimilar_examples = feature_sim_model(test_dataloader, sample_num=3, sim_fn='cos')
+# pos_examples为训练数据中在特征意义上对预测数据有正影响的实例id
+# neg_examples为训练数据中在特征意义上对预测数据有负影响的实例id
+predict_labels, pos_examples, neg_examples = feature_sim_model(test_dataloader, sample_num=3, sim_fn='cos')
 ```
 
 结果示例：
 ```txt
+test data
 text: 没有光驱,重装Windows需要外接光驱,对于电脑新手会很麻烦(没什么人会用Linux吧)    predict label: 0
-most similar examples
+examples with positive influence
 text: Linux系统不太好用,平时习惯用Windows xp 系统,一下子用这个系统感觉很不习惯,建议开发或预装Windows xp系统.    gold label: 0
 text: 1、机器较沉 2、VISTA用起来不习惯，且占系统较多 3、音频插口、右前侧的二个USB口在用鼠标时感觉手靠得太近了    gold label: 0
 text: vista系统下也没有无线网卡驱动，用驱动精灵可解决。 机器稍有点重。 散热有待改进。    gold label: 0
-most dissimilar examples
+examples with negative influence
 text: “任务型教学”在我国外语教学界备受关注。国家教育部新《英语课程标准》将“倡导‘任务型’的教学途径，培养学生综合语言运用能力”写入教学建议。任务型教学被视为改革我国传统外语教学的良方。本书立足我国外语教学现状，全面分析了“任务型教学”的理论和实践基础、以实例说明“任务型教学”的具体操作步骤。为广大一线英语教师提供了教学和研究参考。    gold label: 1
 text: 当美国发生次贷危机乃至影响全世界以后，对于应对危机，我们国内的绝大多数专家对此都异口同声，观点基本雷同，而且又莫衷一是，人云亦云，本书的作者以其独特的视觉和丰富的知识，在书中告诉我们这次危机的来龙去脉，我们国家应该以怎样的方式去直面这次危机，如何转危为安，化危为机；作为普通读者也能从书中领会到一些对自己有益的知识。读完这本书以后，你更能体会到一种不一样的思维，非常值得一读。    gold label: 1
 text: 我从06年开始几乎每月都有一次出差，山西很多酒店都住过了，印象最深的就是三晋国际，其他还有龙城国际，华苑宾馆，黄河京都，还有一个叫什么交通大厦的，下面我对这些酒店做个最真实、准确地点评： 三晋国际——这是我认为最让太原市骄傲的酒店，我们衡量一个酒店的最直接的就是你能够得到什么服务，在这家酒店里，我感觉到了家一般的照顾，第一次来这里，感冒了，嘴里冷不丁说了一句，服务生就听到了，然后熬了一碗姜汤到我房间，当然也是免费的，很感动；洗澡时，一不小心摔倒了，副总经理、总监等等都慰问了我，其实这也不完全是酒店的错，但是从那以后，我发现每个房间浴室都放置了防滑垫和塑料拖鞋；有一次我把袜子之类的放在洗手间了，谁知道我回来后竟然发现服务员帮我免费清洗了，还把我不小心掰断的心爱的梳子还用胶给我粘好了，还留了言给我，真的很让我意外也有点不敢相信！对一个出差特别频繁，时间特别紧张的人来说，办理入住和退房就是一个最让人烦躁的时间，但是我算过了，三晋国际前台办理退房、入住的时间没有超过一分钟！！！在北京都很难有这样的待遇！其他的，比如前台接待、门厅服务之类的就不用说了，真的很好； 当然我也有建议：1、酒店的被子能否换厚一点的，冬天冷啊；2、一些房间的电话没有免提，不是很方便；3、外面的电话打不进来，可能是酒店为了安全考虑吧，但还是希望能够有外线拨入的功能。 龙城国际——不知道五星级是谁给的评价？！酒店一般，还不如华苑宾馆，无法容忍的是，前台接待服务态度太差了！唯一的优点是，早餐挺好吃。 华苑宾馆——06、07年都挺好的，今天偶尔又住了一下，发现时间长了，枕头、被子不是很干净，其他倒是挺好的，服务态度、环境都还不错，早餐有点单一。 黄河京都——地方太偏了！看起来挺好，住进去不咋地，无法容忍的是，也给大家提个醒，我退房的时间整整用了29分钟，快半个钟头了，我差点晕倒！结帐的服务员只顾打电话，不理我。 交通大厦——噩梦般的酒店，我再也不会住了！！隔音效果太差，还不幸地让我听到了隔壁小两口的闺房密语，哈哈，让我坐噩梦的是，半夜不知道什么单位来查房，从好多房间带走了好多女孩子，好怕怕地说……还有就是前台一个戴眼镜的，白白的女孩子，态度可真差啊，郁闷！ 太原还有好多酒店，可能我不会一一住到，但还是希望所有的酒店都能够像三晋国际一样，给山西人长脸！    gold label: 1

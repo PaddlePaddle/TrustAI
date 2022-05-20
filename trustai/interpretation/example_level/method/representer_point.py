@@ -146,7 +146,9 @@ class RepresenterPointBase(nn.Layer):
                 from scipy.stats.stats import pearsonr
             except ImportError as e:
                 import sys
-                sys.stderr.write('''Warning with import scipy: please install scipy firstly. cmd: pip install scipy''')
+                sys.stderr.write(
+                    '''Info about import scipy: please install scipy firstly. cmd: pip install scipy. We need to calculate the pearsonr correlation between the representre point model and the gived model'''
+                )
                 return weight_matrix
             best_w = paddle.matmul(paddle.t(input_feature), weight_matrix)  # alpha * f_i^T
             # calculate y_p, which is the prediction based on decomposition of w by representer theorem
