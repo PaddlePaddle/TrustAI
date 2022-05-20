@@ -14,5 +14,7 @@
 """example method"""
 
 from .representer_point import RepresenterPointModel
+from .feature_similarity import FeatureSimilarityModel
+from .gradient_similarity import GradientSimilarityModel
 
-__all__ = ["RepresenterPointModel"]
+__all__ = ["RepresenterPointModel", "FeatureSimilarityModel", "GradientSimilarityModel"]

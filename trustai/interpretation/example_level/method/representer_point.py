@@ -19,9 +19,9 @@ import functools
 import paddle
 import paddle.nn as nn
 import paddle.nn.functional as F
-from scipy.stats.stats import pearsonr
 
 from ...base_interpret import Interpreter
+from .example_base_interpreter import ExampleBaseInterpreter
 from ..common.utils import get_sublayer
 
 
@@ -57,14 +57,16 @@ class RepresenterPointBase(nn.Layer):
     Class for learning a representer point model
     """
 
-    def __init__(self,
-                 paddle_model,
-                 optimizer_name='SGD',
-                 classifier_layer_name='classifier',
-                 learning_rate=5e-2,
-                 lmbd=0.03,
-                 epochs=40000,
-                 correlation=True):
+    def __init__(
+        self,
+        paddle_model,
+        optimizer_name="SGD",
+        classifier_layer_name="classifier",
+        learning_rate=5e-2,
+        lmbd=0.03,
+        epochs=40000,
+        correlation=True,
+    ):
         """
         Initialization
         """
@@ -92,13 +94,20 @@ class RepresenterPointBase(nn.Layer):
         """
         # input_feature is the feature of a given model, input_probas is the probabilities of input_feature
         input_feature = paddle.concat(
-            [input_feature, paddle.ones((input_feature.shape[0], 1), dtype=input_feature.dtype)], axis=1)
+            [
+                input_feature,
+                paddle.ones((input_feature.shape[0], 1), dtype=input_feature.dtype),
+            ],
+            axis=1,
+        )
 
         input_num = len(input_probas)
-        min_loss = float('inf')
-        optimizer = self.optimizer(learning_rate=self.learning_rate,
-                                   parameters=self.softmax_classifier.linear.parameters())
-        print('Training representer point model, it will take several minutes...')
+        min_loss = float("inf")
+        optimizer = self.optimizer(
+            learning_rate=self.learning_rate,
+            parameters=self.softmax_classifier.linear.parameters(),
+        )
+        print("Training representer point model, it will take several minutes...")
         for epoch in range(self.epochs):
             classifier_loss, L2 = self.softmax_classifier(input_feature, input_probas)
             loss = L2 * self.lmbd + classifier_loss / input_num
@@ -112,7 +121,7 @@ class RepresenterPointBase(nn.Layer):
                 min_loss = grad_loss
                 best_W = self.softmax_classifier.linear.weight
                 if min_loss < init_grad / 200:
-                    logging.info(f'stopping criteria reached in epoch:{epoch}')
+                    logging.info(f"stopping criteria reached in epoch:{epoch}")
                     optimizer.clear_grad()
                     break
             optimizer.step()
@@ -120,7 +129,7 @@ class RepresenterPointBase(nn.Layer):
 
             if epoch % 1000 == 0:
                 logging.info(
-                    f'Eopch:{epoch:4d}\tloss:{loss.numpy()}\tphi_loss:{classifier_mean_loss.numpy()}\tgrad:{grad_loss}')
+                    f"Eopch:{epoch:4d}\tloss:{loss.numpy()}\tphi_loss:{classifier_mean_loss.numpy()}\tgrad:{grad_loss}")
 
         # caluculate w based on the representer theorem's decomposition
         logits = paddle.matmul(input_feature, best_W)
@@ -132,9 +141,15 @@ class RepresenterPointBase(nn.Layer):
         weight_matrix = softmax_value - input_probas
         weight_matrix = weight_matrix / (-2.0 * self.lmbd * input_num)  # alpha
 
-        
-
         if self.correlation:
+            try:
+                from scipy.stats.stats import pearsonr
+            except ImportError as e:
+                import sys
+                sys.stderr.write(
+                    '''Info about import scipy: please install scipy firstly. cmd: pip install scipy. We need to calculate the pearsonr correlation between the representre point model and the gived model'''
+                )
+                return weight_matrix
             best_w = paddle.matmul(paddle.t(input_feature), weight_matrix)  # alpha * f_i^T
             # calculate y_p, which is the prediction based on decomposition of w by representer theorem
             logits = paddle.matmul(input_feature, best_w)  # alpha * f_i^T * f_t
@@ -142,31 +157,33 @@ class RepresenterPointBase(nn.Layer):
             logits = logits - logits_max
             y_p = F.softmax(logits)
 
-            print('L1 difference between ground truth prediction and prediction by representer theorem decomposition')
+            print("L1 difference between ground truth prediction and prediction by representer theorem decomposition")
             print(F.l1_loss(input_probas, y_p).numpy())
 
-            print('pearson correlation between ground truth  prediction and prediciton by representer theorem')
-            corr, _ = (pearsonr(input_probas.flatten().numpy(), (y_p).flatten().numpy()))
+            print("pearson correlation between ground truth  prediction and prediciton by representer theorem")
+            corr, _ = pearsonr(input_probas.flatten().numpy(), (y_p).flatten().numpy())
             print(corr)
         return weight_matrix
 
 
-class RepresenterPointModel(Interpreter):
+class RepresenterPointModel(ExampleBaseInterpreter):
     """
     Representer Point Model for NLP tasks.
     More details regarding the representer point method can be found in the original paper:
     https://proceedings.neurips.cc/paper/2018/file/8a7129b8f3edd95b7d969dfc2c8e9d9d-Paper.pdf
     """
 
-    def __init__(self,
-                 paddle_model,
-                 train_dataloader,
-                 device='gpu',
-                 classifier_layer_name='classifier',
-                 predict_fn=None,
-                 learning_rate=5e-2,
-                 lmbd=0.03,
-                 epochs=40000):
+    def __init__(
+        self,
+        paddle_model,
+        train_dataloader,
+        device="gpu",
+        classifier_layer_name="classifier",
+        predict_fn=None,
+        learning_rate=5e-2,
+        lmbd=0.03,
+        epochs=40000,
+    ):
         """
         Initialization.
         Args:
@@ -179,15 +196,16 @@ class RepresenterPointModel(Interpreter):
             lmbd(float: default=0.03): The coefficient of l2 regularization.
             epochs(int: default=4000): The total epochs to trianing representer point model.
         """
-        Interpreter.__init__(self, paddle_model, device)
+        ExampleBaseInterpreter.__init__(self, paddle_model, device, predict_fn, classifier_layer_name)
         self.paddle_model = paddle_model
-        self._build_predict_fn(predict_fn=predict_fn)
         self.classifier_layer_name = classifier_layer_name
-        self.represerter_point = RepresenterPointBase(paddle_model,
-                                                      classifier_layer_name=classifier_layer_name,
-                                                      learning_rate=learning_rate,
-                                                      lmbd=lmbd,
-                                                      epochs=epochs)
+        self.represerter_point = RepresenterPointBase(
+            paddle_model,
+            classifier_layer_name=classifier_layer_name,
+            learning_rate=learning_rate,
+            lmbd=lmbd,
+            epochs=epochs,
+        )
         self.train_feature, self.train_probas, _ = self.extract_feature(paddle_model, train_dataloader)
         self.weight_matrix = self.represerter_point.train(self.train_feature, self.train_probas)
 
@@ -211,54 +229,9 @@ class RepresenterPointModel(Interpreter):
             neg_examples.append(neg_idx)
         return preds.tolist(), pos_examples, neg_examples
 
-    def _build_predict_fn(self, predict_fn=None):
-        if predict_fn is not None:
-            self.predict_fn = functools.partial(predict_fn, paddle_model=self.paddle_model)
-            return
-
-        def predict_fn(inputs, paddle_model=None):
-            """predict_fn"""
-            if paddle_model is None:
-                paddle_model = self.paddle_model
-
-            cached_features = []
-            
-            def forward_pre_hook(layer, input):
-                """
-                Pre_hook for a given layer in model.
-                """
-                cached_features.extend(input[0])
-            
-            cached_logits = []
-            
-            def forward_post_hook(layer, input, output):
-                """
-                Post_hook for a given layer in model.
-                """
-                cached_logits.append(output)
-
-            classifier = get_sublayer(paddle_model, self.classifier_layer_name)
-
-            forward_pre_hook_handle = classifier.register_forward_pre_hook(forward_pre_hook)
-            forward_post_hook_handle = classifier.register_forward_post_hook(forward_post_hook)
-
-            if isinstance(inputs, (tuple, list)):
-                res = paddle_model(*inputs)  # get logits, [bs, num_c]
-            else:
-                res = paddle_model(inputs)  # get logits, [bs, num_c]
-
-            forward_pre_hook_handle.remove()
-            forward_post_hook_handle.remove()
-
-            probas = paddle.nn.functional.softmax(cached_logits[-1], axis=1)  # get probabilities.
-            preds = paddle.argmax(probas, axis=1).tolist()  # get predictions.
-            return paddle.to_tensor(cached_features), probas, preds
-
-        self.predict_fn = predict_fn
-
     @paddle.no_grad()
     def extract_feature(self, paddle_model, data_loader):
-        print('Extracting feature for given dataloader, it will take some time...')
+        print("Extracting feature for given dataloader, it will take some time...")
         features, probas, preds = [], [], []
 
         for step, batch in enumerate(data_loader, start=1):
@@ -266,4 +239,8 @@ class RepresenterPointModel(Interpreter):
             features.extend(feature)
             probas.extend(prob)
             preds.extend(pred)
-        return paddle.to_tensor(features), paddle.to_tensor(probas), paddle.to_tensor(preds)
+        return (
+            paddle.to_tensor(features),
+            paddle.to_tensor(probas),
+            paddle.to_tensor(preds),
+        )
