@@ -44,7 +44,7 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         self.paddle_model = paddle_model
         self.classifier_layer_name = classifier_layer_name
         self.criterion = (criterion if criterion is not None else paddle.nn.loss.CrossEntropyLoss())
-        if cached_train_grad is not None and os.path.exists(cached_train_grad) and os.path.isfile(cached_train_grad):
+        if cached_train_grad is not None and os.path.isfile(cached_train_grad):
             self.train_grad = paddle.load(cached_train_grad)
         else:
             self.train_grad, *_ = self.get_grad(paddle_model, train_dataloader)
