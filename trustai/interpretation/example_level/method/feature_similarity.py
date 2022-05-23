@@ -40,13 +40,13 @@ class FeatureSimilarityModel(ExampleBaseInterpreter):
         self.classifier_layer_name = classifier_layer_name
         self.train_feature, _ = self.extract_featue(paddle_model, train_dataloader)
 
-    def interpret(self, data, sample_num=3, sim_fn="dot"):
+    def interpret(self, data, sample_num=3, sim_fn="cos"):
         """
         Select most similar and dissimilar examples for a given data using the `sim_fn` metric.
         Args:
             data(iterable): Dataloader to interpret.
             sample_sum(int: default=3): the number of positive examples and negtive examples selected for each instance.
-            sim_fn(str: default=dot): the similarity metric to select examples.
+            sim_fn(str: default=cos): the similarity metric to select examples. It should be ``cos``, ``dot`` or ``euc``.
         """
         pos_examples = []
         neg_examples = []
@@ -58,8 +58,7 @@ class FeatureSimilarityModel(ExampleBaseInterpreter):
         elif sim_fn == "euc":
             similarity_fn = euc_similarity
         else:
-            warnings.warn("only support ['dot', 'cos', 'eud']")
-            exit()
+            raise ValueError(f"sim_fn only support ['dot', 'cos', 'euc'] in feature similarity, but gets `{sim_fn}`")
         for index, target_class in enumerate(preds):
             tmp = similarity_fn(self.train_feature, paddle.to_tensor(val_feature[index]))
             pos_idx, neg_idx = get_top_and_bottom_n_examples(tmp, sample_num=sample_num)
