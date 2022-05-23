@@ -55,13 +55,13 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
                     import sys
                     sys.stderr.write("save cached_train_grad fail")
 
-    def interpret(self, data, sample_num=3, sim_fn="dot"):
+    def interpret(self, data, sample_num=3, sim_fn="cos"):
         """
         Select most similar and dissimilar examples for a given data using the `sim_fn` metric.
         Args:
             data(iterable): Dataloader to interpret.
             sample_sum(int: default=3): the number of positive examples and negtive examples selected for each instance.
-            sim_fn(str: default=dot): the similarity metric to select examples.
+            sim_fn(str: default=cos): the similarity metric to select examples. It should be ``cos`` or ``dot``.
         """
         pos_examples = []
         neg_examples = []
@@ -72,8 +72,7 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         elif sim_fn == "cos":
             similarity_fn = cos_similarity
         else:
-            warnings.warn("only support ['dot', 'cos']")
-            exit()
+            raise ValueError(f"sim_fn only support ['dot', 'cos'] in gradient simmialrity, but gets `{sim_fn}`")
         for index, target_class in enumerate(preds):
             tmp = similarity_fn(self.train_grad, paddle.to_tensor(val_feature[index]))
             pos_idx, neg_idx = get_top_and_bottom_n_examples(tmp, sample_num=sample_num)
