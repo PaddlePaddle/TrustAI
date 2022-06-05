@@ -205,12 +205,15 @@ predict_labels, pos_examples, neg_examples = representer_model.interpret(test_da
 * `GradientShap`: [A Unified Approach to Interpreting Model Predictions, Scott M. Lundberg et al. 2017](http://papers.nips.cc/paper/7062-a-unified-approach-to-interpreting-model-predictions)
 * `Lime`: ["Why Should I Trust You?": Explaining the Predictions of Any Classifier, Marco Tulio Ribeiro et al. 2016](https://arxiv.org/abs/1602.04938)
 * `NormLime`: [NormLime: A New Feature Importance Metric for Explaining Deep Neural Networks, Isaac Ahern et al. 2019](https://arxiv.org/abs/1909.04200)
-* `Attention`:[Attention is not explanation, S Jain et al. 2019](https://arxiv.org/pdf/1902.10186.pdf)
+* `Attention`: [Attention is not explanation, S Jain et al. 2019](https://arxiv.org/pdf/1902.10186.pdf)
 * `Representer Pointer`:[Representer point selection for explaining deep neural networks, Chih-Kuan Yeh et al. 2018](https://proceedings.neurips.cc/paper/2018/file/8a7129b8f3edd95b7d969dfc2c8e9d9d-Paper.pdf)
+* `DuTrust`: [DuTrust: A Sentiment Analysis Dataset for Trustworthiness Evaluation, Wang Lijie, et al. 2021](https://arxiv.org/pdf/2108.13140.pdf)
+* `Evaluation`: [A Fine-grained Interpretability Evaluation Benchmark for Neural NLP, Wang Lijie, et al. 2022](https://arxiv.org/pdf/2205.11097.pdf)
+
 ## 开源计划安排
-- 基于先验知识的可信增强，2022.5.30
-- 基于数据均衡的可信增强，2022.5.30
-- 基于实例级可信分析的应用案例，2022.6.15
+- 基于先验知识的可信增强方案，2022.6
+- 基于数据均衡和增强的可信增强方案，2022.6
+- 实例级可信分析应用案例，2022.6
 
 ## LICENSE
 TrustAI由[Apache-2.0 license](./LICENSE)提供。
