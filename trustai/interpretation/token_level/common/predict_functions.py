@@ -62,7 +62,7 @@ def attention_predict_fn_on_paddlenlp(inputs,
     k = tensor.reshape(x=key_feature[0], shape=[0, 0, num_heads, head_dim])
     k = tensor.transpose(x=k, perm=[0, 2, 1, 3])
     attention = layers.matmul(x=q, y=k, transpose_y=True, alpha=head_dim**-0.5)
-    #
+    
     attention = attention.sum(1)[:, 0]
 
     probas = paddle.nn.functional.softmax(logits, axis=1)  # get probabilities.
@@ -116,7 +116,7 @@ def ig_predict_fn_on_paddlenlp_pretrain(inputs,
         if embedding_name in name:
             h = v.register_forward_post_hook(hook)
             hooks.append(h)
-    assert isinstance(inputs, (tuple, list)) and len(inputs) == 3
+    assert isinstance(inputs, (tuple, list))
     *model_inputs, masked_positions = inputs
     logits = paddle_model(*model_inputs)  # get logits, [bs, num_c]
 

@@ -88,6 +88,7 @@ def evaluate(model, criterion, metric, data_loader):
     print("eval loss: %.5f, accu: %.5f" % (np.mean(losses), accu))
     model.train()
     metric.reset()
+    return accu
 
 
 def convert_example(example, tokenizer, max_seq_length=512, is_test=False):
@@ -218,6 +219,7 @@ def training_model(model, tokenizer, train_ds, dev_ds, learning_rate=5e-5, save_
     criterion = paddle.nn.loss.CrossEntropyLoss()
     metric = paddle.metric.Accuracy()
 
+    best_acc = 0
     global_step = 0
     print("Training Starts:")
     for epoch in range(1, epochs + 1):
@@ -238,10 +240,12 @@ def training_model(model, tokenizer, train_ds, dev_ds, learning_rate=5e-5, save_
             optimizer.step()
             lr_scheduler.step()
             optimizer.clear_grad()
-        evaluate(model, criterion, metric, dev_data_loader)
-
-    model.save_pretrained(save_dir)
-    tokenizer.save_pretrained(save_dir)
+        acc = evaluate(model, criterion, metric, dev_data_loader)
+        if best_acc < acc:
+            model.save_pretrained(save_dir)
+            tokenizer.save_pretrained(save_dir)
+            best_acc = acc
+    print("best accuracy is %f!" % best_acc)
 
 
 def aggregate_subwords_and_importances(subwords, subword_importances):
