@@ -22,7 +22,7 @@ import paddle.nn.functional as F
 
 from ...base_interpret import Interpreter
 from .example_base_interpreter import ExampleBaseInterpreter
-from ..common.utils import get_sublayer
+from ..common.utils import get_sublayer, get_struct_res, get_top_and_bottom_n_examples
 
 
 class SoftmaxClassifier(nn.Layer):
@@ -214,20 +214,22 @@ class RepresenterPointModel(ExampleBaseInterpreter):
         Select postive and negtive examples for a given data.
         Args:
             data(iterable): Dataloader to interpret.
-            sample_sum(int: default=3): the number of positive examples and negtive examples selected for each instance.
+            sample_num(int: default=3): the number of positive examples and negtive examples selected for each instance. Return all the training examples ordered by `influence score` if this parameter is -1.
         """
+        if sample_num == -1:
+            sample_num = len(self.train_feature)
         pos_examples = []
         neg_examples = []
         val_feature, _, preds = self.extract_feature(self.paddle_model, data)
         for index, target_class in enumerate(preds):
             tmp = self.weight_matrix[:, target_class] * paddle.sum(
                 self.train_feature * paddle.to_tensor(val_feature[index]), axis=1)
-            idx = paddle.flip(paddle.argsort(tmp), axis=0)
-            pos_idx = idx[:sample_num].tolist()
-            neg_idx = idx[-sample_num:].tolist()
+            pos_idx, neg_idx = get_top_and_bottom_n_examples(tmp, sample_num=sample_num)
             pos_examples.append(pos_idx)
             neg_examples.append(neg_idx)
-        return preds.tolist(), pos_examples, neg_examples
+        preds = preds.tolist()
+        res = get_struct_res(preds, pos_examples, neg_examples)
+        return res
 
     @paddle.no_grad()
     def extract_feature(self, paddle_model, data_loader):

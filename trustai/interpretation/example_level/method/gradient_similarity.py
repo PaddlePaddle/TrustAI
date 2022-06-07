@@ -10,7 +10,7 @@ import warnings
 import paddle
 import paddle.nn.functional as F
 
-from ..common.utils import get_sublayer, dot_similarity, cos_similarity, euc_similarity, get_top_and_bottom_n_examples
+from ..common.utils import get_sublayer, dot_similarity, cos_similarity, euc_similarity, get_top_and_bottom_n_examples, get_struct_res
 from .example_base_interpreter import ExampleBaseInterpreter
 
 
@@ -60,9 +60,11 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         Select most similar and dissimilar examples for a given data using the `sim_fn` metric.
         Args:
             data(iterable): Dataloader to interpret.
-            sample_sum(int: default=3): the number of positive examples and negtive examples selected for each instance.
+            sample_num(int: default=3): the number of positive examples and negtive examples selected for each instance. Return all the training examples ordered by `influence score` if this parameter is -1.
             sim_fn(str: default=cos): the similarity metric to select examples. It should be ``cos`` or ``dot``.
         """
+        if sample_num == -1:
+            sample_num = len(self.train_grad)
         pos_examples = []
         neg_examples = []
         val_feature, _, preds = self.get_grad(self.paddle_model, data)
@@ -78,7 +80,9 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
             pos_idx, neg_idx = get_top_and_bottom_n_examples(tmp, sample_num=sample_num)
             pos_examples.append(pos_idx)
             neg_examples.append(neg_idx)
-        return preds.tolist(), pos_examples, neg_examples
+        preds = preds.tolist()
+        res = get_struct_res(preds, pos_examples, neg_examples)
+        return res
 
     def get_grad(self, paddle_model, data_loader):
         """
@@ -89,6 +93,11 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         features, probas, preds, grads = [], [], [], []
 
         for step, batch in enumerate(data_loader, start=1):
+            if isinstance(batch, (tuple, list)):
+                assert len(batch[0]) == 1, "batch_size must be 1"
+            else:
+                assert len(batch) == 1, "batch_size must be 1"
+
             _, prob, pred = self.predict_fn(batch)
             loss = self.criterion(prob, paddle.to_tensor(pred))
             loss.backward()

@@ -14,6 +14,7 @@
 """Some useful functions."""
 import paddle
 import paddle.nn.functional as F
+from .data_class import ExampleResult
 
 
 def get_sublayer(model, sublayer_name='classifier'):
@@ -58,4 +59,23 @@ def get_top_and_bottom_n_examples(scores, sample_num=3):
     index = paddle.flip(paddle.argsort(scores), axis=0)
     top_index = index[:sample_num].tolist()
     bottom_index = index[-sample_num:].tolist()
-    return top_index, bottom_index
+    top_score = scores[top_index].tolist()
+    bottom_score = scores[bottom_index].tolist()
+    return list(zip(top_score, top_index)), list(zip(bottom_score, bottom_index))
+
+
+def get_struct_res(pred_label, pos_examples, neg_examples):
+    """
+    get the structual result
+    """
+    res = []
+    for i in range(len(pred_label)):
+        pos_scores, pos_indexes = zip(*pos_examples[i])
+        neg_scores, neg_indexes = zip(*neg_examples[i])
+        res.append(
+            ExampleResult(pred_label=pred_label[i],
+                          pos_indexes=pos_indexes,
+                          neg_indexes=neg_indexes,
+                          pos_scores=pos_scores,
+                          neg_scores=neg_scores))
+    return res
