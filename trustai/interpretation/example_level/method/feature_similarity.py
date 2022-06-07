@@ -9,7 +9,7 @@ import warnings
 import paddle
 import paddle.nn.functional as F
 
-from ..common.utils import get_sublayer, dot_similarity, cos_similarity, euc_similarity, get_top_and_bottom_n_examples
+from ..common.utils import get_sublayer, dot_similarity, cos_similarity, euc_similarity, get_top_and_bottom_n_examples, get_struct_res
 from .example_base_interpreter import ExampleBaseInterpreter
 
 
@@ -45,9 +45,11 @@ class FeatureSimilarityModel(ExampleBaseInterpreter):
         Select most similar and dissimilar examples for a given data using the `sim_fn` metric.
         Args:
             data(iterable): Dataloader to interpret.
-            sample_sum(int: default=3): the number of positive examples and negtive examples selected for each instance.
+            sample_num(int: default=3): the number of positive examples and negtive examples selected for each instance. Return all the training examples ordered by `influence score` if this parameter is -1.
             sim_fn(str: default=cos): the similarity metric to select examples. It should be ``cos``, ``dot`` or ``euc``.
         """
+        if sample_num == -1:
+            sample_num = len(self.train_feature)
         pos_examples = []
         neg_examples = []
         val_feature, preds = self.extract_featue(self.paddle_model, data)
@@ -64,7 +66,9 @@ class FeatureSimilarityModel(ExampleBaseInterpreter):
             pos_idx, neg_idx = get_top_and_bottom_n_examples(tmp, sample_num=sample_num)
             pos_examples.append(pos_idx)
             neg_examples.append(neg_idx)
-        return preds.tolist(), pos_examples, neg_examples
+        preds = preds.tolist()
+        res = get_struct_res(preds, pos_examples, neg_examples)
+        return res
 
     @paddle.no_grad()
     def extract_featue(self, paddle_model, data_loader):

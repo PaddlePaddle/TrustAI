@@ -293,8 +293,7 @@ def preprocess_fn(data, tokenizer, with_label=False):
     examples = []
     if with_label:
         for text in data:
-            input_ids, segment_ids, labels = convert_example(
-                text, tokenizer, max_seq_length=128, is_test=False)
+            input_ids, segment_ids, labels = convert_example(text, tokenizer, max_seq_length=128, is_test=False)
             examples.append((input_ids, segment_ids, labels))
 
         batchify_fn = lambda samples, fn=Tuple(
@@ -303,17 +302,11 @@ def preprocess_fn(data, tokenizer, with_label=False):
             Stack(dtype="int64")  # label
         ): fn(samples)
         input_ids, segment_ids, labels = batchify_fn(examples)
-        return paddle.to_tensor(
-            input_ids, stop_gradient=False), paddle.to_tensor(
-                segment_ids,
-                stop_gradient=False), paddle.to_tensor(labels,
-                                                       stop_gradient=False)
+        return paddle.to_tensor(input_ids, stop_gradient=False), paddle.to_tensor(
+            segment_ids, stop_gradient=False), paddle.to_tensor(labels, stop_gradient=False)
     else:
         for text in data:
-            input_ids, segment_ids = convert_example(text,
-                                                     tokenizer,
-                                                     max_seq_length=128,
-                                                     is_test=True)
+            input_ids, segment_ids = convert_example(text, tokenizer, max_seq_length=128, is_test=True)
             examples.append((input_ids, segment_ids))
 
         batchify_fn = lambda samples, fn=Tuple(
@@ -321,9 +314,7 @@ def preprocess_fn(data, tokenizer, with_label=False):
             Pad(axis=0, pad_val=tokenizer.pad_token_id),  # segment id
         ): fn(samples)
         input_ids, segment_ids = batchify_fn(examples)
-        return paddle.to_tensor(input_ids,
-                                stop_gradient=False), paddle.to_tensor(
-                                    segment_ids, stop_gradient=False)
+        return paddle.to_tensor(input_ids, stop_gradient=False), paddle.to_tensor(segment_ids, stop_gradient=False)
 
 
 def get_batches(data, batch_size=1):
@@ -343,20 +334,14 @@ def get_batches(data, batch_size=1):
     return batches
 
 
-def create_dataloader_from_scratch(data,
-                                   tokenizer,
-                                   batch_size=1,
-                                   with_label=False):
+def create_dataloader_from_scratch(data, tokenizer, batch_size=1, with_label=False):
     """
     Create dataloader from scratch.
     """
     dataloader = []
     # Seperates data into some batches.
     batches = get_batches(data, batch_size=batch_size)
-    dataloader = [
-        preprocess_fn(batch, tokenizer, with_label=with_label)
-        for batch in batches
-    ]
+    dataloader = [preprocess_fn(batch, tokenizer, with_label=with_label) for batch in batches]
     return dataloader
 
 
@@ -410,3 +395,39 @@ def load_data(file_path):
                 example = json.loads(line)
                 data[example[list(example.keys())[0]]] = example
     return data
+
+
+def print_result(test_data, train_ds, res, data_name='chnsenticorp'):
+    """
+    print result
+    """
+    if data_name == 'chnsenticorp':
+        for i in range(len(test_data)):
+            print("test data")
+            print(f"text: {test_data[i]['text']}\tpredict label: {res[i].pred_label}")
+            print("examples with positive influence")
+            for example, score in zip(res[i].pos_indexes, res[i].pos_scores):
+                print(
+                    f"text: {train_ds.data[example]['text']}\tgold label: {train_ds.data[example]['label']}\tscore: {score}"
+                )
+            print("examples with negative influence")
+            for example, score in zip(res[i].neg_indexes, res[i].neg_scores):
+                print(
+                    f"text: {train_ds.data[example]['text']}\tgold label: {train_ds.data[example]['label']}\tscore: {score}"
+                )
+            print()
+    elif data_name == 'qqp':
+        for i in range(len(test_data)):
+            print("test data")
+            print(f"text: {test_data[i]['sentence1']}\t{test_data[i]['sentence2']}\tpredict label: {res[i].pred_label}")
+            print("examples with positive influence")
+            for example, score in zip(res[i].pos_indexes, res[i].pos_scores):
+                print(
+                    f"text: {train_ds.data[example]['sentence1']}\t{train_ds.data[example]['sentence2']}\tgold label: {train_ds.data[example]['labels']}\tscore: {score}"
+                )
+            print("examples with negative influence")
+            for example, score in zip(res[i].neg_indexes, res[i].neg_scores):
+                print(
+                    f"text: {train_ds.data[example]['sentence1']}sepsep{train_ds.data[example]['sentence2']}\tgold label: {train_ds.data[example]['labels']}\tscore: {score}"
+                )
+            print()

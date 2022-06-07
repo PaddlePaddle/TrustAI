@@ -39,7 +39,7 @@ class TestGradientSimilarity(unittest.TestCase):
         batch_size = 1
         max_seq_length = 128
 
-        trans_func = partial(convert_example, tokenizer=tokenizer, max_seq_length=max_seq_length)
+        trans_func = partial(convert_example, tokenizer=tokenizer, max_seq_length=max_seq_length, is_test=True)
         batchify_fn = lambda samples, fn=Tuple(
             Pad(axis=0, pad_val=tokenizer.pad_token_id),  # input
             Pad(axis=0, pad_val=tokenizer.pad_token_type_id),  # segment
