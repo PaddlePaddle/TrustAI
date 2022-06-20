@@ -71,7 +71,7 @@ iou_f1 = evaluator.calc_iou_f1(goldens, predicts)
 
 # 忠诚性评测，评估模型给出的证据多大程度上影响预测。我们从两大维度评估，对应3个评估指标
 # 维度一：从证据的充分性和完备性上评测忠诚性，充分性表明证据包含了做出预测的足够信息，完备性表明证据包含了对预测有影响的所有信息，即非证据部分无法支持预测。
-sufficient, comprehensive = evaluator.cal_suf_com(goldens, predicts)
+sufficency, comprehensiveness = evaluator.cal_suf_com(goldens, predicts)
 # 维度二：扰动下证据的一致性，即相似的输入+相似的输出=相似的证据，如果满足这一点则模型是忠诚的
 map_score = evaluator.cal_map(goldens, predicts)
 ```

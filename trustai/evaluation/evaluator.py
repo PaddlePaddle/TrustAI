@@ -368,13 +368,13 @@ class Evaluator():
         return macro_f1
 
     def cal_suf_com(self, golden, pred):
-        """Calculate sufficency and conciseness of the predicted dataset, which represent the faithfulness of the result
+        """Calculate sufficency and comprehensiveness of the predicted dataset, which represent the faithfulness of the result
 
         Args:
             pred (list): Please refer to the description of "pred" argument in init function
 
         Return:
-            [float, float]: The sufficency and conciseness of the predicted dataset
+            [float, float]: The sufficency and comprehensiveness of the predicted dataset
         """
         self.golden = golden
         self.pred = pred
