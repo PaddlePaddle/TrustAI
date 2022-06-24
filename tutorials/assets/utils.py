@@ -183,7 +183,7 @@ def training_model(model, tokenizer, train_ds, dev_ds, learning_rate=5e-5, save_
 
     batch_size = 32
     max_seq_length = 128
-    epochs = 3  #3
+    epochs = 5  #3
     warmup_proportion = 0.1
     weight_decay = 0.01
 
