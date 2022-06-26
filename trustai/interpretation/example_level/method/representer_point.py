@@ -206,14 +206,14 @@ class RepresenterPointModel(ExampleBaseInterpreter):
             lmbd=lmbd,
             epochs=epochs,
         )
-        self.train_feature, self.train_probas, _ = self.extract_feature(paddle_model, train_dataloader)
+        self.train_feature, self.train_probas, _ = self.extract_feature_from_dataloader(train_dataloader)
         self.weight_matrix = self.represerter_point.train(self.train_feature, self.train_probas)
 
     def interpret(self, data, sample_num=3):
         """
         Select postive and negtive examples for a given data.
         Args:
-            data(iterable): Dataloader to interpret.
+            data(iterable): one batch of data to interpret.
             sample_num(int: default=3): the number of positive examples and negtive examples selected for each instance. Return all the training examples ordered by `influence score` if this parameter is -1.
         """
         if sample_num == -1:
@@ -232,17 +232,25 @@ class RepresenterPointModel(ExampleBaseInterpreter):
         return res
 
     @paddle.no_grad()
-    def extract_feature(self, paddle_model, data_loader):
-        print("Extracting feature for given dataloader, it will take some time...")
+    def extract_feature(self, paddle_model, data):
+        """        
+        extract feature from one batch of data.
+        """
+        if self.paddle_model.training:
+            self.paddle_model.eval()
+        feature, prob, pred = self.predict_fn(data)
+        return paddle.to_tensor(feature), paddle.to_tensor(prob), paddle.to_tensor(pred)
+        
+    def extract_feature_from_dataloader(self, dataloader):
+        """
+        extract feature from data_loader.
+        """
+        print("Extracting feature from given dataloader, it will take some time...")
         features, probas, preds = [], [], []
-
-        for step, batch in enumerate(data_loader, start=1):
-            feature, prob, pred = self.predict_fn(batch)
-            features.extend(feature)
-            probas.extend(prob)
-            preds.extend(pred)
-        return (
-            paddle.to_tensor(features),
-            paddle.to_tensor(probas),
-            paddle.to_tensor(preds),
-        )
+        
+        for batch in dataloader:
+            feature, prob, pred = self.extract_feature(self.paddle_model, batch)
+            features.append(feature)
+            probas.append(prob)
+            preds.append(pred)
+        return paddle.concat(features, axis=0), paddle.concat(probas, axis=0), paddle.concat(preds, axis=0)
