@@ -47,7 +47,7 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         if cached_train_grad is not None and os.path.isfile(cached_train_grad):
             self.train_grad = paddle.load(cached_train_grad)
         else:
-            self.train_grad, *_ = self.get_grad(paddle_model, train_dataloader)
+            self.train_grad, *_ = self.get_grad_from_dataloader(train_dataloader)
             if cached_train_grad is not None:
                 try:
                     paddle.save(self.train_grad, cached_train_grad)
@@ -59,7 +59,7 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         """
         Select most similar and dissimilar examples for a given data using the `sim_fn` metric.
         Args:
-            data(iterable): Dataloader to interpret.
+            data(iterable): one batch of data to interpret.
             sample_num(int: default=3): the number of positive examples and negtive examples selected for each instance. Return all the training examples ordered by `influence score` if this parameter is -1.
             sim_fn(str: default=cos): the similarity metric to select examples. It should be ``cos`` or ``dot``.
         """
@@ -75,7 +75,7 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
             similarity_fn = cos_similarity
         else:
             raise ValueError(f"sim_fn only support ['dot', 'cos'] in gradient simmialrity, but gets `{sim_fn}`")
-        for index, target_class in enumerate(preds):
+        for index in range(len(preds)):
             tmp = similarity_fn(self.train_grad, paddle.to_tensor(val_feature[index]))
             pos_idx, neg_idx = get_top_and_bottom_n_examples(tmp, sample_num=sample_num)
             pos_examples.append(pos_idx)
@@ -83,36 +83,43 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         preds = preds.tolist()
         res = get_struct_res(preds, pos_examples, neg_examples)
         return res
+    
+    def get_grad(self, paddle_model, data):
+        """
+        get grad from one batch of data.
+        """
+        if paddle_model.training:
+            paddle_model.eval()
+        if isinstance(data, (tuple, list)):
+            assert len(data[0]) == 1, "batch_size must be 1"
+        else:
+            assert len(data) == 1, "batch_size must be 1"
+        _, prob, pred = self.predict_fn(data)
+        loss = self.criterion(prob, paddle.to_tensor(pred))
+        loss.backward()
+        grad = self._get_flat_param_grad()
+        self._clear_all_grad()
+        return paddle.to_tensor(grad), paddle.to_tensor(prob), paddle.to_tensor(pred)
 
-    def get_grad(self, paddle_model, data_loader):
+        
+    def get_grad_from_dataloader(self, data_loader):
         """
-        get grad for data_loader.
+        get grad from data_loader.
         """
-        paddle_model.eval()
         print("Extracting gradient for given dataloader, it will take some time...")
-        features, probas, preds, grads = [], [], [], []
+        probas, preds, grads = [], [], []
 
-        for step, batch in enumerate(data_loader, start=1):
-            if isinstance(batch, (tuple, list)):
-                assert len(batch[0]) == 1, "batch_size must be 1"
-            else:
-                assert len(batch) == 1, "batch_size must be 1"
-
-            _, prob, pred = self.predict_fn(batch)
-            loss = self.criterion(prob, paddle.to_tensor(pred))
-            loss.backward()
-            grad = self._get_flat_param_grad()
+        for batch in data_loader:
+            grad, prob, pred = self.get_grad(self.paddle_model, batch)
             grads.append(grad)
-            self._clear_all_grad()
+            probas.append(prob)
+            preds.append(pred)
 
-            probas.extend(prob)
-            preds.extend(pred)
-
-        return (
-            paddle.to_tensor(grads),
-            paddle.to_tensor(probas),
-            paddle.to_tensor(preds),
-        )
+        grads = paddle.concat(grads, axis=0)
+        probas = paddle.concat(probas, axis=0)
+        preds = paddle.concat(preds, axis=0)
+        return grads, probas, preds
+        
 
     def _get_flat_param_grad(self):
         """
@@ -120,7 +127,7 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         """
         return paddle.concat([
             paddle.flatten(p.grad) for n, p in self.paddle_model.named_parameters() if self.classifier_layer_name in n
-        ])
+        ]).unsqueeze(axis=0)
 
     def _clear_all_grad(self):
         """
