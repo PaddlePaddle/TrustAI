@@ -186,11 +186,9 @@ from trustai.interpretation import RepresenterPointModel
 
 # 初始化分析方法，传入模型和训练数据。
 representer_model = RepresenterPointModel(model, train_data_loader)
-# 传入测试样本进行预测及证据分析
-# predict_labels是测试样本的预测结果
-# pos_examples是支持模型做出预测的训练样本，称为正例样本
-# neg_examples是不支持模型做出预测的训练样本，称为负例样本
-predict_labels, pos_examples, neg_examples = representer_model.interpret(test_dataloader)
+# 将待分析文本转为模型输入，传入分析接口
+# 返回测试样本的预测标签，支持模型预测和不支持模型预测的证据和分数
+result = representer_model(preprocess_fn(data))
 ```
 
 
