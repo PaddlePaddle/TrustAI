@@ -46,7 +46,7 @@ def attention_predict_fn_on_paddlenlp(inputs,
         if str(layer) + '.' + key_name in name:
             h = v.register_forward_post_hook(hook_for_key)
             hooks.append(h)
-    if isinstance(inputs, tuple):
+    if isinstance(inputs, (list, tuple)):
         logits = paddle_model(*inputs)  # get logits, [bs, num_c]
     else:
         logits = paddle_model(inputs)  # get logits, [bs, num_c]
@@ -77,7 +77,7 @@ def attention_predict_fn_on_paddlenlp(inputs,
 def general_predict_fn(inputs, paddle_model):
     """general predict function"""
 
-    if isinstance(inputs, tuple):
+    if isinstance(inputs, (list, tuple)):
         logits = paddle_model(*inputs)  # get logits, [bs, num_c]
     else:
         logits = paddle_model(inputs)  # get logits, [bs, num_c]
