@@ -44,4 +44,4 @@ python -u train.py --dataset_dir ./data --train_file train_5000_correction.tsv.t
 | 基线   |  86.42%  | 84.87% | 69.51%  |  
 | 数据修正   | 87.76%  | 86.62% | 73.18%  |  
 
-<font size=3 color=gray>注：注：以上结果均为10次实验的平均值。</font>
+<font size=3 color=gray>注：以上结果均为10次实验的平均值。</font>
