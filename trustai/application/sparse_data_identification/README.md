@@ -56,4 +56,4 @@ python -u train.py --dataset_dir ./data --train_file merge_valid.tsv --dev_file 
 | 基线 + 随机1000条 | 6000 | 86.76% | 85.05% | 69.23% | 55.20% |
 | 基线 + 策略1000条 | 6000 | 87.04% | 85.58% | 70.20% | 69.60% |
 
-<font size=3 color=gray>注：注：以上结果均为10次实验的平均值。</font>
+<font size=3 color=gray>注：以上结果均为10次实验的平均值。</font>
