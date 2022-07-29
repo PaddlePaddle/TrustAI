@@ -12,6 +12,7 @@
 
 [![PyPi Latest Release](https://img.shields.io/pypi/v/trustai.svg)](https://pypi.org/project/trustai/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
+[![Python](https://img.shields.io/badge/python-3.6.2+-aff.svg)](./LICENSE)
 ## 项目介绍
 TrustAI是百度基于产业级深度学习平台『飞桨』([PaddlePaddle](https://github.com/PaddlePaddle/Paddle))开发的集评测、分析、增强于一体的可信AI工具集，助力开发者提升模型效果和可信度，推动模型安全、可靠的落地于应用。
 
@@ -104,7 +105,7 @@ TrustAI提供基于可解释性结果指导模型优化的示例，可以帮助�
 ### 安装
 
 #### 依赖
-* `python`: >=3.6.0
+* `python`: >=3.6.2
 * [`paddlepaddle`](https://www.paddlepaddle.org.cn/): >=2.0
 
 #### 一键安装
