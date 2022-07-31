@@ -29,7 +29,9 @@ from paddlenlp.datasets import load_dataset
 from paddlenlp.transformers import AutoModelForSequenceClassification, AutoTokenizer
 from paddlenlp.utils.log import logger
 from trustai.interpretation import get_word_offset
-from trustai.interpretation import IntGradInterpreter
+from trustai.interpretation.token_level.common import attention_predict_fn_on_paddlenlp
+from trustai.interpretation.token_level import AttentionInterpreter
+
 from tqdm import tqdm
 import jieba
 
@@ -141,12 +143,13 @@ def run():
         subword_offset_maps.append(tokenizer.get_offset_mapping(contexts[i]))
 
     # get interpret result by intgrad
-    print("The IG method will take some minutes, please be patient.")
-    ig = IntGradInterpreter(model, device="gpu", batch_size=64)
+    print("The Interpreter method will take some minutes, please be patient.")
+    att = AttentionInterpreter(model, device="gpu", predict_fn=attention_predict_fn_on_paddlenlp)
+
     analysis_result = []
     for batch in tqdm(input_data_loader):
-        analysis_result += ig(batch, steps=args.ig_steps)
-    align_res = ig.alignment(analysis_result,
+        analysis_result += att(batch)
+    align_res = att.alignment(analysis_result,
                              contexts,
                              batch_words,
                              word_offset_maps,
