@@ -19,6 +19,7 @@ TrustAI提供了基于数据集统计方法偏置识别方法，并提供了数�
 wget --no-check-certificate https://trustai.bj.bcebos.com/application_data/distribution_data.tar && tar xf distribution_data.tar && rm distribution_data.tar
 # 训练基线模型
 python -u train.py --dataset_dir ./data --train_file train.tsv --dev_file robust.tsv --num_classes 2 --save_dir ./checkpoint
+
 # 统计重要证据和频次
 python -u get_rationale_importance.py --dataset_dir ./data --input_file train.tsv --num_classes 2  --rationale_path ./data/rationale_importance.txt  --init_from_ckpt ./checkpoint/model_state.pdparams
 # rationale_path为证据及其频次保存的地址
