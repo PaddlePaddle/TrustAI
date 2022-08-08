@@ -150,7 +150,7 @@ class TestRepresenterPoint(unittest.TestCase):
         pad_token_id = vocab.to_indices('[PAD]')
 
         DATASET_NAME = 'chnsenticorp'
-        paddle_model = model = LSTMModel(vocab_size,
+        paddle_model = LSTMModel(vocab_size,
                                          num_classes,
                                          direction='bidirect',
                                          padding_idx=pad_token_id)

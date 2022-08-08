@@ -32,10 +32,12 @@ class ExampleBaseInterpreter(Interpreter):
 
     def _build_predict_fn(self, predict_fn=None):
         if predict_fn is not None:
-            self.predict_fn = functools.partial(predict_fn, paddle_model=self.paddle_model)
+            self.predict_fn = functools.partial(predict_fn,
+                                                classifier_layer_name=self.classifier_layer_name,
+                                                paddle_model=self.paddle_model)
             return
 
-        def predict_fn(inputs, paddle_model=None):
+        def predict_fn(inputs, classifier_layer_name, paddle_model):
             """predict_fn"""
             if paddle_model is None:
                 paddle_model = self.paddle_model
@@ -56,7 +58,7 @@ class ExampleBaseInterpreter(Interpreter):
                 """
                 cached_logits.append(output)
 
-            classifier = get_sublayer(paddle_model, self.classifier_layer_name)
+            classifier = get_sublayer(paddle_model, classifier_layer_name)
 
             forward_pre_hook_handle = classifier.register_forward_pre_hook(forward_pre_hook)
             forward_post_hook_handle = classifier.register_forward_post_hook(forward_post_hook)

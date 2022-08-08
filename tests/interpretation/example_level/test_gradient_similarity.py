@@ -170,7 +170,7 @@ class TestGradientSimilarity(unittest.TestCase):
         pad_token_id = vocab.to_indices("[PAD]")
 
         DATASET_NAME = "chnsenticorp"
-        paddle_model = model = LSTMModel(vocab_size, num_classes, direction="bidirect", padding_idx=pad_token_id)
+        paddle_model = LSTMModel(vocab_size, num_classes, direction="bidirect", padding_idx=pad_token_id)
         state_dict = paddle.load(PARAMS_PATH)
         paddle_model.set_dict(state_dict)
 
