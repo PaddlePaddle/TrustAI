@@ -10,8 +10,8 @@ from paddlenlp.data import Stack, Tuple, Pad, Vocab, JiebaTokenizer
 from paddlenlp.datasets import load_dataset, MapDataset
 from paddlenlp.transformers import ErnieForSequenceClassification, ErnieTokenizer
 
-sys.path.append('../')
-sys.path.append('../../../')
+sys.path.insert(0, '../')
+sys.path.insert(0, '../../../')
 from assets.utils import create_dataloader, convert_example, create_dataloader_from_scratch, LSTMModel, preprocess_fn_lstm, get_sublayer
 from trustai.interpretation.example_level.method.representer_point import RepresenterPointModel
 

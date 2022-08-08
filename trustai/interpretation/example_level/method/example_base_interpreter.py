@@ -24,8 +24,8 @@ class ExampleBaseInterpreter(Interpreter):
                  **kwargs):
         Interpreter.__init__(self, paddle_model, device)
         self.paddle_model = paddle_model
-        self._build_predict_fn(predict_fn=predict_fn)
         self.classifier_layer_name = classifier_layer_name
+        self._build_predict_fn(predict_fn=predict_fn)
 
     def __call__(self, *args, **kwargs):
         return self.interpret(*args, **kwargs)
@@ -37,10 +37,12 @@ class ExampleBaseInterpreter(Interpreter):
                                                 paddle_model=self.paddle_model)
             return
 
-        def predict_fn(inputs, classifier_layer_name, paddle_model):
+        def predict_fn(inputs, classifier_layer_name=None, paddle_model=None):
             """predict_fn"""
             if paddle_model is None:
                 paddle_model = self.paddle_model
+            if classifier_layer_name is None:
+                classifier_layer_name = self.classifier_layer_name
 
             cached_features = []
 
