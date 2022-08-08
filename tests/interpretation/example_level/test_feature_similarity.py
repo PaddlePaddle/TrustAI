@@ -21,26 +21,20 @@ from assets.utils import (
     get_sublayer,
 )
 from trustai.interpretation.example_level.method.feature_similarity import (
-    FeatureSimilarityModel,
-)
+    FeatureSimilarityModel, )
 
 
 class TestFeatureSimilarity(unittest.TestCase):
+
     def test_bert_model(self):
         MODEL_NAME = "ernie-1.0"
         DATASET_NAME = "chnsenticorp"
-        paddle_model = ErnieForSequenceClassification.from_pretrained(
-            MODEL_NAME, num_classes=2
-        )
+        paddle_model = ErnieForSequenceClassification.from_pretrained(MODEL_NAME, num_classes=2)
         tokenizer = ErnieTokenizer.from_pretrained(MODEL_NAME)
-        state_dict = paddle.load(
-            f"../assets/{DATASET_NAME}-{MODEL_NAME}/model_state.pdparams"
-        )
+        state_dict = paddle.load(f"../assets/{DATASET_NAME}-{MODEL_NAME}/model_state.pdparams")
         paddle_model.set_dict(state_dict)
 
-        train_ds, dev_ds, test_ds = load_dataset(
-            DATASET_NAME, splits=["train", "dev", "test"]
-        )
+        train_ds, dev_ds, test_ds = load_dataset(DATASET_NAME, splits=["train", "dev", "test"])
 
         batch_size = 32
         max_seq_length = 128
@@ -65,11 +59,10 @@ class TestFeatureSimilarity(unittest.TestCase):
             shuffle=False,
         )
 
-        feature_sim_model = FeatureSimilarityModel(
-            paddle_model, train_data_loader, classifier_layer_name="classifier"
-        )
+        feature_sim_model = FeatureSimilarityModel(paddle_model, train_data_loader, classifier_layer_name="classifier")
 
     def test_predict_fn(self):
+
         def predict_fn(inputs, paddle_model, classifier_layer_name="classifier"):
             """predict_fn"""
 
@@ -83,9 +76,7 @@ class TestFeatureSimilarity(unittest.TestCase):
 
             classifier = get_sublayer(paddle_model, classifier_layer_name)
 
-            forward_pre_hook_handle = classifier.register_forward_pre_hook(
-                forward_pre_hook
-            )
+            forward_pre_hook_handle = classifier.register_forward_pre_hook(forward_pre_hook)
 
             if isinstance(inputs, (tuple, list)):
                 logits = paddle_model(*inputs)  # get logits, [bs, num_c]
@@ -101,18 +92,12 @@ class TestFeatureSimilarity(unittest.TestCase):
 
         MODEL_NAME = "ernie-1.0"
         DATASET_NAME = "chnsenticorp"
-        paddle_model = ErnieForSequenceClassification.from_pretrained(
-            MODEL_NAME, num_classes=2
-        )
+        paddle_model = ErnieForSequenceClassification.from_pretrained(MODEL_NAME, num_classes=2)
         tokenizer = ErnieTokenizer.from_pretrained(MODEL_NAME)
-        state_dict = paddle.load(
-            f"../assets/{DATASET_NAME}-{MODEL_NAME}/model_state.pdparams"
-        )
+        state_dict = paddle.load(f"../assets/{DATASET_NAME}-{MODEL_NAME}/model_state.pdparams")
         paddle_model.set_dict(state_dict)
 
-        train_ds, dev_ds, test_ds = load_dataset(
-            DATASET_NAME, splits=["train", "dev", "test"]
-        )
+        train_ds, dev_ds, test_ds = load_dataset(DATASET_NAME, splits=["train", "dev", "test"])
 
         batch_size = 32
         max_seq_length = 128
@@ -157,15 +142,11 @@ class TestFeatureSimilarity(unittest.TestCase):
         pad_token_id = vocab.to_indices("[PAD]")
 
         DATASET_NAME = "chnsenticorp"
-        paddle_model = model = LSTMModel(
-            vocab_size, num_classes, direction="bidirect", padding_idx=pad_token_id
-        )
+        paddle_model = LSTMModel(vocab_size, num_classes, direction="bidirect", padding_idx=pad_token_id)
         state_dict = paddle.load(PARAMS_PATH)
         paddle_model.set_dict(state_dict)
 
-        train_ds, dev_ds, test_ds = load_dataset(
-            DATASET_NAME, splits=["train", "dev", "test"]
-        )
+        train_ds, dev_ds, test_ds = load_dataset(DATASET_NAME, splits=["train", "dev", "test"])
 
         # train_ds = [d['text'] for d in list(train_ds)[:1200]]
         # train_ds = [d["text"] for d in list(train_ds)]
@@ -189,9 +170,9 @@ class TestFeatureSimilarity(unittest.TestCase):
             shuffle=False,
         )
 
-        feature_sim_model = FeatureSimilarityModel(
-            paddle_model, train_data_loader, classifier_layer_name="output_layer"
-        )
+        feature_sim_model = FeatureSimilarityModel(paddle_model,
+                                                   train_data_loader,
+                                                   classifier_layer_name="output_layer")
 
 
 if __name__ == "__main__":

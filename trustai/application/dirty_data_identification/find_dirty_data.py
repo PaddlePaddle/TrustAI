@@ -106,7 +106,7 @@ def get_dirty_data(weight_matrix, dirty_num, threshold=0):
 
 class LocalDataCollatorWithPadding(DataCollatorWithPadding):
     """
-    Convert the  result of DataCollatorWithPadding from dict dictionary to a list
+    Convert the result of DataCollatorWithPadding from dict dictionary to a list
     """
 
     def __call__(self, features):

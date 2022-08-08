@@ -61,9 +61,7 @@ def convert_example(example, tokenizer, max_seq_length=512, is_test=False):
             encoded_label_name = n
             break
     if len(encoded_input_names) == 1:
-        encoded_inputs = tokenizer(
-            text=example[encoded_input_names[0]], max_seq_len=max_seq_length
-        )
+        encoded_inputs = tokenizer(text=example[encoded_input_names[0]], max_seq_len=max_seq_length)
     elif len(encoded_input_names) == 2:
         encoded_inputs = tokenizer(
             text=example[encoded_input_names[0]],
@@ -84,9 +82,7 @@ def convert_example(example, tokenizer, max_seq_length=512, is_test=False):
         return input_ids, token_type_ids
 
 
-def create_dataloader(
-    dataset, mode="train", shuffle=None, batch_size=1, batchify_fn=None, trans_fn=None
-):
+def create_dataloader(dataset, mode="train", shuffle=None, batch_size=1, batchify_fn=None, trans_fn=None):
     """create_dataloader"""
     if trans_fn:
         dataset = dataset.map(trans_fn)
@@ -94,13 +90,9 @@ def create_dataloader(
         shuffle = True if mode == "train" else False
     # shuffle = True if mode == 'train' else False
     if mode == "train":
-        batch_sampler = paddle.io.DistributedBatchSampler(
-            dataset, batch_size=batch_size, shuffle=shuffle
-        )
+        batch_sampler = paddle.io.DistributedBatchSampler(dataset, batch_size=batch_size, shuffle=shuffle)
     else:
-        batch_sampler = paddle.io.BatchSampler(
-            dataset, batch_size=batch_size, shuffle=shuffle
-        )
+        batch_sampler = paddle.io.BatchSampler(dataset, batch_size=batch_size, shuffle=shuffle)
 
     return paddle.io.DataLoader(
         dataset=dataset,
@@ -124,9 +116,7 @@ def preprocess_fn(data, tokenizer, with_label=False):
     examples = []
     if with_label:
         for text in data:
-            input_ids, segment_ids, labels = convert_example(
-                text, tokenizer, max_seq_length=128, is_test=False
-            )
+            input_ids, segment_ids, labels = convert_example(text, tokenizer, max_seq_length=128, is_test=False)
             examples.append((input_ids, segment_ids, labels))
 
         batchify_fn = lambda samples, fn=Tuple(
@@ -142,9 +132,7 @@ def preprocess_fn(data, tokenizer, with_label=False):
         )
     else:
         for text in data:
-            input_ids, segment_ids = convert_example(
-                text, tokenizer, max_seq_length=128, is_test=True
-            )
+            input_ids, segment_ids = convert_example(text, tokenizer, max_seq_length=128, is_test=True)
             examples.append((input_ids, segment_ids))
 
         batchify_fn = lambda samples, fn=Tuple(
@@ -152,9 +140,7 @@ def preprocess_fn(data, tokenizer, with_label=False):
             Pad(axis=0, pad_val=tokenizer.pad_token_id),  # segment id
         ): fn(samples)
         input_ids, segment_ids = batchify_fn(examples)
-        return paddle.to_tensor(input_ids, stop_gradient=False), paddle.to_tensor(
-            segment_ids, stop_gradient=False
-        )
+        return paddle.to_tensor(input_ids, stop_gradient=False), paddle.to_tensor(segment_ids, stop_gradient=False)
 
 
 def get_batches(data, batch_size=1):
@@ -181,9 +167,7 @@ def create_dataloader_from_scratch(data, tokenizer, batch_size=1, with_label=Fal
     dataloader = []
     # Seperates data into some batches.
     batches = get_batches(data, batch_size=batch_size)
-    dataloader = [
-        preprocess_fn(batch, tokenizer, with_label=with_label) for batch in batches
-    ]
+    dataloader = [preprocess_fn(batch, tokenizer, with_label=with_label) for batch in batches]
     return dataloader
 
 
@@ -204,9 +188,7 @@ class LSTMModel(nn.Layer):
         fc_hidden_size=96,
     ):
         super().__init__()
-        self.embedder = nn.Embedding(
-            num_embeddings=vocab_size, embedding_dim=emb_dim, padding_idx=padding_idx
-        )
+        self.embedder = nn.Embedding(num_embeddings=vocab_size, embedding_dim=emb_dim, padding_idx=padding_idx)
         self.lstm_encoder = paddlenlp.seq2vec.LSTMEncoder(
             emb_dim,
             lstm_hidden_size,
@@ -238,8 +220,8 @@ def preprocess_fn_lstm(text, tokenizer, is_test=False):
     preprocess function for lstm-based model.
     """
     ids = tokenizer.encode(text["text"])
-    texts = paddle.to_tensor(ids)
-    seq_lens = paddle.to_tensor(len(ids))
+    texts = ids
+    seq_lens = len(ids)
     if not is_test:
         label = np.array([text["label"]], dtype="int64")
         return texts, seq_lens, label
