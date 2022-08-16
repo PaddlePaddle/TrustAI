@@ -144,18 +144,18 @@ def run():
 
     # get interpret result by intgrad
     print("The Interpreter method will take some minutes, please be patient.")
-    att = AttentionInterpreter(model, device="gpu", predict_fn=attention_predict_fn_on_paddlenlp)
+    att = AttentionInterpreter(model, predict_fn=attention_predict_fn_on_paddlenlp)
 
     analysis_result = []
     for batch in tqdm(input_data_loader):
         analysis_result += att(batch)
     align_res = att.alignment(analysis_result,
-                             contexts,
-                             batch_words,
-                             word_offset_maps,
-                             subword_offset_maps,
-                             special_tokens=["[CLS]", '[SEP]'],
-                             rationale_num=1)
+                              contexts,
+                              batch_words,
+                              word_offset_maps,
+                              subword_offset_maps,
+                              special_tokens=["[CLS]", '[SEP]'],
+                              rationale_num=1)
 
     # sort rationale and return rationale and frequency pair
     rationale_dict = collections.defaultdict(int)

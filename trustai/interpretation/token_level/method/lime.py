@@ -140,7 +140,7 @@ class LIMEInterpreter(TokenInterpreter):
                  paddle_model,
                  unk_id,
                  pad_id=None,
-                 device='gpu',
+                 device=None,
                  random_seed=None,
                  predict_fn=None,
                  batch_size=50,
@@ -150,7 +150,7 @@ class LIMEInterpreter(TokenInterpreter):
             paddle_model (callable): A model with ``forward`` and possibly ``backward`` functions.
             unk_id (int): The word id to replace occluded words. Typical choices include "", <unk>, and <pad>.
             pad_id (int or None): The word id used to pad the sequences. If None, it means there is no padding. Default: None.
-            device (str, optional): The device used for running `paddle_model`, options: ``cpu``, ``gpu`` etc. Default: gpu. 
+            device (str, optional): The device used for running `paddle_model`, options: ``cpu``, ``gpu``, ``gpu:0``, ``gpu:1`` etc. Default: None. 
             random_seed (int): random seed. Defaults to None.
             predict_fn(callable, optional): If the paddle_model prediction has special process, the user can customize the prediction function.  Default: None.
             batch_size (int, optional): Number of samples to forward each time. Default: 50

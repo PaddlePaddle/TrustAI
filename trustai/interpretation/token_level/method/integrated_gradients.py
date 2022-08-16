@@ -31,14 +31,14 @@ class IntGradInterpreter(TokenInterpreter):
 
     def __init__(self,
                  paddle_model,
-                 device='gpu',
+                 device=None,
                  embedding_name='word_embeddings',
                  batch_size=16,
                  predict_fn=None) -> None:
         """
         Args:
             paddle_model (callable): A model with ``forward`` and possibly ``backward`` functions.
-            device (str, optional): The device used for running `paddle_model`, options: ``cpu``, ``gpu`` etc. Default: gpu. 
+            device (str, optional): The device used for running `paddle_model`, options: ``cpu``, ``gpu``, ``gpu:0``, ``gpu:1`` etc. Default: None. 
             embedding_name (str, optional): name of the embedding layer at which the steps will be applied. 
                 Defaults to 'word_embeddings'. The correct name of embedding can be found through ``print(model)``.
             batch_size(int, optional): Number of samples to forward each time in integrated gradient interpretation. Default: 16.
@@ -52,12 +52,12 @@ class IntGradInterpreter(TokenInterpreter):
         # batch size for single instance in integrated Gradients
         self.batch_size = batch_size
 
-    def interpret(self, data, labels=None, steps=50):
+    def interpret(self, data, labels=None, steps=1000):
         """Main function of the interpreter.
         Args:
             data ([type]): The inputs of the paddle_model.
             labels ([type], optional): The target label to analyze. If None, the most likely label will be used. Default: None.
-            steps (int, optional): number of steps in the Riemman approximation of the integral. Default: 50
+            steps (int, optional): number of steps in the Riemman approximation of the integral. Default: 1000
             
         Returns:
             List[IGResult]: a list of predicted labels, probabilities and interpretations.

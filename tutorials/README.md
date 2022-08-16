@@ -15,7 +15,7 @@ TrustAI提供基于证据分析的模型增强方案，该目录包含通用的�
 
 TrustAI提供了“稀疏数据识别->有效数据选择->训练数据丰富”流程，用尽量少的标注数据有效提升模型效果。在稀疏数据识别中，基于可信分析中的实例级证据分析方法，从测试数据中识别因训练证据不充足而导致的低置信数据，称作目标集。然后，在大量的未标注数据中，选择可以支持目标集中数据预测的证据进行标注。最后，将新标注的数据加入到训练数据中重训模型。
 <p align="center">
-<img align="center" src="../../imgs/sparse.png", width=600><br>
+<img align="center" src="../imgs/sparse.png", width=600><br>
 </p>
 
 ### 方法效果
@@ -42,7 +42,7 @@ TrustAI提供了“稀疏数据识别->有效数据选择->训练数据丰富”
 TrustAI提供了"脏数据识别 -> 清洗"闭环方案，基于实例级证据分析方法给出的训练数据对模型的影响，识别出候选脏数据。开发者对少部分候选脏数据进行人工修正，可显著提升模型效果。
 
 <p align="center">
-<img align="center" src="../../imgs/dirty.png", width=600><br>
+<img align="center" src="../imgs/dirty.png", width=600><br>
 </p>
 
 ### 方法效果
@@ -70,7 +70,7 @@ TrustAI提供了基于数据集统计方法偏置识别方法，并提供了数�
 基于数据集统计方法偏置识别方法即统计训练数据中词与标注标签的分布，基于此进行偏置词和数据的识别。
 
 <p align="center">
-<img align="center" src="../../imgs/bias.png", width=500><br>
+<img align="center" src="../imgs/bias.png", width=500><br>
 </p>
 
 ### 数据权重修正
@@ -115,7 +115,7 @@ TrustAI提供了基于数据集统计方法偏置识别方法，并提供了数�
 参照MAW(Mean attention weights, [Jayaram etc. 2021](https://aclanthology.org/2021.emnlp-main.450/))方法，我们利用专家标注的证据指导模型的优化。
 
 <p align="center">
-<img align="center" src="../../imgs/rationale.png", width=600><br>
+<img align="center" src="../imgs/rationale.png", width=600><br>
 </p>
 
 ### 方法效果
@@ -152,4 +152,4 @@ TrustAI提供了基于数据集统计方法偏置识别方法，并提供了数�
 
 基于困难数据，自动生成强正负例，通过数据增强方式重训模型，模型在该类数据上准确率提升7%。
 
-应用的详细示例见[tutorials](../../tutorials/application/zh-similarity-application.ipynb)。
+应用的详细示例见[examples](../examples/application/zh-similarity-application.ipynb)。

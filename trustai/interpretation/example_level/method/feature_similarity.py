@@ -22,7 +22,7 @@ class FeatureSimilarityModel(ExampleBaseInterpreter):
         self,
         paddle_model,
         train_dataloader,
-        device="gpu",
+        device=None,
         classifier_layer_name="classifier",
         predict_fn=None,
     ):
@@ -31,7 +31,7 @@ class FeatureSimilarityModel(ExampleBaseInterpreter):
         Args:
             paddle_model(callable): A model with ``forward``.
             train_dataloader(iterable): Dataloader of model's training data.
-            device(str: default=gpu): Device type, and it should be ``gpu``, ``cpu`` etc.
+            device(str: default=None): Device type, and it should be ``cpu``, ``gpu``, ``gpu:0``, ``gpu:1``  etc.
             classifier_layer_name(str: default=classifier): Name of the classifier layer in paddle_model.
             predict_fn(callabel: default=None): If the paddle_model prediction has special process, user can customize the prediction function.
         """

@@ -34,8 +34,7 @@ def evaluate(model, criterion, metric, data_loader, name=''):
     metric.reset()
     losses = []
     for batch in data_loader:
-        input_ids, token_type_ids, labels = batch['input_ids'], batch[
-            'token_type_ids'], batch['labels']
+        input_ids, token_type_ids, labels = batch['input_ids'], batch['token_type_ids'], batch['labels']
         logits = model(input_ids, token_type_ids)
         loss = criterion(logits, labels)
         losses.append(loss.numpy())

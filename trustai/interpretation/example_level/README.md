@@ -126,4 +126,4 @@ text: 我从06年开始几乎每月都有一次出差，山西很多酒店都住
 基于特征的相似度方法召回了在特征意义上对测试数据有正影响和负影响的实例数据。召回的正影响数据与GC方法相似，负影响数据更倾向于召回和测试数据字面不相似的数据。
 
 
-详细示例见[tutorials](../../../tutorials/interpretation/example_level/)。
+详细示例见[examples](../../../examples/interpretation/example_level/)。

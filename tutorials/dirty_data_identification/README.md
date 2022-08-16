@@ -33,7 +33,7 @@ python -u find_dirty_data.py --dataset_dir ./data --train_file train_5000.tsv  -
 基于修正后的新训练集`train_5000_correction.tsv`训练模型，即可提升模型效果。
 ```shell
 # 下载的数据中包含train_5000_correction.tsv文件
-python -u train.py --dataset_dir ./data --train_file train_5000_correction.tsv.tsv --dev_file dev.tsv --test_files test.tsv DuQM --num_classes 2 --save_dir ./new_checkpoint
+python -u train.py --dataset_dir ./data --train_file train_5000_correction.tsv --dev_file dev.tsv --test_files test.tsv DuQM --num_classes 2 --save_dir ./new_checkpoint
 ```
 
 开发者可基于修正后的训练集和修正前的训练集进行对比实验，由下表可知，对候选脏数据进行人工检查及修正（规模为原始训练集的10%），模型在LCQMC测试集上提升2.13%，在相似度匹配鲁棒性数据集（DuQM）上提升4.01。

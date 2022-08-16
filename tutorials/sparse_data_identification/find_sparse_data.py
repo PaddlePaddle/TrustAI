@@ -21,7 +21,6 @@ import os
 import argparse
 
 import numpy as np
-
 import paddle
 import paddle.nn.functional as F
 from paddle.metric import Accuracy
@@ -89,8 +88,9 @@ def read(data_path):
 
 class LocalDataCollatorWithPadding(DataCollatorWithPadding):
     """
-    Convert the  result of DataCollatorWithPadding from dict dictionary to a list
+    Convert the result of DataCollatorWithPadding from dict dictionary to a list
     """
+
     def __call__(self, features):
         batch = super().__call__(features)
         batch = list(batch.values())
@@ -168,6 +168,7 @@ def run():
             is_true.append(1 if str(preds[idx]) == str(data['label']) else 0)
         print("accuracy in sparse data:", sum(is_true) / len(is_true))
         print("average score in sparse data:", sum(sparse_scores) / len(sparse_scores))
+
 
 if __name__ == "__main__":
     run()

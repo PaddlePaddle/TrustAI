@@ -428,6 +428,21 @@ def print_result(test_data, train_ds, res, data_name='chnsenticorp'):
             print("examples with negative influence")
             for example, score in zip(res[i].neg_indexes, res[i].neg_scores):
                 print(
-                    f"text: {train_ds.data[example]['sentence1']}sepsep{train_ds.data[example]['sentence2']}\tgold label: {train_ds.data[example]['labels']}\tscore: {score}"
+                    f"text: {train_ds.data[example]['sentence1']}\t{train_ds.data[example]['sentence2']}\tgold label: {train_ds.data[example]['labels']}\tscore: {score}"
+                )
+            print()
+    elif data_name == 'lcqmc':
+        for i in range(len(test_data)):
+            print("test data")
+            print(f"text: {test_data[i]['query']}\t{test_data[i]['title']}\tpredict label: {res[i].pred_label}")
+            print("examples with positive influence")
+            for example, score in zip(res[i].pos_indexes, res[i].pos_scores):
+                print(
+                    f"text: {train_ds.data[example]['query']}\t{train_ds.data[example]['title']}\tgold label: {train_ds.data[example]['label']}\tscore: {score}"
+                )
+            print("examples with negative influence")
+            for example, score in zip(res[i].neg_indexes, res[i].neg_scores):
+                print(
+                    f"text: {train_ds.data[example]['query']}\t{train_ds.data[example]['title']}\tgold label: {train_ds.data[example]['label']}\tscore: {score}"
                 )
             print()
