@@ -67,7 +67,7 @@ def run():
         examples = []
         for i, line in enumerate(tqdm(list(f))):
             label, text = line.strip().split('\t')
-            examples.append((i, int(label), text, list(jieba.cut(text))))
+            examples.append((i, int(label), text, list(lac.run(text)[0])))
 
     # Statistics rationale index in positive and negative examples respectively
     pos_dict = collections.defaultdict(list)
@@ -87,9 +87,10 @@ def run():
         neg_list = neg_dict[token]
         pos_ratio = len(pos_list) / (len(pos_list) + len(neg_list))
         postags = lac.run(token)[1]
-        if (pos_ratio <= 0.45 or pos_ratio >= 0.55) and not (set(["a", 'vn', 'r', 'd', 'w', 'v', 'm']) & set(postags)):
+        if (pos_ratio <= 0.25 or pos_ratio >= 0.75) and not (set(['r', 'd', 'w', 'm']) & set(postags)):
             rate_dict[token] = [pos_ratio if pos_ratio < 0.5 else 1 - pos_ratio, len(pos_list), len(neg_list), postags]
 
+    print(list(rate_dict))
     # sampling the data that will be added to the training set
     add_list = []
     for token in rate_dict:

@@ -58,7 +58,7 @@ def get_top_and_bottom_n_examples(scores, sample_num=3):
     """
     index = paddle.flip(paddle.argsort(scores), axis=0)
     top_index = index[:sample_num].tolist()
-    bottom_index = index[-sample_num:].tolist()
+    bottom_index = index[-sample_num:].tolist()[::-1]
     top_score = scores[top_index].tolist()
     bottom_score = scores[bottom_index].tolist()
     return list(zip(top_score, top_index)), list(zip(bottom_score, bottom_index))

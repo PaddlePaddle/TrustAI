@@ -64,7 +64,7 @@ parser.add_argument('--early_stop', type=bool, default=True, help='Epoch before 
 parser.add_argument('--early_stop_nums', type=int, default=2, help='Number of epoch before early stop.')
 parser.add_argument("--epochs", default=5, type=int, help="Total number of training epochs to perform.")
 parser.add_argument('--warmup', type=bool, default=True, help="whether use warmup strategy")
-parser.add_argument("--warmup_steps", default=200, type=int, help="Linear warmup steps over the training process.")
+parser.add_argument("--warmup_steps", default=100, type=int, help="Linear warmup steps over the training process.")
 parser.add_argument("--logging_steps", default=100, type=int, help="The interval steps to logging.")
 parser.add_argument("--init_from_ckpt", type=str, default=None, help="The path of checkpoint to be loaded.")
 parser.add_argument("--seed", type=int, default=None, help="random seed for initialization")

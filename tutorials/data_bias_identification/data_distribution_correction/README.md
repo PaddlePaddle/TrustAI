@@ -1,4 +1,4 @@
-# 基于数据分布偏置识别及数据分布修正方案
+# 解决训练数据存在脏数据的问题 - 数据分布修正方案
 
 ## 方法介绍
 受限于数据集收集方法、标注人员经验等影响，构建的训练数据集存在分布偏置问题。模型会利用数据集中的偏置作为预测的捷径，如在情感分析任务中，遇到否定词或描述直接给出“负向”情感预测。这种偏置会导致模型没有学会真正的理解和推理能力，在与训练数据分布一致的测试数据上表现非常好，但在与训练数据分布不一致的测试数据上表现很差，也就是说模型的泛化性和鲁棒性很差。
@@ -29,13 +29,13 @@ python -u get_rationale_importance.py --dataset_dir ./data --input_file train.ts
 
 ```shell
 # 生成均衡训练数据
-python -u balance_train_data.py  --input_path ./data/train.tsv  --rationale_path 16 --rationale_path ./data/rationale_importance.txt --output_path ./data/balanced_train.tsv
+python -u balance_train_data.py  --input_path ./data/train.tsv  --rationale_path ./data/rationale_importance.txt --output_path ./data/balanced_train.tsv
 ```
 
 基于生成的均衡数据`balanced_train.tsv`训练模型，即可提升模型效果。
 
 ```shell
-python -u train.py --dataset_dir ./data --train_file train.tsv --dev_file robust.tsv --num_classes 2 --save_dir ./checkpoint
+python -u train.py --dataset_dir ./data --train_file balanced_train.tsv --dev_file robust.tsv --num_classes 2 --save_dir ./checkpoint
 ```
 实验结果如下表所示：
 |   数据集  |   鲁棒性数据集  |  

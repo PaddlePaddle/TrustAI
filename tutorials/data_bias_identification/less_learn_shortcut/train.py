@@ -57,7 +57,7 @@ parser.add_argument('--device',
                     choices=['cpu', 'gpu', 'xpu', 'npu'],
                     default="gpu",
                     help="Select which device to train model, defaults to gpu.")
-parser.add_argument("--batch_size", default=64, type=int, help="Batch size per GPU/CPU for training.")
+parser.add_argument("--batch_size", default=32, type=int, help="Batch size per GPU/CPU for training.")
 parser.add_argument("--learning_rate", default=2e-5, type=float, help="The initial learning rate for Adam.")
 parser.add_argument("--weight_decay", default=0.01, type=float, help="Weight decay if we apply some.")
 parser.add_argument('--early_stop', type=bool, default=True, help='Epoch before early stop.')
@@ -156,7 +156,7 @@ def train():
     # Generate parameter names needed to perform weight decay.
     # All bias and LayerNorm parameters are excluded.
     decay_params = [p.name for n, p in model.named_parameters() if not any(nd in n for nd in ["bias", "norm"])]
-    optimizer = paddle.optimizer.AdamW(learning_rate=lr_scheduler,
+    optimizer = paddle.optimizer.AdamW(learning_rate=lr_scheduler if args.warmup else args.learning_rate,
                                        parameters=model.parameters(),
                                        weight_decay=args.weight_decay,
                                        apply_decay_param_fun=lambda x: x in decay_params)
