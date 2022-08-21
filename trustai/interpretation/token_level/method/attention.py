@@ -24,11 +24,11 @@ class AttentionInterpreter(TokenInterpreter):
     Attention Interpreter for NLP tasks.
     """
 
-    def __init__(self, paddle_model, device='gpu', attention_name=None, predict_fn=None) -> None:
+    def __init__(self, paddle_model, device=None, attention_name=None, predict_fn=None) -> None:
         """
         Args:
             paddle_model (callable): A model with ``forward`` and possibly ``backward`` functions.
-            device (str, optional): The device used for running `paddle_model`, options: ``cpu``, ``gpu`` etc. Default: gpu. 
+            device (str, optional): The device used for running `paddle_model`, options: ``cpu``, ``gpu``, ``gpu:0``, ``gpu:1`` etc. Default: None. 
             attention_name(str, optional): The layer name of attention. The correct name of embedding can be found through ``print(model)``. Default: None.  
             predict_fn(callable, optional): If the paddle_model prediction has special process, the user can customize the prediction function.  Default: None.
         """

@@ -23,7 +23,7 @@ model_inputs = preprocess_fn(data)
 初始化分析接口，输入待分析数据。
 ```python
 from trustai.interpretation.token_level import IntGradInterpreter
-ig = IntGradInterpreter(model, device="gpu")
+ig = IntGradInterpreter(model)
 result = ig(preprocess_fn(data), steps=100)
 
 # attributions的长度与用户切词相同
@@ -94,4 +94,4 @@ html = visualize_text(VisualizationTextRecord(aligns[0], true_label=0))
 图1 可视化实例：实例来自情感分析任务
 </p>
 
-详细示例见[tutorials](../../../tutorials/interpretation/token_level)。
+详细示例见[examples](../../../examples/interpretation/token_level)。

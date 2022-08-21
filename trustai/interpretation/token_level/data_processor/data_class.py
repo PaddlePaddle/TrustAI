@@ -21,32 +21,29 @@ from typing import Tuple
 
 
 @dataclass
-class AttentionResult(object):
+class TokenResult(object):
     attributions: List[float]
     pred_label: float
     pred_proba: List[float]
 
 
 @dataclass
-class GradShapResult(object):
-    attributions: List[float]
-    pred_label: float
-    pred_proba: List[float]
+class AttentionResult(TokenResult):
+    pass
 
 
 @dataclass
-class IGResult(object):
-    attributions: List[float]
-    pred_label: float
-    pred_proba: List[float]
+class GradShapResult(TokenResult):
+    pass
+
+
+@dataclass
+class IGResult(TokenResult):
     error_percent: float
 
 
 @dataclass
-class LimeResult(object):
-    attributions: List[float]
-    pred_label: float
-    pred_proba: List[float]
+class LimeResult(TokenResult):
     lime_score: float
 
 

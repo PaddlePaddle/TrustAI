@@ -23,7 +23,7 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         self,
         paddle_model,
         train_dataloader,
-        device="gpu",
+        device=None,
         classifier_layer_name="classifier",
         predict_fn=None,
         criterion=None,
@@ -34,7 +34,7 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         Args:
             paddle_model(callable): A model with ``forward``.
             train_dataloader(iterable): Dataloader of model's training data.
-            device(str: default=gpu): Device type, and it should be ``gpu``, ``cpu`` etc.
+            device(str: default=None): Device type, and it should be ``cpu``, ``gpu``, ``gpu:0``, ``gpu:1``  etc.
             classifier_layer_name(str: default=classifier): Name of the classifier layer in paddle_model.
             predict_fn(callabel: default=None): If the paddle_model prediction has special process, user can customize the prediction function.
             criterion(paddle.nn.layer.loss: default=None): criterion to calculate model loss.
@@ -51,7 +51,7 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
             if cached_train_grad is not None:
                 try:
                     paddle.save(self.train_grad, cached_train_grad)
-                except IOError as e:
+                except IOError:
                     import sys
                     sys.stderr.write("save cached_train_grad fail")
 
@@ -83,7 +83,7 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         preds = preds.tolist()
         res = get_struct_res(preds, pos_examples, neg_examples)
         return res
-    
+
     def get_grad(self, paddle_model, data):
         """
         get grad from one batch of data.
@@ -101,7 +101,6 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         self._clear_all_grad()
         return paddle.to_tensor(grad), paddle.to_tensor(prob), paddle.to_tensor(pred)
 
-        
     def get_grad_from_dataloader(self, data_loader):
         """
         get grad from data_loader.
@@ -119,7 +118,6 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         probas = paddle.concat(probas, axis=0)
         preds = paddle.concat(preds, axis=0)
         return grads, probas, preds
-        
 
     def _get_flat_param_grad(self):
         """

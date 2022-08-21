@@ -29,7 +29,7 @@ class GradShapInterpreter(TokenInterpreter):
         """
         Args:
             paddle_model (callable): A model with ``forward`` and possibly ``backward`` functions.
-            device (str, optional): The device used for running `paddle_model`, options: ``cpu``, ``gpu`` etc. Default: gpu. 
+            device (str, optional): The device used for running `paddle_model`, options: ``cpu``, ``gpu``. Default: gpu. 
             n_samples (int, optional): [description]. Defaults to 5.
             noise_amount (float, optional): Noise level of added noise to the embeddings. 
                 The std of Guassian random noise is ``noise_amount * embedding.mean() * (x_max - x_min)``. Default: 0.1

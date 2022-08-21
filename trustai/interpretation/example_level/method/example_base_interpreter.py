@@ -11,14 +11,14 @@ class ExampleBaseInterpreter(Interpreter):
     """Interpreter is the base class for all interpretation algorithms.
     Args:
         paddle_model (callable): A model with ``forward`` and possibly ``backward`` functions.
-        device (str): The device used for running `paddle_model`, options: ``cpu``, ``gpu:0``, ``gpu:1`` etc.
+        device (str): The device used for running `paddle_model`, options: ``cpu``, ``gpu``, ``gpu:0``, ``gpu:1`` etc. default: None
         predict_fn(callabel: default=None): If the paddle_model prediction has special process, user can customize the prediction function.
         classifier_layer_name(str: default=classifier): Name of the classifier layer in paddle_model.
     """
 
     def __init__(self,
                  paddle_model: callable,
-                 device: str = "gpu",
+                 device: str = None,
                  predict_fn=None,
                  classifier_layer_name="classifier",
                  **kwargs):

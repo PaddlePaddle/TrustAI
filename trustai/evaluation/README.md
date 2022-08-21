@@ -75,4 +75,4 @@ sufficency, comprehensiveness = evaluator.cal_suf_com(goldens, predicts)
 # 维度二：扰动下证据的一致性，即相似的输入+相似的输出=相似的证据，如果满足这一点则模型是忠诚的
 map_score = evaluator.cal_map(goldens, predicts)
 ```
-更多使用示列详见[tutorials](../../tutorials/evaluation/)。
+更多使用示列详见[examples](../../examples/evaluation/)。

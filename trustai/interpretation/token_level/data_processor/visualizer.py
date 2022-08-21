@@ -17,6 +17,9 @@ from IPython.core.display import display, HTML
 
 import numpy as np
 
+from .data_class import TokenResult
+from .data_class import InterpretResult
+
 
 class VisualizationTextRecord(object):
     """
@@ -24,8 +27,11 @@ class VisualizationTextRecord(object):
     Part of the code is modified from https://github.com/pytorch/captum/blob/master/captum/attr/_utils/visualization.py
     """
 
-    def __init__(self, interpret_res, true_label=''):
-        self.words = interpret_res.words
+    def __init__(self, interpret_res, true_label=None, words=None):
+        if words is not None:
+            self.words = words
+        else:
+            self.words = interpret_res.words
         self.pred_label = interpret_res.pred_label
         if isinstance(self.pred_label, np.ndarray):
             self.pred_proba = [
@@ -34,10 +40,13 @@ class VisualizationTextRecord(object):
             self.pred_label = self.pred_label.tolist()
         else:
             self.pred_proba = interpret_res.pred_proba[self.pred_label]
-        self.true_label = true_label
+        self.true_label = true_label if true_label is not None else ''
 
         # Normalization for attributions
-        word_attributions = interpret_res.word_attributions
+        if isinstance(interpret_res, InterpretResult):
+            word_attributions = interpret_res.word_attributions
+        else:
+            word_attributions = interpret_res.attributions
         _max = max(word_attributions)
         _min = min(word_attributions)
         self.word_attributions = [(word_imp - _min) / (_max - _min) for word_imp in word_attributions]
@@ -100,3 +109,21 @@ def visualize_text(text_records):
     html = HTML("".join(html))
     display(html)
     return html.data
+
+
+def visualize(interpret_res, true_labels=None, words=None):
+    """
+    interpret_res: List[TokenResult, InterpretResult], Interpretability Results
+    true_labels: List[int], Golden labels for test examples
+    words: List[List[str]], The word segmentation result of the test examples, the length of words is equal to the attributions
+    """
+    result_num = len(interpret_res)
+    if true_labels is None:
+        true_labels = [None] * result_num
+    if words is None:
+        words = [None] * result_num
+    records = []
+    for i in range(result_num):
+        records.append(VisualizationTextRecord(interpret_res[i], true_label=true_labels[i], words=words[i]))
+    html = visualize_text(records)
+    return html
