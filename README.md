@@ -24,7 +24,7 @@
 
 ## News 📢
 * 🔥 2022.8.20 TrustAI发布可信增强能力及应用案例
-* 🎉 2022.5.20 **TrustAI**首次[发布](https://mp.weixin.qq.com/s/AqYReKRnki9TwI5huY1f5Q)！
+* 🎉 2022.5.20 TrustAI首次[发布](https://mp.weixin.qq.com/s/AqYReKRnki9TwI5huY1f5Q)！
 
 ## 👏可信分析功能
 TrustAI提供特征级证据和实例级证据分析方法，全方位解释模型的预测，帮助开发者了解模型预测机制，以及协助使用者基于证据做出正确决策。
