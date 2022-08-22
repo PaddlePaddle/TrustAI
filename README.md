@@ -19,7 +19,7 @@
   <a href=#使用示例> 使用示例 </a>
 </h4>
 
-**TrustAI**是百度基于产业级深度学习平台『飞桨』([PaddlePaddle](https://github.com/PaddlePaddle/Paddle))开发的集可信分析和增强于一体的可信AI工具集，助力开发者提升模型效果和可信度，推动模型安全、可靠的落地于应用。
+**TrustAI**是基于深度学习平台『飞桨』([PaddlePaddle](https://github.com/PaddlePaddle/Paddle))开发的集可信分析和增强于一体的可信AI工具集，助力NLP开发者提升深度学习模型效果和可信度，推动模型安全、可靠的落地于应用。
 
 
 ## News 📢
