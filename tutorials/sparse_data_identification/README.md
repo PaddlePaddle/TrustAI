@@ -1,10 +1,12 @@
 # 解决训练数据覆盖不足的问题
 
 ## 方法介绍
-训练数据扩充是提升模型效果的重要手段，然而数据标注是一个费时费力的工作，如何标注更少的数据提升更大的效果是大多数NLP开发者面临的难题。
 
-TrustAI提供了“稀疏数据识别->有效数据选择->训练数据丰富”流程，用尽量少的标注数据有效提升模型效果。在稀疏数据识别中，基于可信分析中的实例级证据分析方法，从测试数据中识别因训练证据不充足而导致的低置信数据，称作目标集。然后，在大量的未标注数据中，选择可以支持目标集中数据预测的证据进行标注。最后，将新标注的数据加入到训练数据中重训模型。
+训练数据覆盖不足会导致模型在对应的测试数据上表现不好。数据扩充是提升模型效果直接的方法，然而数据标注是一个费时费力的工作，如何标注更少的数据带来更大的效果提升是大多数NLP开发者面临的难题。
 
+TrustAI提供了“目标数据识别->有效数据选择->训练数据丰富”流程，用尽量少的标注数据有效提升模型效果。首先，基于可信分析中的实例级证据分析方法，从测试数据中识别因训练数据覆盖不足而导致的预测效果差的测试样本，称作目标集。然后，在大量的未标注数据中，选择可以支持目标集中数据预测的证据进行标注。最后，将新标注的数据加入到训练数据中重训模型。
+
+注：开发者可访问[ AI Studio示例 ](https://aistudio.baidu.com/aistudio/projectdetail/4434403)快速体验本案例。
 ## 实验步骤
 
 由于标注数据成本高昂，本方案基于相似度计算任务开源数据集LCQMC进行模拟实验，在LCQMC的测试集和DuQM鲁棒性数据集上评估效果。实验基于ERNIE-3.0-base-zh微调，评估指标为准确率。
@@ -18,17 +20,17 @@ wget --no-check-certificate https://trustai.bj.bcebos.com/application_data/spars
 python -u train.py --dataset_dir ./data --train_file train_5000.tsv --dev_file dev.tsv --test_files test.tsv DuQM --num_classes 2 --save_dir ./checkpoint
 ```
 
-基于训练的基线模型`checkpoint`从验证集中选择稀疏数据，即为**目标集**。
+基于训练的基线模型`checkpoint`从验证集中选择目标数据，即为**目标集**。
 
-目标集选择方法为：使用TrustAI提供的实例级可信分析`FeatureSimilarityModel`方法，计算验证集中样本的正影响证据的平均分数。分数较低的样本表明其训练证据不足，在训练集中较为稀疏，模型在这些样本上表现也相对较差。
+目标集选择方法为：使用TrustAI提供的实例级可信分析`FeatureSimilarityModel`方法，计算验证集中样本的正影响证据的平均分数。分数较低的样本表明其训练证据不足，训练数据对此类数据覆盖度较低，模型在这些样本上表现也相对较差。
 ```shell
-# 选取稀疏数据
+# 选取目标数据
 python -u find_sparse_data.py --dataset_dir ./data --train_file train_5000.tsv --dev_file dev.tsv --num_classes 2  --init_from_ckpt ./checkpoint/model_state.pdparams --sparse_num 50 --sparse_path ./data/sparse_data.tsv
-# sparse_num表示选择的稀疏数据的数量
+# sparse_num表示选择的目标数据的数量
 # sparse_path表示目标集存储的路径
 ```
 
-在稀疏数据选择好后，只需要再次利用`FeatureSimilarityModel`方法从未标注的数据集`rest_train.tsv`中选择支持目标集的有效数据进行人工标注即可。
+在目标数据选择好后，只需要再次利用`FeatureSimilarityModel`方法从未标注的数据集`rest_train.tsv`中选择支持目标集的有效数据进行人工标注即可。
 
 <font size=3 color=gray>注：此处为模拟实验，`rest_train.tsv`的数据已被标注</font>
 

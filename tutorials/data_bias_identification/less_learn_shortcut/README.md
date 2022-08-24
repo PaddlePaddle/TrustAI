@@ -8,6 +8,8 @@ TrustAI提供了基于数据集统计方法偏置识别方法，并提供了数�
 
 数据权重修正通过降低偏置样本对训练loss的影响来减少模型从偏置样本中学习，即在训练loss计算时引入样本的偏置度(详见[Du, Yanrui, et al. 2022](https://arxiv.org/abs/2205.12593))。
 
+注：开发者可访问[ AI Studio示例 ](https://aistudio.baidu.com/aistudio/projectdetail/4434616)快速体验本案例。
+
 ## 实验步骤
 本方案基于相似度计算任务开源数据集LCQMC训练模型，在LCQMC的测试集和DuQM鲁棒性数据集上评估效果。实验基于ERNIE-3.0-base-zh微调，评估指标为准确率。
 
