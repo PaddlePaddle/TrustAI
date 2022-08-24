@@ -14,9 +14,9 @@
 <h4 align="center">
   <a href=#安装> 安装 </a> |
   <a href=#快速开始> 快速开始 </a>|
-  <a href=# 👏可信分析功能> 可信分析功能 </a> |
-  <a href=# 💥可信增强功能> 可信增强功能 </a> |
-  <a href=# 🚀应用案例> 应用案例 </a>
+  <a href=#可信分析功能> 可信分析功能 </a> |
+  <a href=#可信增强功能> 可信增强功能 </a> |
+  <a href=#应用案例> 应用案例 </a>
 </h4>
 
 **TrustAI**是基于深度学习平台『飞桨』([PaddlePaddle](https://github.com/PaddlePaddle/Paddle))开发的集可信分析和增强于一体的可信AI工具集，助力NLP开发者提升深度学习模型效果和可信度，推动模型安全、可靠的落地于应用。
@@ -26,7 +26,7 @@
 * 🔥 2022.8.20 TrustAI[发布](https://mp.weixin.qq.com/s/Ph3uzbUEUj1K7UALdM6OCA)可信增强能力及应用案例
 * 🎉 2022.5.20 TrustAI首次[发布](https://mp.weixin.qq.com/s/AqYReKRnki9TwI5huY1f5Q)！
 
-## 👏可信分析功能
+## <p id="可信分析功能">👏可信分析功能</p>
 TrustAI提供特征级证据和实例级证据分析方法，全方位解释模型的预测，帮助开发者了解模型预测机制，以及协助使用者基于证据做出正确决策。
 
 ### 特征级证据分析
@@ -55,7 +55,8 @@ TrustAI提供特征级证据和实例级证据分析方法，全方位解释模�
 
 关于方法更多详细内容可参考 - [实例级证据分析文档](./trustai/interpretation/example_level/README.md)
 
-## 💥可信增强功能
+## <p id="可信增强功能">💥可信增强功能</p>
+
 除了提供可信分析结果以外，TrustAI还包含多项增强功能，能够帮助开发者解决训练数据缺陷问题，用最小的标注成本获得最大幅度的效果提升。
 
 ### 解决训练数据存在脏数据的问题
@@ -188,7 +189,8 @@ result = interpreter(model_inputs)
 
 关于接口使用的更多样例见[examples目录](./examples)
 
-## 🚀应用案例
+
+## <p id="应用案例">🚀应用案例</p>
 
 
 </details>
