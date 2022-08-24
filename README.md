@@ -23,7 +23,7 @@
 
 
 ## News 📢
-* 🔥 2022.8.20 TrustAI发布可信增强能力及应用案例
+* 🔥 2022.8.20 TrustAI[发布](https://mp.weixin.qq.com/s/Ph3uzbUEUj1K7UALdM6OCA)可信增强能力及应用案例
 * 🎉 2022.5.20 TrustAI首次[发布](https://mp.weixin.qq.com/s/AqYReKRnki9TwI5huY1f5Q)！
 
 ## 👏可信分析功能
@@ -150,7 +150,6 @@ result = interpreter(model_inputs)
 html = visualize(result, words=tokens)
 # TrustAI提供可视化输出，即根据输入特征的支持度，以不同颜色深度展示结果。颜色越深表示支持度越大，越浅表示支持度越小。
 ```
-</details>
 
 &emsp;更多详情 - [特征级证据分析文档](./trustai/interpretation/token_level/README.md)
 
@@ -187,7 +186,6 @@ result = interpreter(model_inputs)
 
 </details>
 
-</br>
 关于接口使用的更多样例见[examples目录](./examples)
 
 ## 🚀应用案例
@@ -207,7 +205,6 @@ result = interpreter(model_inputs)
 </details>
 
 <details><summary> &emsp;缓解数据偏置对模型训练的影响，提升模型鲁棒性 </summary>
-</br>
 
 &emsp;&emsp;&emsp;[解决训练数据分布偏置的问题 - 数据权重修正](./tutorials/data_bias_identification/less_learn_shortcut)
 
