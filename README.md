@@ -19,12 +19,12 @@
   <a href=#应用案例> 应用案例 </a>
 </h4>
 
-**TrustAI**是百度基于产业级深度学习平台『飞桨』([PaddlePaddle](https://github.com/PaddlePaddle/Paddle))开发的集可信分析和增强于一体的可信AI工具集，助力开发者提升模型效果和可信度，推动模型安全、可靠的落地于应用。
+**TrustAI**是基于深度学习平台『飞桨』([PaddlePaddle](https://github.com/PaddlePaddle/Paddle))开发的集可信分析和增强于一体的可信AI工具集，助力NLP开发者提升深度学习模型效果和可信度，推动模型安全、可靠的落地于应用。
 
 
 ## News 📢
 * 🔥 2022.8.20 TrustAI发布可信增强能力及应用案例
-* 🎉 2022.5.20 **TrustAI**首次[发布](https://mp.weixin.qq.com/s/AqYReKRnki9TwI5huY1f5Q)！
+* 🎉 2022.5.20 TrustAI首次[发布](https://mp.weixin.qq.com/s/AqYReKRnki9TwI5huY1f5Q)！
 
 ## 👏可信分析功能
 TrustAI提供特征级证据和实例级证据分析方法，全方位解释模型的预测，帮助开发者了解模型预测机制，以及协助使用者基于证据做出正确决策。
@@ -150,6 +150,7 @@ result = interpreter(model_inputs)
 html = visualize(result, words=tokens)
 # TrustAI提供可视化输出，即根据输入特征的支持度，以不同颜色深度展示结果。颜色越深表示支持度越大，越浅表示支持度越小。
 ```
+</details>
 
 &emsp;更多详情 - [特征级证据分析文档](./trustai/interpretation/token_level/README.md)
 
