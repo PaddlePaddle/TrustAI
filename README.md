@@ -14,9 +14,9 @@
 <h4 align="center">
   <a href=#安装> 安装 </a> |
   <a href=#快速开始> 快速开始 </a>|
-  <a href=#👏可信分析功能> 可信分析功能 </a> |
-  <a href=#💥可信增强功能> 可信增强功能 </a> |
-  <a href=#🚀应用案例> 应用案例 </a>
+  <a href=# 👏可信分析功能> 可信分析功能 </a> |
+  <a href=# 💥可信增强功能> 可信增强功能 </a> |
+  <a href=# 🚀应用案例> 应用案例 </a>
 </h4>
 
 **TrustAI**是基于深度学习平台『飞桨』([PaddlePaddle](https://github.com/PaddlePaddle/Paddle))开发的集可信分析和增强于一体的可信AI工具集，助力NLP开发者提升深度学习模型效果和可信度，推动模型安全、可靠的落地于应用。
