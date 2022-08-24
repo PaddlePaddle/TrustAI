@@ -16,14 +16,14 @@
   <a href=#快速开始> 快速开始 </a>|
   <a href=#可信分析> 可信分析功能 </a> |
   <a href=#可信增强> 可信增强功能 </a> |
-  <a href=#使用示例> 使用示例 </a>
+  <a href=#应用案例> 应用案例 </a>
 </h4>
 
 **TrustAI**是基于深度学习平台『飞桨』([PaddlePaddle](https://github.com/PaddlePaddle/Paddle))开发的集可信分析和增强于一体的可信AI工具集，助力NLP开发者提升深度学习模型效果和可信度，推动模型安全、可靠的落地于应用。
 
 
 ## News 📢
-* 🔥 2022.8.20 TrustAI发布可信增强能力及应用案例
+* 🔥 2022.8.20 TrustAI[发布](https://mp.weixin.qq.com/s/Ph3uzbUEUj1K7UALdM6OCA)可信增强能力及应用案例
 * 🎉 2022.5.20 TrustAI首次[发布](https://mp.weixin.qq.com/s/AqYReKRnki9TwI5huY1f5Q)！
 
 ## 👏可信分析功能
@@ -37,7 +37,7 @@ TrustAI提供特征级证据和实例级证据分析方法，全方位解释模�
   <img src="./imgs/token.png" align="middle", width="500" />
 </p>
 
-应用示例见AI Studio - [ 基于TrustAI的中文情感特征级可信分析示例](https://aistudio.baidu.com/aistudio/projectdetail/4431334)
+应用示例见AI Studio - [基于TrustAI的中文情感特征级可信分析示例](https://aistudio.baidu.com/aistudio/projectdetail/4431334)
 
 关于方法更多详细内容可参考 - [特征级证据分析文档](./trustai/interpretation/token_level/README.md)
 
@@ -150,6 +150,10 @@ result = interpreter(model_inputs)
 html = visualize(result, words=tokens)
 # TrustAI提供可视化输出，即根据输入特征的支持度，以不同颜色深度展示结果。颜色越深表示支持度越大，越浅表示支持度越小。
 ```
+
+&emsp;更多详情 - [特征级证据分析文档](./trustai/interpretation/token_level/README.md)
+
+
 </details>
 
 
@@ -177,44 +181,40 @@ result = interpreter(model_inputs)
 # ExampleResult.pos_scores: List[float], 支持当前预测的训练数据的支持度
 # ExampleResult.neg_scores: List[float], 不支持当前预测的训练数据的支持度
 ```
-</details>
 
-## 🚀使用示例
-
-<details><summary> &emsp;特征级证据分析示例 </summary>
-</br>
-
-[基于TrustAI的中文情感特征级证据分析示例](https://aistudio.baidu.com/aistudio/projectdetail/4431334)
+&emsp;更多详情 - [实例级证据分析文档](./trustai/interpretation/example_level/README.md)
 
 </details>
-<details><summary> &emsp;实例级证据分析示例 </summary>
-</br>
 
-[基于TrustAI的中文情感实例级证据分析示例](https://aistudio.baidu.com/aistudio/projectdetail/4433286)
+关于接口使用的更多样例见[examples目录](./examples)
+
+## 🚀应用案例
+
 
 </details>
 <details><summary> &emsp;自动识别脏数据，降低人力检查成本 </summary>
 </br>
 
-[解决训练数据存在脏数据的问题](https://aistudio.baidu.com/aistudio/projectdetail/4434058)
+&emsp;&emsp;&emsp;[解决训练数据存在脏数据的问题](./tutorials/dirty_data_identification)
 
 </details>
 <details><summary> &emsp;标注尽量少的数据，提升模型效果 </summary>
 </br>
 
-[解决训练数据覆盖不足的问题](https://aistudio.baidu.com/aistudio/projectdetail/4434403)
+&emsp;&emsp;&emsp;[解决训练数据覆盖不足的问题](./tutorials/sparse_data_identification)
+</details>
+
+<details><summary> &emsp;缓解数据偏置对模型训练的影响，提升模型鲁棒性 </summary>
+
+&emsp;&emsp;&emsp;[解决训练数据分布偏置的问题 - 数据权重修正](./tutorials/data_bias_identification/less_learn_shortcut)
+
+&emsp;&emsp;&emsp;[解决训练数据分布偏置的问题 - 数据分布修正](./tutorials/data_bias_identification/data_distribution_correction)
 
 </details>
-<details><summary> &emsp;缓解数据偏置对模型训练的影响，提升模型鲁棒性 </summary>
+
 </br>
 
-[数据权重修正](https://aistudio.baidu.com/aistudio/projectdetail/4434616)
-
-[数据分布修正](https://aistudio.baidu.com/aistudio/projectdetail/4434652)
-
-</details>
-
-
+关于应用案例的更多说明，请参考[tutorials目录](./tutorials/)
 
 ## 相关文献
 
@@ -256,7 +256,6 @@ result = interpreter(model_inputs)
   journal={arXiv preprint arXiv:2205.11097},
   year={2022}
 }
-
 ```
 
 ## 致谢

@@ -30,12 +30,10 @@ from paddlenlp.transformers import AutoModelForSequenceClassification, AutoToken
 from paddlenlp.utils.log import logger
 from trustai.interpretation import get_word_offset
 from trustai.interpretation.token_level.common import attention_predict_fn_on_paddlenlp
-from trustai.interpretation.token_level import AttentionInterpreter
-from trustai.interpretation.token_level import GradShapInterpreter
+from trustai.interpretation.token_level import IntGradInterpreter
 
 from tqdm import tqdm
 import jieba
-from LAC import LAC
 
 from utils import evaluate, preprocess_function
 
@@ -57,7 +55,7 @@ parser.add_argument('--device',
                     choices=['cpu', 'gpu', 'xpu', 'npu'],
                     default="gpu",
                     help="Select which device to train model, defaults to gpu.")
-parser.add_argument("--batch_size", default=32, type=int, help="Batch size per GPU/CPU for training.")
+parser.add_argument("--batch_size", default=16, type=int, help="Batch size per GPU/CPU for training.")
 parser.add_argument("--init_from_ckpt", type=str, help="The path of checkpoint to be loaded.")
 parser.add_argument("--seed", type=int, default=3, help="random seed for initialization")
 parser.add_argument('--num_classes', type=int, default=2, help='Number of classification.')
@@ -95,7 +93,7 @@ class LocalDataCollatorWithPadding(DataCollatorWithPadding):
 
     def __call__(self, features):
         batch = super().__call__(features)
-        batch = tuple(batch.values())
+        batch = list(batch.values())
         return batch
 
 
@@ -105,7 +103,6 @@ def run():
     """
     set_seed(args.seed)
     paddle.set_device(args.device)
-    lac = LAC(mode='lac')
 
     # init lexical analyzer of chinese
 
@@ -138,7 +135,7 @@ def run():
     for example in input_ds.data:
         example['text'] = example['text_a']
         contexts.append("[CLS]" + " " + example['text_a'] + " " + "[SEP]")
-        batch_words.append(["[CLS]"] + list(lac.run(example['text_a'])[0]) + ["[SEP]"])
+        batch_words.append(["[CLS]"] + list(jieba.cut(example['text_a'])) + ["[SEP]"])
     word_offset_maps = []
     subword_offset_maps = []
     for i in range(len(contexts)):
@@ -147,18 +144,18 @@ def run():
 
     # get interpret result by intgrad
     print("The Interpreter method will take some minutes, please be patient.")
-    # interpreter = AttentionInterpreter(model, predict_fn=attention_predict_fn_on_paddlenlp)
-    interpreter = GradShapInterpreter(model, device="gpu", n_samples=10, noise_amount=0.1)
+    interpreter = IntGradInterpreter(model, batch_size=32)
+
     analysis_result = []
     for batch in tqdm(input_data_loader):
-        analysis_result += interpreter(tuple(batch))
+        analysis_result += interpreter(batch, steps=50)
     align_res = interpreter.alignment(analysis_result,
-                              contexts,
-                              batch_words,
-                              word_offset_maps,
-                              subword_offset_maps,
-                              special_tokens=["[CLS]", '[SEP]'],
-                              rationale_num=5)
+                                      contexts,
+                                      batch_words,
+                                      word_offset_maps,
+                                      subword_offset_maps,
+                                      special_tokens=["[CLS]", '[SEP]'],
+                                      rationale_num=3)
 
     # sort rationale and return rationale and frequency pair
     rationale_dict = collections.defaultdict(int)
