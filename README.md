@@ -228,7 +228,7 @@ result = interpreter(model_inputs)
 <details><summary> &emsp;限时赛</summary>
 
 * [2022 CCF BDCI 基于文心NLP大模型的阅读理解可解释评测](https://aistudio.baidu.com/aistudio/competition/detail/394/0/introduction)，比赛时间：2022/08/29 - 2022/12/31
-* [兴智杯-深度学习模型可解释性赛事](https://aistudio.baidu.com/aistudio/competition/detail/394/0/introduction)，比赛时间：2022/08/08 - 2022/10/31
+* [兴智杯-深度学习模型可解释性赛事](http://www.aiinnovation.com.cn/#/trackDetail?id=23)，比赛时间：2022/08/08 - 2022/10/31
 
 </details>
 
