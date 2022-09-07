@@ -16,7 +16,8 @@
   <a href=#快速开始> 快速开始 </a>|
   <a href=#可信分析功能> 可信分析功能 </a> |
   <a href=#可信增强功能> 可信增强功能 </a> |
-  <a href=#应用案例> 应用案例 </a>
+  <a href=#应用案例> 应用案例 </a> |
+  <a href=#评测榜单> 评测榜单 </a>
 </h4>
 
 **TrustAI**是基于深度学习平台『飞桨』([PaddlePaddle](https://github.com/PaddlePaddle/Paddle))开发的集可信分析和增强于一体的可信AI工具集，助力NLP开发者提升深度学习模型效果和可信度，推动模型安全、可靠的落地于应用。
@@ -220,9 +221,32 @@ result = interpreter(model_inputs)
 
 关于应用案例的更多说明，请参考[tutorials目录](./tutorials/)
 
+## 评测榜单
+
+评测数据集下载：[千言数据集-可解释性评测](https://www.luge.ai/#/luge/task/taskDetail?taskId=15)
+
+<details><summary> &emsp;限时赛</summary>
+
+* [2022 CCF BDCI 基于文心NLP大模型的阅读理解可解释评测](https://aistudio.baidu.com/aistudio/competition/detail/394/0/introduction)，比赛时间：2022/08/29 - 2022/12/31
+* [兴智杯-深度学习模型可解释性赛事](https://aistudio.baidu.com/aistudio/competition/detail/394/0/introduction)，比赛时间：2022/08/08 - 2022/10/31
+
+</details>
+
+<details><summary> &emsp;常规赛</summary>
+
+* [千言数据集：情感分析可解释性评测（中文）](https://aistudio.baidu.com/aistudio/competition/detail/443/0/introduction)
+* [千言数据集：情感分析可解释性评测（英文）](https://aistudio.baidu.com/aistudio/competition/detail/449/0/introduction)
+* [千言数据集：文本相似度可解释性评测（中文）](https://aistudio.baidu.com/aistudio/competition/detail/445/0/introduction)
+* [千言数据集：文本相似度可解释性评测（英文）](https://aistudio.baidu.com/aistudio/competition/detail/451/0/introduction)
+* [千言数据集：阅读理解可解释性评测（中文）](https://aistudio.baidu.com/aistudio/competition/detail/447/0/introduction)
+* [千言数据集：阅读理解可解释性评测（英文）](https://aistudio.baidu.com/aistudio/competition/detail/453/0/introduction)
+
+</details>
+
+
 ## 相关文献
 
-<details><summary> &emsp;参考论文 </summary>
+<details><summary> &emsp;可信分析方法参考论文 </summary>
 
 * `IntegratedGraients`: [Axiomatic Attribution for Deep Networks, Mukund Sundararajan et al. 2017](https://arxiv.org/abs/1703.01365)
 * `GradientShap`: [A Unified Approach to Interpreting Model Predictions, Scott M. Lundberg et al. 2017](http://papers.nips.cc/paper/7062-a-unified-approach-to-interpreting-model-predictions)
@@ -234,7 +258,16 @@ result = interpreter(model_inputs)
 
 </details>
 
-<details><summary> &emsp;学习材料 </summary>
+<details><summary> &emsp;可信增强方法参考论文 </summary>
+
+  * `Bias` : [Towards Debiasing NLU Models from Unknown Biases](https://arxiv.org/pdf/2009.12303v4.pdf)
+  * `Bias` : [Towards Interpreting and Mitigating Shortcut Learning Behavior of NLU Models](https://arxiv.org/pdf/2103.06922.pdf)
+  * `Bias` : [Learning to Learn to be Right for the Right Reasons](https://aclanthology.org/2021.naacl-main.304/)
+  * `Robustness` : [Can Rationalization Improve Robustness](https://arxiv.org/pdf/2204.11790v1.pdf)
+
+</details>
+
+<details><summary> &emsp;进阶学习材料 </summary>
 
 * `tutorials` : [ACL 2020 tutorial: Interpretability and Analysis in Neural NLP](https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1204/slides/cs224n-2020-lecture20-interpretability.pdf) | [Video](https://www.youtube.com/watch?v=RkYASrVFdlU)
 * `tutorials` : [EMNLP 2020 Tutorial on Interpreting Predictions of NLP Models](https://github.com/Eric-Wallace/interpretability-tutorial-emnlp2020) | [Video](https://www.youtube.com/watch?v=gprIzglUW1s)
@@ -242,10 +275,6 @@ result = interpreter(model_inputs)
 * `Survey` : [Teach Me to Explain: A Review of Datasets for Explainable Natural Language Processing](https://openreview.net/pdf?id=ogNcxJn32BZ)
 * `Survey` : [Benchmarking and Survey of Explanation Methods for Black Box Models](https://arxiv.org/pdf/2102.13076.pdf)
 * `Survey` : [A Survey on the Explainability of Supervised Machine Learning](https://dl.acm.org/doi/pdf/10.1613/jair.1.12228)
-* `Bias` : [Towards Debiasing NLU Models from Unknown Biases](https://arxiv.org/pdf/2009.12303v4.pdf)
-* `Bias` : [Towards Interpreting and Mitigating Shortcut Learning Behavior of NLU Models](https://arxiv.org/pdf/2103.06922.pdf)
-* `Bias` : [Learning to Learn to be Right for the Right Reasons](https://aclanthology.org/2021.naacl-main.304/)
-* `Robustness` : [Can Rationalization Improve Robustness](https://arxiv.org/pdf/2204.11790v1.pdf)
 
 
 </details>
