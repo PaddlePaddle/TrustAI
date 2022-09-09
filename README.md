@@ -280,6 +280,12 @@ result = interpreter(model_inputs)
 
 </details>
 
+<details><summary> &emsp;各赛事优秀方案分享 </summary>
+
+  * `情感可解释` : [情感可解释前三方案分享](https://aistudio.baidu.com/aistudio/competition/detail/443/0/datasets)（需报名）
+
+</details>
+
 
 ## 引用
 要引用 TrustAI 进行研究，请使用以下格式进行引用。
