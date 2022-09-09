@@ -24,9 +24,10 @@
 
 
 ## News 📢
-* 🔥 2022.8.29 [2022 CCF BDCI 基于文心NLP大模型的阅读理解可解释评测](https://aistudio.baidu.com/aistudio/competition/detail/394/0/introduction)赛事启动，火热报名中
-* 🔥 2022.8.20 TrustAI[发布](https://mp.weixin.qq.com/s/Ph3uzbUEUj1K7UALdM6OCA)可信增强能力及应用案例
-* 🔥 2022.8.8 [兴智杯-深度学习模型可解释性赛](http://www.aiinnovation.com.cn/#/trackDetail?id=23)启动，火热报名中
+* 🔥 2022.8.29 [PaddleNLP分类系统](https://github.com/PaddlePaddle/PaddleNLP/tree/develop/applications/text_classification)已经接入TrustAI能力，欢迎大家试用。
+* 🔥 2022.8.29 [2022 CCF BDCI 基于文心NLP大模型的阅读理解可解释评测](https://aistudio.baidu.com/aistudio/competition/detail/394/0/introduction)赛事启动，火热报名中。
+* 🔥 2022.8.20 TrustAI[发布](https://mp.weixin.qq.com/s/Ph3uzbUEUj1K7UALdM6OCA)可信增强能力及应用案例。
+* 🔥 2022.8.8 [兴智杯-深度学习模型可解释性赛](http://www.aiinnovation.com.cn/#/trackDetail?id=23)启动，火热报名中。
 * 🎉 2022.5.20 TrustAI首次[发布](https://mp.weixin.qq.com/s/AqYReKRnki9TwI5huY1f5Q)！
 
 ## <p id="可信分析功能">👏可信分析功能</p>
