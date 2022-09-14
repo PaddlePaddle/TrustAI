@@ -38,11 +38,18 @@ def dot_similarity(inputs_a, inputs_b):
     return paddle.sum(inputs_a * inputs_b, axis=1)
 
 
-def cos_similarity(inputs_a, inputs_b):
+def cos_similarity(inputs_a, inputs_b, step=500000):
     """
     calaculate cosine similarity between the two inputs.
     """
-    return F.cosine_similarity(inputs_a, inputs_b.unsqueeze(0))
+    # Processing to avoid paddle bug
+    start, end = 0, step
+    res = []
+    while start < inputs_a.shape[0]:
+        res.append(F.cosine_similarity(inputs_a[start:end], inputs_b.unsqueeze(0)))
+        start = end
+        end = end + step
+    return paddle.concat(res, axis=0)
 
 
 def euc_similarity(inputs_a, inputs_b):
