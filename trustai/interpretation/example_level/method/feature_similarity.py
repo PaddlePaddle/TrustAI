@@ -3,6 +3,8 @@
 feature-based similarity method.
 cosine, cot and euc.
 """
+import os
+import sys
 import functools
 import warnings
 
@@ -25,6 +27,7 @@ class FeatureSimilarityModel(ExampleBaseInterpreter):
         device=None,
         classifier_layer_name="classifier",
         predict_fn=None,
+        cached_train_feature=None,
     ):
         """
         Initialization.
@@ -38,9 +41,18 @@ class FeatureSimilarityModel(ExampleBaseInterpreter):
         ExampleBaseInterpreter.__init__(self, paddle_model, device, predict_fn, classifier_layer_name)
         self.paddle_model = paddle_model
         self.classifier_layer_name = classifier_layer_name
-        self.train_feature, _ = self.extract_feature_from_dataloader(train_dataloader)
 
-    
+        if cached_train_feature is not None and os.path.isfile(cached_train_feature):
+            self.train_feature = paddle.load(cached_train_feature)
+        else:
+            self.train_feature, _ = self.extract_feature_from_dataloader(train_dataloader)
+            if cached_train_feature is not None:
+                try:
+                    paddle.save(self.train_feature, cached_train_feature)
+                except IOError:
+                    import sys
+                    sys.stderr.write("save cached_train_feature fail")
+
     def interpret(self, data, sample_num=3, sim_fn="cos"):
         """
         Select most similar and dissimilar examples for a given data using the `sim_fn` metric.
@@ -87,7 +99,7 @@ class FeatureSimilarityModel(ExampleBaseInterpreter):
         """
         print("Extracting feature from given dataloader, it will take some time...")
         features, preds = [], []
-        
+
         for batch in dataloader:
             feature, pred = self.extract_feature(self.paddle_model, batch)
             features.append(feature)
