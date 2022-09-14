@@ -77,7 +77,7 @@ TrustAI提供了脏数据（即标注质量差的数据）自动识别功能，�
 
 应用示例见AI Studio - [解决训练数据存在脏数据的问题](https://aistudio.baidu.com/aistudio/projectdetail/4434058)
 
-### 解决训练数据覆盖不足的问题
+### 解决文本冗余导致精度下降的问题
 
 训练数据覆盖不足会导致模型在对应的测试数据上表现不好。TrustAI可识别因训练数据覆盖不足而导致的预测效果差的测试样本（这些样本构成的集合称为目标集），并帮助开发者从未标注数据中选择有效数据进行标注，提高训练数据覆盖度和模型效果。
 
@@ -102,6 +102,18 @@ TrustAI提供了脏数据（即标注质量差的数据）自动识别功能，�
 </p>
 
 应用示例见AI Studio - [数据权重修正](https://aistudio.baidu.com/aistudio/projectdetail/4434616)和[数据分布修正](https://aistudio.baidu.com/aistudio/projectdetail/4434652)
+
+### 解决文本冗余导致精度下降的问题
+过长的冗余信息往往会导致神经网络模型做预测时发生误判。这会导致模型难以处理长文本，鲁棒性、泛化性差。TrustAI提供了Select-Predict两阶段策略，在不需要人工介入的条件下，有效缓解文本冗余导致精度下降的问题。
+
+如下图所示，在如下3个数据集上，TrustAI的域内预测精度、泛化性、鲁棒性在EM指标上均取得明显提升。
+
+<p align="center">
+<img align="center" src="./imgs/redundancy_removal.png", width=400><br>
+图4 偏置修正后模型在鲁棒性数据集上的效果
+</p>
+
+应用示例见[ AI Studio ](https://aistudio.baidu.com/aistudio/projectdetail/4525331)
 
 **关于可信增强更多内容请阅读[tutorials](./tutorials)。**
 

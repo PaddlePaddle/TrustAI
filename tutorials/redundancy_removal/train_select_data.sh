@@ -54,33 +54,9 @@ if [ ! -d "${output_dir}/tmp" ]; then
   mkdir "${output_dir}/tmp"
 fi
 
-echo "########## Selector Training #############"
-
-# train selector
-python -u ./run_select.py \
-    --model_name hfl/roberta-wwm-ext \
-    --max_seq_length 512 \
-    --batch_size 24 \
-    --learning_rate 8e-5 \
-    --num_train_epochs 100 \
-    --logging_steps 10 \
-    --save_steps 200 \
-    --warmup_proportion 0.1 \
-    --weight_decay 0.01 \
-    --output_dir "${output_dir}/selector/" \
-    --data_dir ${data_dir} \
-    --set_k_sentences_ground_true 0 \
-    --early_stop_nums 5 \
-    --one_alpha -1 \
-    --do_train \
-    --use_loose_metric \
-    --early_stop \
-    --device gpu
-
 
 echo "########## Dev Processing #############"
-cp –f "${data_dir}/dev.json" "${output_dir}/tmp"
-mv "${output_dir}/tmp/dev.json" "${output_dir}/tmp/test.json"
+cp "${data_dir}/dev.json" "${output_dir}/tmp/test.json"
 
 # predict selector
 python -u ./run_select.py \
@@ -103,36 +79,3 @@ cp -f ${temp_dir} "${output_dir}/selected-data"
 rm -f "${output_dir}/selected-data/dev.json"
 origin_dev_path="${output_dir}/selector/test_prediction.json"
 mv ${origin_dev_path} "${output_dir}/selected-data/dev.json"
-
-echo "########## Predictor Training #############"
-
-# Train predictor
-python -u run_predict.py \
-    --model_name hfl/roberta-wwm-ext \
-    --max_seq_length 384 \
-    --batch_size 24 \
-    --learning_rate 5e-5 \
-    --num_train_epochs 20 \
-    --logging_steps 10 \
-    --save_steps 100 \
-    --warmup_proportion 0.1 \
-    --weight_decay 0.01 \
-    --output_dir "$output_dir/predictor/" \
-    --data_dir "$output_dir/selected-data/" \
-    --do_train \
-    --device gpu
-
-python -u run_predict.py \
-    --model_name hfl/roberta-wwm-ext \
-    --max_seq_length 384 \
-    --batch_size 24 \
-    --learning_rate 5e-5 \
-    --num_train_epochs 8 \
-    --logging_steps 10 \
-    --save_steps 200 \
-    --warmup_proportion 0.1 \
-    --weight_decay 0.01 \
-    --output_dir "$output_dir/predictor/" \
-    --data_dir "$output_dir/selected-data/" \
-    --do_train \
-    --device gpu

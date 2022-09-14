@@ -81,7 +81,7 @@ class ModelManager():
         return loss, result
 
     def save_model(self, tokenizer=None):
-        output_dir = os.path.join(self.args.output_dir, "model_%d" % self.global_step)
+        output_dir = os.path.join(self.args.output_dir, "best_model")
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         model_to_save = self.model._layers if isinstance(self.model, paddle.DataParallel) else self.model

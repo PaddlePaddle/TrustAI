@@ -151,7 +151,8 @@ TrustAI提供了数据权重修正和数据分布修正两种优化策略，在�
 应用的详细示例见[基于相似度计算任务的困难数据识别](./map_analysis/zh-similarity-application.ipynb)。
 
 <br>
-# 基于证据抽取的二段式模型增强方案
+
+## 解决文本冗余导致精度下降的问题
 
 ### 方法介绍
 
@@ -161,10 +162,12 @@ TrustAI提供了数据权重修正和数据分布修正两种优化策略，在�
 
 ### 方法效果
 
-通过我们的方案，在EM指标上在Dev集上效果提升1.13%，在Challenge Test集上提升了4.94%，说明我们的方案在提升模型性能的同时较好地提高了模型的鲁棒性。同时我们的方案在Zero Shot设置上也取得了较高的收益。在Robust上训练的该方案在Checklist数据集（移除no answer设置）上将效果提升7.48%。 
+通过我们的方案，在EM指标上在Dev集上效果提升1.13%，在Challenge Test集上提升了4.94%，说明我们的方案在提升模型性能的同时较好地提高了模型的鲁棒性。同时我们的方案在Zero Shot设置上也取得了较高的收益。在Robust上训练的该方案在Checklist数据集（移除no answer设置）上将效果提升3.48%。 
 
 |        模型        | DuReader-robust dev EM | DuReader-robust Test EM | **DuReader-checklist dev EM** |
 | :----------------: | ---------------------- | ----------------------- | :---------------------------: |
-|    roberta-base    | 73.18                  | 45.97%                  |             23.56             |
+|    roberta-base    | 73.18                  | 45.97%                  |             27.56             |
 | Selector-Predictor | 74.31                  | 50.91%                  |             31.04             |
+
+应用的详细示例见[解决文本冗余导致精度下降的问题](./redundancy_removal)。
 
