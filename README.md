@@ -106,6 +106,8 @@ TrustAI提供了脏数据（即标注质量差的数据）自动识别功能，�
 ### 解决文本冗余导致精度下降的问题
 过长的冗余信息往往会导致神经网络模型做预测时发生误判。这会导致模型难以处理长文本，鲁棒性、泛化性差。TrustAI提供了Select-Predict两阶段策略，在不需要人工介入的条件下，有效缓解文本冗余导致精度下降的问题。
 
+具体来说，我们在答案抽取式MRC任务上提供了一个典型示例。任务输入给定一个文章，一个问题，要求机器根据问题从文章中输出一个连续的片段作为答案。
+
 如下图所示，在如下3个数据集上，TrustAI的域内预测精度、泛化性、鲁棒性在EM指标上均取得明显提升。
 
 <p align="center">
@@ -113,7 +115,7 @@ TrustAI提供了脏数据（即标注质量差的数据）自动识别功能，�
 图4 偏置修正后模型在鲁棒性数据集上的效果
 </p>
 
-应用示例见[ AI Studio ](https://aistudio.baidu.com/aistudio/projectdetail/4525331)
+应用示例见[ 解决文本冗余导致精度下降的问题 ](https://aistudio.baidu.com/aistudio/projectdetail/4525331)
 
 **关于可信增强更多内容请阅读[tutorials](./tutorials)。**
 
@@ -208,17 +210,17 @@ result = interpreter(model_inputs)
 
 ## <p id="应用案例">🚀应用案例</p>
 
-
 </details>
+
 <details><summary> &emsp;自动识别脏数据，降低人力检查成本 </summary>
 </br>
 
 &emsp;&emsp;&emsp;[解决训练数据存在脏数据的问题](./tutorials/dirty_data_identification)
 
 </details>
+
 <details><summary> &emsp;标注尽量少的数据，提升模型效果 </summary>
 </br>
-
 &emsp;&emsp;&emsp;[解决训练数据覆盖不足的问题](./tutorials/sparse_data_identification)
 </details>
 
@@ -227,6 +229,12 @@ result = interpreter(model_inputs)
 &emsp;&emsp;&emsp;[解决训练数据分布偏置的问题 - 数据权重修正](./tutorials/data_bias_identification/less_learn_shortcut)
 
 &emsp;&emsp;&emsp;[解决训练数据分布偏置的问题 - 数据分布修正](./tutorials/data_bias_identification/data_distribution_correction)
+
+</details>
+
+<details><summary> &emsp;缓解文本冗余对模型预测的影响，提升模型精度和鲁棒性 </summary>
+
+&emsp;&emsp;&emsp;[解决文本冗余导致精度下降的问题](./tutorials/redundancy_removal)
 
 </details>
 
