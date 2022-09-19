@@ -19,10 +19,11 @@ import functools
 import paddle
 import paddle.nn as nn
 import paddle.nn.functional as F
+from tqdm import tqdm
 
 from ...base_interpret import Interpreter
 from .example_base_interpreter import ExampleBaseInterpreter
-from ..common.utils import get_sublayer, get_struct_res, get_top_and_bottom_n_examples
+from ..common.utils import get_sublayer, get_top_and_bottom_n_examples
 
 
 class SoftmaxClassifier(nn.Layer):
@@ -221,14 +222,14 @@ class RepresenterPointModel(ExampleBaseInterpreter):
         pos_examples = []
         neg_examples = []
         val_feature, _, preds = self.extract_feature(self.paddle_model, data)
+        res = []
+        preds = preds.tolist()
         for index, target_class in enumerate(preds):
             tmp = self.weight_matrix[:, target_class] * paddle.sum(
                 self.train_feature * paddle.to_tensor(val_feature[index]), axis=1)
-            pos_idx, neg_idx = get_top_and_bottom_n_examples(tmp, sample_num=sample_num)
-            pos_examples.append(pos_idx)
-            neg_examples.append(neg_idx)
-        preds = preds.tolist()
-        res = get_struct_res(preds, pos_examples, neg_examples)
+            pred_label = preds[index]
+            example_result = get_top_and_bottom_n_examples(tmp, pred_label, sample_num=sample_num)
+            res.append(example_result)
         return res
 
     @paddle.no_grad()
@@ -248,7 +249,7 @@ class RepresenterPointModel(ExampleBaseInterpreter):
         print("Extracting feature from given dataloader, it will take some time...")
         features, probas, preds = [], [], []
 
-        for batch in dataloader:
+        for batch in tqdm(dataloader):
             feature, prob, pred = self.extract_feature(self.paddle_model, batch)
             features.append(feature)
             probas.append(prob)
