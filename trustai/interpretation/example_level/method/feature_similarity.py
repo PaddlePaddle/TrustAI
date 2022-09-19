@@ -10,8 +10,9 @@ import warnings
 
 import paddle
 import paddle.nn.functional as F
+from tqdm import tqdm
 
-from ..common.utils import get_sublayer, dot_similarity, cos_similarity, euc_similarity, get_top_and_bottom_n_examples, get_struct_res
+from ..common.utils import get_sublayer, dot_similarity, cos_similarity, euc_similarity, get_top_and_bottom_n_examples
 from .example_base_interpreter import ExampleBaseInterpreter
 
 
@@ -63,8 +64,7 @@ class FeatureSimilarityModel(ExampleBaseInterpreter):
         """
         if sample_num == -1:
             sample_num = len(self.train_feature)
-        pos_examples = []
-        neg_examples = []
+
         val_feature, preds = self.extract_feature(self.paddle_model, data)
         if sim_fn == "dot":
             similarity_fn = dot_similarity
@@ -74,13 +74,14 @@ class FeatureSimilarityModel(ExampleBaseInterpreter):
             similarity_fn = euc_similarity
         else:
             raise ValueError(f"sim_fn only support ['dot', 'cos', 'euc'] in feature similarity, but gets `{sim_fn}`")
+        res = []
+        preds = preds.tolist()
         for index in range(len(preds)):
             tmp = similarity_fn(self.train_feature, paddle.to_tensor(val_feature[index]))
-            pos_idx, neg_idx = get_top_and_bottom_n_examples(tmp, sample_num=sample_num)
-            pos_examples.append(pos_idx)
-            neg_examples.append(neg_idx)
-        preds = preds.tolist()
-        res = get_struct_res(preds, pos_examples, neg_examples)
+            pred_label = preds[index]
+            example_result = get_top_and_bottom_n_examples(tmp, pred_label, sample_num=sample_num)
+            res.append(example_result)
+
         return res
 
     @paddle.no_grad()
@@ -100,7 +101,7 @@ class FeatureSimilarityModel(ExampleBaseInterpreter):
         print("Extracting feature from given dataloader, it will take some time...")
         features, preds = [], []
 
-        for batch in dataloader:
+        for batch in tqdm(dataloader):
             feature, pred = self.extract_feature(self.paddle_model, batch)
             features.append(feature)
             preds.append(pred)
