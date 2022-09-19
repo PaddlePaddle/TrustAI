@@ -59,30 +59,19 @@ def euc_similarity(inputs_a, inputs_b):
     return -paddle.linalg.norm(inputs_a - inputs_b.unsqueeze(0), axis=-1).squeeze(-1)
 
 
-def get_top_and_bottom_n_examples(scores, sample_num=3):
+def get_top_and_bottom_n_examples(scores, pred_label, sample_num=3):
     """
-    get n index of the highest and lowest score.
+    get n index of the highest and lowest score, return the structual result.
     """
     index = paddle.flip(paddle.argsort(scores), axis=0)
     top_index = index[:sample_num].tolist()
     bottom_index = index[-sample_num:].tolist()[::-1]
     top_score = scores[top_index].tolist()
     bottom_score = scores[bottom_index].tolist()
-    return list(zip(top_score, top_index)), list(zip(bottom_score, bottom_index))
 
-
-def get_struct_res(pred_label, pos_examples, neg_examples):
-    """
-    get the structual result
-    """
-    res = []
-    for i in range(len(pred_label)):
-        pos_scores, pos_indexes = zip(*pos_examples[i])
-        neg_scores, neg_indexes = zip(*neg_examples[i])
-        res.append(
-            ExampleResult(pred_label=pred_label[i],
-                          pos_indexes=pos_indexes,
-                          neg_indexes=neg_indexes,
-                          pos_scores=pos_scores,
-                          neg_scores=neg_scores))
+    res = ExampleResult(pred_label=pred_label,
+                        pos_indexes=top_index,
+                        neg_indexes=bottom_index,
+                        pos_scores=top_score,
+                        neg_scores=bottom_score)
     return res

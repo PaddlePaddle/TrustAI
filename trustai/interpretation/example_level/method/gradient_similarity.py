@@ -9,8 +9,9 @@ import warnings
 
 import paddle
 import paddle.nn.functional as F
+from tqdm import tqdm
 
-from ..common.utils import get_sublayer, dot_similarity, cos_similarity, euc_similarity, get_top_and_bottom_n_examples, get_struct_res
+from ..common.utils import get_sublayer, dot_similarity, cos_similarity, euc_similarity, get_top_and_bottom_n_examples
 from .example_base_interpreter import ExampleBaseInterpreter
 
 
@@ -65,8 +66,7 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         """
         if sample_num == -1:
             sample_num = len(self.train_grad)
-        pos_examples = []
-        neg_examples = []
+
         val_feature, _, preds = self.get_grad(self.paddle_model, data)
 
         if sim_fn == "dot":
@@ -75,13 +75,14 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
             similarity_fn = cos_similarity
         else:
             raise ValueError(f"sim_fn only support ['dot', 'cos'] in gradient simmialrity, but gets `{sim_fn}`")
+        res = []
+        preds = preds.tolist()
         for index in range(len(preds)):
             tmp = similarity_fn(self.train_grad, paddle.to_tensor(val_feature[index]))
-            pos_idx, neg_idx = get_top_and_bottom_n_examples(tmp, sample_num=sample_num)
-            pos_examples.append(pos_idx)
-            neg_examples.append(neg_idx)
-        preds = preds.tolist()
-        res = get_struct_res(preds, pos_examples, neg_examples)
+            pred_label = preds[index]
+            example_result = get_top_and_bottom_n_examples(tmp, pred_label, sample_num=sample_num)
+            res.append(example_result)
+
         return res
 
     def get_grad(self, paddle_model, data):
@@ -108,7 +109,7 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
         print("Extracting gradient for given dataloader, it will take some time...")
         probas, preds, grads = [], [], []
 
-        for batch in data_loader:
+        for batch in tqdm(data_loader):
             grad, prob, pred = self.get_grad(self.paddle_model, batch)
             grads.append(grad)
             probas.append(prob)

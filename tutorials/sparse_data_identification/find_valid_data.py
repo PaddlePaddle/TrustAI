@@ -103,6 +103,7 @@ def get_valid_data(analysis_result, valid_num, valid_threshold=0.7):
     """
     ret_idxs = []
     ret_scores = []
+    unique_idxs = set()
     rationale_idx = 0
     try:
         while len(ret_idxs) < valid_num:
@@ -110,15 +111,16 @@ def get_valid_data(analysis_result, valid_num, valid_threshold=0.7):
                 score = analysis_result[n].pos_scores[rationale_idx]
                 if score > valid_threshold:
                     idx = analysis_result[n].pos_indexes[rationale_idx]
-                    if idx not in ret_idxs:
+                    if idx not in unique_idxs:
                         ret_idxs.append(idx)
+                        unique_idxs.add(idx)
                         ret_scores.append(score)
                     if len(ret_idxs) >= valid_num:
                         break
 
             rationale_idx += 1
     except IndexError:
-        logger.error(f"The index is out of range, please reduce valid_num or increase valid_threshold. Got {len(ret_idxs)} now.")
+        logger.error(f"The index is out of range, please reduce valid_num or valid_threshold. Got {len(ret_idxs)} now.")
 
     return ret_idxs, ret_scores
 
