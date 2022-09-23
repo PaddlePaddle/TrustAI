@@ -61,13 +61,15 @@ def euc_similarity(inputs_a, inputs_b):
 
 def get_top_and_bottom_n_examples(scores, pred_label, sample_num=3):
     """
-    get n index of the highest and lowest score, return the structual result.
+    get n index of the highest and lowest score.
     """
-    index = paddle.flip(paddle.argsort(scores), axis=0)
-    top_index = index[:sample_num].tolist()
-    bottom_index = index[-sample_num:].tolist()[::-1]
-    top_score = scores[top_index].tolist()
-    bottom_score = scores[bottom_index].tolist()
+    top = np.argsort(-scores)
+    top_index = top[:sample_num]
+    top_score = scores[top_index]
+
+    bottom = top[::-1]
+    bottom_index = bottom[:sample_num]
+    bottom_score = scores[bottom_index]
 
     res = ExampleResult(pred_label=pred_label,
                         pos_indexes=top_index,
