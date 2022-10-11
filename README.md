@@ -9,7 +9,7 @@
 <a href="./LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"></a>
 <a href=""><img src="https://img.shields.io/badge/python-3.6.2+-orange.svg"></a>
 <a href=""><img src="https://img.shields.io/badge/os-linux%2C%20win%2C%20mac-red.svg"></a>
-</p> [解决训练数据覆盖不足的问题]
+</p>
 
 <h4 align="center">
   <a href=#安装> 安装 </a> |
