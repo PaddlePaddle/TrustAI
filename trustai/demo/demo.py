@@ -17,6 +17,7 @@ import logging
 import logging.handlers
 import os
 import sys
+import re
 import requests
 import shutil
 import tarfile
@@ -108,7 +109,6 @@ class DEMO(object):
 
             # globally set device.
             paddle.set_device(self.device)
-            self.paddle_model.to(self.device)
 
     def __getitem__(self, key):
         return getattr(self, key)
