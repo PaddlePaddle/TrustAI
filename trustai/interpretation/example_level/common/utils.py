@@ -64,18 +64,15 @@ def get_top_and_bottom_n_examples(scores, pred_label, sample_num=3):
     """
     get n index of the highest and lowest score, return the structual result.
     """
-    scores = scores.numpy()
-    top = np.argsort(-scores)
-    top_index = top[:sample_num]
-    top_score = scores[top_index]
 
-    bottom = top[::-1]
-    bottom_index = bottom[:sample_num]
-    bottom_score = scores[bottom_index]
+    top_score, top_index = paddle.topk(scores, sample_num, axis=0, largest=True, sorted=True)
+
+    bottom_score, bottom_index = paddle.topk(scores, sample_num, axis=0, largest=False, sorted=True)
 
     res = ExampleResult(pred_label=pred_label,
-                        pos_indexes=top_index,
-                        neg_indexes=bottom_index,
-                        pos_scores=top_score,
-                        neg_scores=bottom_score)
+                        pos_indexes=top_index.numpy(),
+                        neg_indexes=bottom_index.numpy(),
+                        pos_scores=top_score.numpy(),
+                        neg_scores=bottom_score.numpy())
+
     return res
