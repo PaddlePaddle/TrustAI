@@ -95,7 +95,7 @@ html = visualize_text(VisualizationTextRecord(aligns[0], true_label=0))
 
 可视化输出示例：
 <p align="center">
-<img align="center" src="../../../imgs/visual2.png", width=1600><br>
+<img align="center" src="../../../imgs/visual2.png", width=800><br>
 图1 可视化实例：实例来自情感分析任务
 </p>
 
