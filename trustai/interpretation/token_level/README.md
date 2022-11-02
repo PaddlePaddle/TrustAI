@@ -40,7 +40,7 @@ print(result[0].attributions)
 ```
 
 
-TrustAI支持将输出的重要度分数映射到更大粒度片段上，并进行可视化输出。这里给出了一个基于jieba分词的使用示例。
+TrustAI支持将输出的重要度分数映射到更大粒度片段上，这里给出了一个基于jieba分词的使用示例。
 
 ```python
 import jieba
@@ -87,11 +87,13 @@ print(aligns[0].non_rationale_tokens)
 
 ```
 
-可视化示例
+同时，TrustAI提供了可视化功能，调用代码如下：
 ```python
 # html为HTML格式的文本，可以保存为html文件
 html = visualize_text(VisualizationTextRecord(aligns[0], true_label=0))
 ```
+
+可视化输出示例：
 <p align="center">
 <img align="center" src="../../../imgs/visual2.png", width=1600><br>
 图1 可视化实例：实例来自情感分析任务
