@@ -18,7 +18,7 @@ TrustAI为所有实例级证据分析方法提供统一的使用接口。
 
 
 
-### 基于梯度的方法
+#### 基于梯度的方法
 调用代码：
 ```python
 from trustai.interpretation import RepresenterPointModel
@@ -49,7 +49,7 @@ text: 价格确实比较高，而且还没有早餐提供。 携程拿到的价�
 ```
 
 
-### 基于表示相似度的方法
+#### 基于表示相似度的方法
 调用代码：
 ```python
 from trustai.interpretation import FeatureSimilarityModel
@@ -81,7 +81,7 @@ text: 我从06年开始几乎每月都有一次出差，山西很多酒店都住
 ```
 
 
-### 基于梯度的相似度方法示例
+#### 基于梯度的相似度方法示例
 调用代码：
 
 ```python
