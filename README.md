@@ -24,10 +24,10 @@
 
 
 ## News 📢
+* 🔥 2022.10.30 [可解释评测数据集](https://www.luge.ai/#/luge/task/taskDetail?taskId=15)入驻千言，部分数据提供人工标注证据，欢迎大家使用。
 * 🔥 2022.8.29 [PaddleNLP分类系统](https://github.com/PaddlePaddle/PaddleNLP/tree/develop/applications/text_classification)已经接入TrustAI能力，欢迎大家试用。
 * 🔥 2022.8.29 [2022 CCF BDCI 基于文心NLP大模型的阅读理解可解释评测](https://aistudio.baidu.com/aistudio/competition/detail/394/0/introduction)赛事启动，火热报名中。
 * 🔥 2022.8.20 TrustAI[发布](https://mp.weixin.qq.com/s/Ph3uzbUEUj1K7UALdM6OCA)可信增强能力及应用案例。
-* 🔥 2022.8.8 [兴智杯-深度学习模型可解释性赛](http://www.aiinnovation.com.cn/#/trackDetail?id=23)启动，火热报名中。
 * 🎉 2022.5.20 TrustAI首次[发布](https://mp.weixin.qq.com/s/AqYReKRnki9TwI5huY1f5Q)！
 
 ## <p id="可信分析功能">👏可信分析功能</p>
@@ -35,35 +35,35 @@ TrustAI提供特征级证据和实例级证据分析方法，全方位解释模�
 
 ### 特征级证据分析
 
-根据模型预测结果，从输入文本中提取模型预测所依赖的证据，即输入文本中支持模型预测的重要词。
+根据模型预测结果，从输入文本中提取模型预测所依赖的证据，即输入文本中支持模型预测的若干重要词。
 
 <p align="center">
   <img src="./imgs/token.png" align="middle", width="500" />
 </p>
 
-应用示例见AI Studio - [基于TrustAI的中文情感特征级可信分析示例](https://aistudio.baidu.com/aistudio/projectdetail/4431334)
+应用示例见AI Studio - [基于TrustAI的特征级证据分析示例-中文情感分析任务](https://aistudio.baidu.com/aistudio/projectdetail/4431334)
 
 关于方法更多详细内容可参考 - [特征级证据分析文档](./trustai/interpretation/token_level/README.md)
 
 ### 实例级证据分析
 
 
-从训练数据中找出对当前预测影响较大的若干实例数据作为预测证据。
+从训练数据中找出对当前预测文本影响较大的若干训练样本作为模型预测依赖证据。
 <p align="center">
   <img src="./imgs/example.png" align="middle", width="500" />
 </p>
 
 
 
-应用示例见AI Studio - [基于TrustAI的中文情感实例级可信分析示例](https://aistudio.baidu.com/aistudio/projectdetail/4433286)
+应用示例见AI Studio - [基于TrustAI的实例级证据分析示例-中文情感分析任务](https://aistudio.baidu.com/aistudio/projectdetail/4433286)
 
 关于方法更多详细内容可参考 - [实例级证据分析文档](./trustai/interpretation/example_level/README.md)
 
 ## <p id="可信增强功能">💥可信增强功能</p>
 
-除了提供可信分析结果以外，TrustAI还包含多项增强功能，能够帮助开发者解决训练数据缺陷问题，用最小的标注成本获得最大幅度的效果提升。
+基于对模型预测依赖证据的分析，TrustAI提供了模型缺陷识别和对应的优化方案，即可信增强功能。当前，TrustAI开源了针对训练数据的缺陷识别和优化方案，希望能够帮助开发者以最小成本解决训练数据缺陷问题。
 
-### 解决训练数据存在脏数据的问题
+### 训练数据中脏数据自动识别
 
 
 TrustAI提供了脏数据（即标注质量差的数据）自动识别功能，帮助降低人工检查数据的成本。
@@ -72,26 +72,26 @@ TrustAI提供了脏数据（即标注质量差的数据）自动识别功能，�
 
 <p align="center">
 <img align="center" src="./imgs/dirty_analysis.png", width=400><br>
-图1 不同策略识别出的脏数据比例
+图1 不同策略的脏数据识别效果
 </p>
 
-应用示例见AI Studio - [解决训练数据存在脏数据的问题](https://aistudio.baidu.com/aistudio/projectdetail/4434058)
+应用示例见AI Studio - [训练数据中脏数据自动识别示例](https://aistudio.baidu.com/aistudio/projectdetail/4434058)
 
-### 解决训练数据覆盖不足的问题
+### 训练数据覆盖不足识别及有效数据增强
 
-训练数据覆盖不足会导致模型在对应的测试数据上表现不好。TrustAI可识别因训练数据覆盖不足而导致的预测效果差的测试样本（这些样本构成的集合称为目标集），并帮助开发者从未标注数据中选择有效数据进行标注，提高训练数据覆盖度和模型效果。
+训练数据覆盖不足会导致模型在对应的测试数据上表现不好。基于实例级证据分析方法，TrustAI可识别训练数据覆盖不足的测试数据（这些数据构成的集合称为目标集），模型在目标集上效果降低20%左右。进一步地，为降低标注成本，TrustAI提供有效数据选择策略，即从未标注数据中选择可以提高训练数据覆盖度和模型效果的数据进行标注。
 
-如下图所示，在两个公开数据集上，TrustAI选择的有效数据对模型在目标数据上的效果提升远高于随机选择策略。
+如下图所示，在两个公开数据集上，TrustAI提供的有效数据增强策略对模型在目标数据上的效果提升远高于随机选择策略。
 
 <p align="center">
 <img align="center" src="./imgs/sparse_analysis.png", width=400><br>
 图2 目标集提升的效果
 </p>
 
-应用示例见AI Studio - [解决训练数据覆盖不足的问题](https://aistudio.baidu.com/aistudio/projectdetail/4434403)
+应用示例见AI Studio - [训练数据覆盖不足识别及有效数据增强示例](https://aistudio.baidu.com/aistudio/projectdetail/4434403)
 
 
-### 解决训练数据分布偏置的问题
+### 训练数据分布偏置识别及偏置缓解
 神经网络模型会利用数据集中的偏置做预测，这会导致模型没有学会理解语言，鲁棒性差。TrustAI提供了分布修正和权重修正两种策略，在不需要人工介入的条件下，有效缓解数据偏置对模型训练的影响。
 
 如下图所示，在两个公开的鲁棒性数据集上，TrustAI的权重修正和分布修正策略分别取得明显提升。
@@ -101,21 +101,21 @@ TrustAI提供了脏数据（即标注质量差的数据）自动识别功能，�
 图3 偏置修正后模型在鲁棒性数据集上的效果
 </p>
 
-应用示例见AI Studio - [数据权重修正](https://aistudio.baidu.com/aistudio/projectdetail/4434616)和[数据分布修正](https://aistudio.baidu.com/aistudio/projectdetail/4434652)
+应用示例见AI Studio - [数据分布偏置缓解策略-数据权重修正示例](https://aistudio.baidu.com/aistudio/projectdetail/4434616)和[数据分布偏置缓解策略-数据分布修正示例](https://aistudio.baidu.com/aistudio/projectdetail/4434652)
 
-### 解决文本冗余导致精度下降的问题
-过长的冗余信息往往会导致神经网络模型做预测时发生误判。这会导致模型难以处理长文本，鲁棒性、泛化性差。TrustAI提供了Select-Predict两阶段策略，在不需要人工介入的条件下，有效缓解文本冗余导致精度下降的问题。
+### 证据识别及基于证据的预测
+在长本文理解任务中，输入中的冗余信息往往会干扰模型预测，导致模型鲁棒性差。TrustAI提供了“证据识别-基于证据的预测”两阶段预测方案，显著提升长文本任务上的模型效果，尤其是模型的鲁棒性。
 
-具体来说，我们在答案抽取式MRC任务上提供了一个典型示例。任务输入给定一个文章，一个问题，要求机器根据问题从文章中输出一个连续的片段作为答案。
+“证据识别-基于证据的预测”策略简介：以抽取式阅读理解任务为例，基于给定的文章和问题，证据识别功能从文章中抽取与问题答案相关的片段，这些片段作为阅读理解模型的输入，然后模型从这些片段中抽取问题对应的答案。
 
-如下图所示，在如下3个数据集上，TrustAI的域内预测精度、泛化性、鲁棒性在EM指标上均取得明显提升。
+以DuReader-robust数据集的训练数据训练模型，在DuReader-robust验证集、测试集以及DuReader-checklist测试集上进行了效果验证，分别验证模型的基本效果、鲁棒性效果、领域泛化效果，各数据集上的答案精准匹配率均取得显著提升。
 
 <p align="center">
 <img align="center" src="./imgs/redundancy_removal.png", width=400><br>
-图4 偏置修正后模型在鲁棒性数据集上的效果
+图4 证据识别及基于证据预测的两阶段策略在阅读理解任务上的效果
 </p>
 
-应用示例见AI Studio - [ 解决文本冗余导致精度下降的问题 ](https://aistudio.baidu.com/aistudio/projectdetail/4525331)
+应用示例见AI Studio - [证据识别及基于证据的预测示例-中文阅读理解任务](https://aistudio.baidu.com/aistudio/projectdetail/4525331)
 
 **关于可信增强更多内容请阅读[tutorials](./tutorials)。**
 
@@ -215,28 +215,28 @@ result = interpreter(model_inputs)
 <details><summary> &emsp;自动识别脏数据，降低人力检查成本 </summary>
 </br>
 
-&emsp;&emsp;&emsp;[解决训练数据存在脏数据的问题](./tutorials/dirty_data_identification)
+&emsp;&emsp;&emsp;[训练数据中脏数据自动识别示例](./tutorials/dirty_data_identification)
 
 </details>
 
-<details><summary> &emsp;标注尽量少的数据，提升模型效果 </summary>
+<details><summary> &emsp;以一半标注成本，带来更大效果提升 </summary>
 </br>
 
-&emsp;&emsp;&emsp;[解决训练数据覆盖不足的问题](./tutorials/sparse_data_identification)
+&emsp;&emsp;&emsp;[训练数据覆盖不足识别及有效数据增强示例](./tutorials/sparse_data_identification)
 
 </details>
 
-<details><summary> &emsp;缓解数据偏置对模型训练的影响，提升模型鲁棒性 </summary>
+<details><summary> &emsp;缓解数据集偏置，提升模型鲁棒性 </summary>
 
-&emsp;&emsp;&emsp;[解决训练数据分布偏置的问题 - 数据权重修正](./tutorials/data_bias_identification/less_learn_shortcut)
+&emsp;&emsp;&emsp;[数据集分布偏置缓解 - 数据权重修正策略示例](./tutorials/data_bias_identification/less_learn_shortcut)
 
-&emsp;&emsp;&emsp;[解决训练数据分布偏置的问题 - 数据分布修正](./tutorials/data_bias_identification/data_distribution_correction)
+&emsp;&emsp;&emsp;[数据集分布偏置缓解 - 数据分布修正策略示例](./tutorials/data_bias_identification/data_distribution_correction)
 
 </details>
 
-<details><summary> &emsp;缓解文本冗余对模型预测的影响，提升模型精度和鲁棒性 </summary>
+<details><summary> &emsp;证据识别及基于证据的预测，提升模型鲁棒性 </summary>
 
-&emsp;&emsp;&emsp;[解决文本冗余导致精度下降的问题](./tutorials/redundancy_removal)
+&emsp;&emsp;&emsp;[证据识别及基于证据的预测示例](./tutorials/redundancy_removal)
 
 </details>
 
@@ -251,7 +251,7 @@ result = interpreter(model_inputs)
 <details><summary> &emsp;限时赛</summary>
 
 * [2022 CCF BDCI 基于文心NLP大模型的阅读理解可解释评测](https://aistudio.baidu.com/aistudio/competition/detail/394/0/introduction)，比赛时间：2022/08/29 - 2022/12/31
-* [兴智杯-深度学习模型可解释性赛事](http://www.aiinnovation.com.cn/#/trackDetail?id=23)，比赛时间：2022/08/08 - 2022/10/31
+* [兴智杯-深度学习模型可解释性赛事](http://www.aiinnovation.com.cn/#/trackDetail?id=23)，已结束
 
 </details>
 
@@ -278,6 +278,7 @@ result = interpreter(model_inputs)
 * `Attention`: [Attention is not explanation, S Jain et al. 2019](https://arxiv.org/pdf/1902.10186.pdf)
 * `Representer Pointer`:[Representer point selection for explaining deep neural networks, Chih-Kuan Yeh et al. 2018](https://proceedings.neurips.cc/paper/2018/file/8a7129b8f3edd95b7d969dfc2c8e9d9d-Paper.pdf)
 * `Evaluation`: [A Fine-grained Interpretability Evaluation Benchmark for Neural NLP, Wang Lijie, et al. 2022](https://arxiv.org/pdf/2205.11097.pdf)
+* `Evaluation`: [A Fine-grained Interpretability Evaluation Benchmark for Pre-trained Language Models, Shen yaozong, et al. 2022](https://arxiv.org/pdf/2207.13948.pdf)
 
 </details>
 
