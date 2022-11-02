@@ -1,18 +1,20 @@
 # 特征级证据分析
 
-## 背景介绍
-特征级证据分析给出模型预测所依据的来自预测文本的若干重要特征。
-本工具提供了3种主流的证据分析方法，分别是LIME、Attention、Integrated Gradient。同时，我们也封装了InterpretDL中的NormLime、GradShap方法。
+## 功能介绍
+针对给定的模型和预测结果，特征级证据分析方法对测试输入中的每一特征（在以文本形式为输入的NLP任务中，特征为输入中的字或词）赋值一个分数，用其表示该特征对预测结果的影响度。然后影响度大的若干特征被选择作为模型预测依赖的证据，解释模型的预测结果。
+TrustAI提供了3种主流的特征级证据分析方法，分别是[Lime](https://arxiv.org/abs/1602.04938)、[Attention](https://arxiv.org/pdf/1902.10186.pdf)、[Integrated Gradient](https://arxiv.org/abs/1703.01365)方法。
 
 ## 使用示例
-初始化待分析模型。
+模型预测依赖证据的输出包含三步：待解释模型准备、测试数据准备、证据输出。
+
+一、待解释模型准备
 ```python
 from paddlenlp.transformers import ErnieForSequenceClassification, ErnieTokenizer
 model = ErnieForSequenceClassification.from_pretrained('ernie-1.0', num_classes=2)
 tokenizer = ErnieTokenizer.from_pretrained('ernie-1.0')
 ```
 
-准备好要分析数据，将文本转化为开发者模型的输入。
+二、测试数据准备：将输入测试文本转化为模型的输入
 ```python
 data = [{ "text": '这个宾馆比较陈旧了，特价的房间也很一般。总体来说一般'}]
 
@@ -20,7 +22,7 @@ data = [{ "text": '这个宾馆比较陈旧了，特价的房间也很一般。�
 model_inputs = preprocess_fn(data)
 ```
 
-初始化分析接口，输入待分析数据。
+三、证据获取
 ```python
 from trustai.interpretation.token_level import IntGradInterpreter
 ig = IntGradInterpreter(model)
@@ -37,7 +39,7 @@ print(result[0].attributions)
 ```
 
 
-TrustAI支持将输出的重要度分数映射到更大粒度的切分结果上，并进行可视化输出。这里给出了一个基于jieba分词的使用示例。
+TrustAI支持将输出的重要度分数映射到更大粒度片段上，并进行可视化输出。这里给出了一个基于jieba分词的使用示例。
 
 ```python
 import jieba
