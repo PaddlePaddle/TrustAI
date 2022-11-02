@@ -2,6 +2,7 @@
 
 ## 功能介绍
 针对给定的模型和预测结果，特征级证据分析方法对测试输入中的每一特征（在以文本形式为输入的NLP任务中，特征为输入中的字或词）赋值一个分数，用其表示该特征对预测结果的影响度。然后影响度大的若干特征被选择作为模型预测依赖的证据，解释模型的预测结果。
+
 TrustAI提供了3种主流的特征级证据分析方法，分别是[Lime](https://arxiv.org/abs/1602.04938)、[Attention](https://arxiv.org/pdf/1902.10186.pdf)、[Integrated Gradient](https://arxiv.org/abs/1703.01365)方法。
 
 ## 使用示例
@@ -22,7 +23,7 @@ data = [{ "text": '这个宾馆比较陈旧了，特价的房间也很一般。�
 model_inputs = preprocess_fn(data)
 ```
 
-三、证据获取
+三、证据获取：这里以Integrated Gradient方法为例
 ```python
 from trustai.interpretation.token_level import IntGradInterpreter
 ig = IntGradInterpreter(model)
