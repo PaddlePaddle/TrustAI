@@ -34,12 +34,12 @@ TrustAI可识别因训练数据覆盖不足而导致的预测效果差的测试�
 
 同时，该策略接入了PaddleNLP的分类系统，在多分类、多标签分类、及层次分类任务上完成了效果验证，效果如下图所示：通过TrustAI提供的有效数据选择策略，增加10%训练数据带来的效果提升大于随机增加20%训练数据的效果，也就是说，该策略能够节省一半标注成本，带来更大的效果提升。
 <p align="center">
-<img align="center" src="../imgs/paddlenlp覆盖不足识别及有效增强.png", width=800><br>
+<img align="center" src="../imgs/paddlenlp覆盖不足识别及有效增强.png", width=900><br>
 图1 在三个常见分类任务上应用“数据覆盖不足识别及有效数据增强”策略的效果
 </p>
 
 
-应用的详细示例见[解决训练数据覆盖不足的问题](./sparse_data_identification)。
+详细方案和实验介绍见应用示例[训练数据覆盖不足识别及有效数据增强](./sparse_data_identification)。
 <br>
 
 
