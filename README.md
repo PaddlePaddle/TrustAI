@@ -60,7 +60,7 @@ TrustAI提供特征级证据和实例级证据分析方法，全方位解释模�
 
 ## <p id="可信增强功能">💥可信增强功能</p>
 
-基于对模型预测依赖证据的分析，TrustAI提供了模型缺陷识别和对应的优化方案，即可信增强功能。当前，TrustAI开源了针对训练数据的缺陷识别和优化方案，希望能够帮助开发者以最小成本解决训练数据缺陷问题。
+基于对模型预测依赖证据的分析，TrustAI提供了模型缺陷识别和对应的优化方案，即可信增强功能。当前，从训练数据和训练机制优化角度，TrustAI开源了针对3种数据缺陷的识别方案和优化方案，希望能够帮助开发者以最小成本解决训练数据缺陷问题。同时，TrustAI开源了一种基于证据指导的预测机制优化方案，用来解决长文本理解问题。
 
 ### 训练数据中脏数据自动识别
 
@@ -102,7 +102,7 @@ TrustAI提供了脏数据（即标注质量差的数据）自动识别功能，�
 
 应用示例见AI Studio - [数据分布偏置缓解策略-数据权重修正示例](https://aistudio.baidu.com/aistudio/projectdetail/4434616)和[数据分布偏置缓解策略-数据分布修正示例](https://aistudio.baidu.com/aistudio/projectdetail/4434652)
 
-### 证据识别及基于证据的预测
+### 证据识别及基于证据的预测 - 预测机制优化
 在长本文理解任务中，输入中的冗余信息往往会干扰模型预测，导致模型鲁棒性差。TrustAI提供了“证据识别-基于证据的预测”两阶段预测方案，显著提升长文本任务上的模型效果，尤其是模型的鲁棒性。
 
 以DuReader-robust数据集的训练数据训练模型，在DuReader-robust验证集、测试集以及DuReader-checklist测试集上进行了效果验证，分别验证模型的基本效果、鲁棒性效果、领域泛化效果，各数据集上的答案精准匹配率均取得显著提升。
@@ -267,8 +267,18 @@ result = interpreter(model_inputs)
 
 
 ## 相关文献
+<details><summary>&emsp;评测相关论文（数据集和指标）</summary>
 
-<details><summary> &emsp;可信分析方法参考论文 </summary>
+* `Dataset` : [A Fine-grained Interpretability Evaluation Benchmark for Neural NLP, Wang Lijie, et al. 2022](https://arxiv.org/pdf/2205.11097.pdf)
+* `Dataset` : [A Fine-grained Interpretability Evaluation Benchmark for Pre-trained Language Models, Shen yaozong, et al. 2022](https://arxiv.org/pdf/2207.13948.pdf)
+* `Dataset` : [Benchmarking and Survey of Explanation Methods for Black Box Models](https://arxiv.org/pdf/2102.13076.pdf)
+* `Dataset` : [ERASER: A Benchmark to Evaluate Rationalized NLP Models](https://aclanthology.org/2020.acl-main.408.pdf)
+* `Metrics` : [On the Sensitivity and Stability of Model Interpretations in NLP](https://arxiv.org/abs/2104.08782)
+* `Metrics` : [Towards Faithfully Interpretable NLP Systems: How Should We Define and Evaluate Faithfulness?](https://aclanthology.org/2020.acl-main.386.pdf)
+
+</details>
+
+<details><summary> &emsp;可信分析参考论文 </summary>
 
 * `IntegratedGraients`: [Axiomatic Attribution for Deep Networks, Mukund Sundararajan et al. 2017](https://arxiv.org/abs/1703.01365)
 * `GradientShap`: [A Unified Approach to Interpreting Model Predictions, Scott M. Lundberg et al. 2017](http://papers.nips.cc/paper/7062-a-unified-approach-to-interpreting-model-predictions)
@@ -276,12 +286,12 @@ result = interpreter(model_inputs)
 * `NormLime`: [NormLime: A New Feature Importance Metric for Explaining Deep Neural Networks, Isaac Ahern et al. 2019](https://arxiv.org/abs/1909.04200)
 * `Attention`: [Attention is not explanation, S Jain et al. 2019](https://arxiv.org/pdf/1902.10186.pdf)
 * `Representer Pointer`:[Representer point selection for explaining deep neural networks, Chih-Kuan Yeh et al. 2018](https://proceedings.neurips.cc/paper/2018/file/8a7129b8f3edd95b7d969dfc2c8e9d9d-Paper.pdf)
-* `Evaluation`: [A Fine-grained Interpretability Evaluation Benchmark for Neural NLP, Wang Lijie, et al. 2022](https://arxiv.org/pdf/2205.11097.pdf)
-* `Evaluation`: [A Fine-grained Interpretability Evaluation Benchmark for Pre-trained Language Models, Shen yaozong, et al. 2022](https://arxiv.org/pdf/2207.13948.pdf)
+* `Similarity based Instance Attribution`: [An Empirical Comparison of Instance Attribution Methods for NLP](https://arxiv.org/pdf/2104.04128.pdf)
+* `Similarity based Instance Attribution`: [Input Similarity from the Neural Network Perspective](https://arxiv.org/pdf/2102.05262.pdf)
 
 </details>
 
-<details><summary> &emsp;可信增强方法参考论文 </summary>
+<details><summary> &emsp;可信增强参考论文 </summary>
 
   * `Bias` : [Towards Debiasing NLU Models from Unknown Biases](https://arxiv.org/pdf/2009.12303v4.pdf)
   * `Bias` : [Towards Interpreting and Mitigating Shortcut Learning Behavior of NLU Models](https://arxiv.org/pdf/2103.06922.pdf)
@@ -290,15 +300,20 @@ result = interpreter(model_inputs)
 
 </details>
 
+<details><summary> &emsp; 端到端可解释性模型相关论文 </summary>
+
+* `Self-explaining` : [Self-explaining deep models with logic rule reasoning](https://arxiv.org/abs/2210.07024)
+  
+</details>
+
 <details><summary> &emsp;进阶学习材料 </summary>
 
 * `tutorials` : [ACL 2020 tutorial: Interpretability and Analysis in Neural NLP](https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1204/slides/cs224n-2020-lecture20-interpretability.pdf) | [Video](https://www.youtube.com/watch?v=RkYASrVFdlU)
 * `tutorials` : [EMNLP 2020 Tutorial on Interpreting Predictions of NLP Models](https://github.com/Eric-Wallace/interpretability-tutorial-emnlp2020) | [Video](https://www.youtube.com/watch?v=gprIzglUW1s)
 * `tutorials` : [NAACL 2021 tutorial：Fine-grained Interpretation and Causation Analysis in Deep NLP Models](https://aclanthology.org/2021.naacl-tutorials.2.pdf) | [Video](https://www.youtube.com/watch?v=gprIzglUW1s)
 * `Survey` : [Teach Me to Explain: A Review of Datasets for Explainable Natural Language Processing](https://openreview.net/pdf?id=ogNcxJn32BZ)
-* `Survey` : [Benchmarking and Survey of Explanation Methods for Black Box Models](https://arxiv.org/pdf/2102.13076.pdf)
 * `Survey` : [A Survey on the Explainability of Supervised Machine Learning](https://dl.acm.org/doi/pdf/10.1613/jair.1.12228)
-
+* `Workshop` : [ICML 2022 Workshop: Interpretable Machine Learning in Healthcare](https://sites.google.com/view/imlh2022?pli=1)
 
 </details>
 
