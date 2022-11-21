@@ -42,7 +42,7 @@
 
 我们以阅读理解任务上的实验为例介绍该方案的使用。
 
-实验基于`roberta-wwm-ext`在Dureader<sub>robust</sub>训练数据上微调得到阅读理解模型，在Dureader<sub>robust</sub> 测试集和Dureader<sub>checklist</sub>测试集合上评估模型效果，评估指标为答案的EM（exactly match）和F1分数。
+实验基于`roberta-wwm-ext`在Dureader<sub>robust</sub>训练数据上微调得到阅读理解模型，在Dureader<sub>robust</sub> 测试集和Dureader<sub>checklist</sub>测试集合上评估模型效果，评估指标为答案的EM（exact match）和F1分数。
 
 
 ### 基线模型-文件结构介绍
