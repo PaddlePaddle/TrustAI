@@ -26,7 +26,6 @@
 ## News 📢
 * 🔥 2022.10.30 [可解释评测数据集](https://www.luge.ai/#/luge/task/taskDetail?taskId=15)入驻千言，部分数据提供人工标注证据，欢迎大家使用。
 * 🔥 2022.8.29 [PaddleNLP分类系统](https://github.com/PaddlePaddle/PaddleNLP/tree/develop/applications/text_classification)已经接入TrustAI能力，欢迎大家试用。
-* 🔥 2022.8.29 [2022 CCF BDCI 基于文心NLP大模型的阅读理解可解释评测](https://aistudio.baidu.com/aistudio/competition/detail/394/0/introduction)赛事启动，火热报名中。
 * 🔥 2022.8.20 TrustAI[发布](https://mp.weixin.qq.com/s/Ph3uzbUEUj1K7UALdM6OCA)可信增强能力及应用案例。
 * 🎉 2022.5.20 TrustAI首次[发布](https://mp.weixin.qq.com/s/AqYReKRnki9TwI5huY1f5Q)！
 
@@ -250,6 +249,8 @@ result = interpreter(model_inputs)
 
 * [2022 CCF BDCI 基于文心NLP大模型的阅读理解可解释评测](https://aistudio.baidu.com/aistudio/competition/detail/394/0/introduction)，比赛时间：2022/08/29 - 2022/12/31
 * [兴智杯-深度学习模型可解释性赛事](http://www.aiinnovation.com.cn/#/trackDetail?id=23)，已结束
+* [2022 CCF BDCI 基于文心NLP大模型的阅读理解可解释评测](https://aistudio.baidu.com/aistudio/competition/detail/394/0/introduction)，已结束。
+
 
 </details>
 
