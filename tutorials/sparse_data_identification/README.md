@@ -5,7 +5,7 @@
 训练数据覆盖不足会导致模型在对应的测试数据上表现不好。数据扩充是提升模型效果首选方法，然而数据标注是一个费时费力的工作，如何标注更少的数据带来更大的效果提升是大多数NLP开发者面临的难题。
 
 <p align="center">
-<img align="center" src="../imgs/process-for-sparse.png", width=800><br>
+<img align="center" src="../../imgs/process-for-sparse.png", width=800><br>
 图1 数据覆盖不足识别及有效数据增强策略流程
 </p>
 
@@ -40,7 +40,7 @@ python -u find_sparse_data.py --dataset_dir ./data --train_file train_5000.tsv -
 
 经验证，模型在目标集上的效果降低明显，如图2所示。
 <p align="center">
-<img align="center" src="../imgs/target-performance.png", width=500><br>
+<img align="center" src="../../imgs/target-performance.png", width=500><br>
 图2 模型在整个测试集和目标集上的表现
 </p>
 
