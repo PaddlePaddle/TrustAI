@@ -18,6 +18,7 @@
   <a href=#可信增强功能> 可信增强功能 </a> |
   <a href=#应用案例> 应用案例 </a> |
   <a href=#评测榜单> 评测榜单 </a>
+  <a href=#学术文献> 学术文献 </a>
 </h4>
 
 **TrustAI**是基于深度学习平台『飞桨』([PaddlePaddle](https://github.com/PaddlePaddle/Paddle))开发的集可信分析和增强于一体的可信AI工具集，助力NLP开发者提升深度学习模型效果和可信度，推动模型安全、可靠的落地于应用。
@@ -266,8 +267,8 @@ result = interpreter(model_inputs)
 </details>
 
 
-## 相关文献
-<details><summary>&emsp;评测相关论文（数据集和指标）</summary>
+## 学术文献
+<details><summary>&emsp;评测参考论文（数据集和评测指标）</summary>
 
 * `Dataset` : [A Fine-grained Interpretability Evaluation Benchmark for Neural NLP, Wang Lijie, et al. 2022](https://arxiv.org/pdf/2205.11097.pdf)
 * `Dataset` : [A Fine-grained Interpretability Evaluation Benchmark for Pre-trained Language Models, Shen yaozong, et al. 2022](https://arxiv.org/pdf/2207.13948.pdf)
@@ -300,7 +301,7 @@ result = interpreter(model_inputs)
 
 </details>
 
-<details><summary> &emsp; 端到端可解释性模型相关论文 </summary>
+<details><summary> &emsp; 端到端可解释性模型参考论文 </summary>
 
 * `Self-explaining` : [Self-explaining deep models with logic rule reasoning](https://arxiv.org/abs/2210.07024)
   
