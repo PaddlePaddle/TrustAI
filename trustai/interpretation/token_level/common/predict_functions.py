@@ -62,7 +62,7 @@ def attention_predict_fn_on_paddlenlp(inputs,
     k = tensor.reshape(x=key_feature[0], shape=[0, 0, num_heads, head_dim])
     k = tensor.transpose(x=k, perm=[0, 2, 1, 3])
     attention = layers.matmul(x=q, y=k, transpose_y=True, alpha=head_dim**-0.5)
-    
+
     attention = attention.sum(1)[:, 0]
 
     probas = paddle.nn.functional.softmax(logits, axis=1)  # get probabilities.
@@ -146,7 +146,12 @@ def ig_predict_fn_on_paddlenlp_pretrain(inputs,
         loss += proba.index_sample(ori_label).sum()
     loss = loss / masked_positions.sum()
 
+    # adapt for paddle 2.4
+    if paddle.version.full_version >= '2.4.0':
+        target_feature_map[0].retain_grads()
+
     loss.backward()
+
     gradients = target_feature_map[0].grad  # get gradients of "embedding".
     loss.clear_gradient()
 

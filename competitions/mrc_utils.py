@@ -765,8 +765,11 @@ def IG_predict_fn(inputs, label, left=None, right=None, steps=None, paddle_model
     loss = paddle.sum(probas_start * labels_onehot, axis=1)
     labels_onehot = paddle.nn.functional.one_hot(paddle.to_tensor(preds_end), num_classes=probas_end.shape[1])
     loss += paddle.sum(probas_end * labels_onehot, axis=1)
+    
+    # adapt for paddle 2.4
+    if paddle.version.full_version >= '2.4.0':
+        target_feature_map[0].retain_grads()
     loss.backward()
-
     gradients = target_feature_map[0].grad  # get gradients of "embedding".
     loss.clear_gradient()
 

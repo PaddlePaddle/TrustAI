@@ -113,6 +113,11 @@ class RepresenterPointBase(nn.Layer):
             classifier_loss, L2 = self.softmax_classifier(input_feature, input_probas)
             loss = L2 * self.lmbd + classifier_loss / input_num
             classifier_mean_loss = classifier_loss / input_num
+
+            # adapt for paddle 2.4
+            if paddle.version.full_version >= '2.4.0':
+                self.softmax_classifier.linear.weight.retain_grads()
+
             loss.backward()
             grad_loss = paddle.mean(paddle.abs(self.softmax_classifier.linear.weight.grad)).numpy()
             # save the W with the lowest grad_loss

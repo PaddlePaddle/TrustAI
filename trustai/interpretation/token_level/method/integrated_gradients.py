@@ -139,6 +139,11 @@ class IntGradInterpreter(TokenInterpreter):
             labels = labels.reshape((bs, ))
             labels_onehot = paddle.nn.functional.one_hot(paddle.to_tensor(labels), num_classes=probas.shape[1])
             loss = paddle.sum(probas * labels_onehot, axis=1)
+
+            # adapt for paddle 2.4
+            if paddle.version.full_version >= '2.4.0':
+                target_feature_map[0].retain_grads()
+
             loss.backward()
 
             gradients = target_feature_map[0].grad  # get gradients of "embedding".
