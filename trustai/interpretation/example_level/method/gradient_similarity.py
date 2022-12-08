@@ -97,6 +97,13 @@ class GradientSimilarityModel(ExampleBaseInterpreter):
             assert len(data) == 1, "batch_size must be 1"
         _, prob, pred = self.predict_fn(data)
         loss = self.criterion(prob, paddle.to_tensor(pred))
+
+        # adapt for paddle 2.4
+        if paddle.version.full_version >= '2.4.0':
+            for n, p in self.paddle_model.named_parameters():
+                if self.classifier_layer_name in n:
+                    p.retain_grads()
+
         loss.backward()
         grad = self._get_flat_param_grad()
         self._clear_all_grad()

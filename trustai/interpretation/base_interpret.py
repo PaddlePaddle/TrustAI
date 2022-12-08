@@ -64,7 +64,7 @@ class Interpreter(abc.ABC):
             paddle.set_device(self.device)
             self.paddle_model.to(self.device)
 
-        if versiontuple2tuple(paddle.__version__) >= (2, 2, 1):
+        if versiontuple2tuple(paddle.version.full_version) >= (2, 2, 1):
             # From Paddle2.2.1, gradients are supported in eval mode.
             self.paddle_model.eval()
         else:
