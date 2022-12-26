@@ -116,12 +116,10 @@ base_model = 'bert_base'
 class sim_data(DatasetBuilder):
     
     def _read(self, filename):
-        with open(filename, "r", encoding="utf8") as f:
-            i = 0
+        with open(filename, "r", encoding="utf8") as f:            
             for line in f.readlines():
                 line = line.strip()
-                line = line.split('\t')
-                print(len(line))
+                line = line.split('\t')                
                 if line[0] == 'text_a':
                     continue
                 elif len(line) == 4:
@@ -228,11 +226,8 @@ def do_train():
 
     train_file = os.path.join(args.data_dir, args.train_set)
     dev_file = os.path.join(args.data_dir, args.dev_set)
-    print(1)
-    train_ds = sim_data().read(train_file)
-    print(2)
+    train_ds = sim_data().read(train_file) 
     dev_ds = sim_data().read(dev_file)
-    print(3)
 
     tokenizer = AutoTokenizer.from_pretrained('ernie-3.0-base-zh')
     pretrained_model = AutoModelForSequenceClassification.from_pretrained('ernie-3.0-base-zh', num_classes=2)
