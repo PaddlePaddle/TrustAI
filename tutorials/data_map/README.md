@@ -1,4 +1,4 @@
-# 基于训练信号的数据地图绘制 Training signal-based data map plotting
+# 基于训练信号的数据地图绘制 Dataset Cartography with Training Dynamics
 
 ## 方法介绍
 现有工作表明，可以使用训练数据在训练过程中的信号绘制数据地图；同时，根据信号特征划的区域具有不同特点，如难学、标注错误等。通过绘制数据地图，可以帮助开发者更好地了解训练数据。
@@ -11,10 +11,10 @@ TrustAI提供了"训练信号收集 -> 数据地图绘制"方案。首先，在�
 我们以基于相似度计算任务LCQMC数据集上的模拟实验为例，介绍该方案实现步骤和效果。
 
 
-**Step 1**: 从LCQMC训练集中随机抽取100条数据作为样例训练集. 训练集为.tsv格式, 内容如下
+**Step 1**: 从LCQMC训练集中随机抽取100条数据作为样例训练。训练集为.tsv格式，内容如下
 
 ```shell
-# tsv格式数据, 每条训练数据为一行, 中间用tab分隔, 每列分别表示:
+# tsv格式数据，每条训练数据为一行，中间用tab分隔，每列分别表示:
 [
     "text_a" : xxx,              // 训练数据文本a
     "text_b" : xxx,              // 训练数据文本b
@@ -65,11 +65,11 @@ python -u sample_stat_summary.py
     <summary> 训练信号详细信息 </summary>
 
 ```shell
-# tsv 格式数据, 每条训练数据的所有训练信号保存为一行, 信号之间用tab进行分隔, 每列分别表示:
+# tsv 格式数据，每条训练数据的所有训练信号保存为一行，信号之间用tab进行分隔，每列分别表示:
 [
     "id" : xxx,                  // 训练数据的id
     "label" : xxx,               // 训练数据对应的label
-    "s_label" : xxx,             // 训练数据的构造label, 数据地图绘制允许标记困难数据(s_label = 1)和构造脏数据(s_label = 2)
+    "s_label" : xxx,             // 训练数据的构造label，数据地图绘制允许标记困难数据(s_label = 1)和构造脏数据(s_label = 2)
     "correct_times" : xxx,       // 总共预测正确的次数  
     "correct_ratio" : xxx,       // 预测正确次数占比
     "avg_probs" : xxx,           // 多次预测的置信度的平均数
@@ -91,12 +91,12 @@ python -u sample_stat_summary.py
 python -u plot_map.py
 
 # 参数选择
-attr1: str类型， 默认值为"avg_probs", 选择一个信号作为数据地图的纵轴
-attr2: str类型， 默认值为"label_var", 选择一个信号作为数据地图的横轴
-criterion: str类型, 默认值为空, 选择一个训练信号作为数据筛选依据, 仅满足条件的数据会被绘制在地图上
-threshold: float类型, 默认值0, 与criterion一同使用, 为选择的训练信号设置阈值, 筛选数据
-use_f_times: float类型, 默认值-1, 使用forgotten_times并选择所有遗忘次数不小于use_f_times的样本
-use_l_times: float类型, 默认值-1, 使用learnt_times并选择所有遗忘次数不小于use_l_times的样本
+attr1: str类型， 默认值为"avg_probs"，选择一个信号作为数据地图的纵轴
+attr2: str类型， 默认值为"label_var"，选择一个信号作为数据地图的横轴
+criterion: str类型，默认值为空，选择一个训练信号作为数据筛选依据，仅满足条件的数据会被绘制在地图上
+threshold: float类型，默认值0，与criterion一同使用，为选择的训练信号设置阈值，筛选数据
+use_f_times: float类型，默认值-1，使用forgotten_times并选择所有遗忘次数不小于use_f_times的样本
+use_l_times: float类型，默认值-1，使用learnt_times并选择所有遗忘次数不小于use_l_times的样本
 
 # 数据地图样例
 python -u plot_map.py                                               # 图1左
