@@ -23,8 +23,13 @@
 
 **TrustAI**是基于深度学习平台『飞桨』([PaddlePaddle](https://github.com/PaddlePaddle/Paddle))开发的集可信分析和增强于一体的可信AI工具集，助力NLP开发者提升深度学习模型效果和可信度，推动模型安全、可靠的落地于应用。
 
+<p align="center">
+<img align="center" src="./imgs/framework.png", width=500><br>
+图 TrustAI提供能力概览
+</p>
 
 ## News 📢
+* 🔥 2022.12.27 TrustAI发布数据地图绘制能力，欢迎大家使用。
 * 🔥 2022.10.30 [可解释评测数据集](https://www.luge.ai/#/luge/task/taskDetail?taskId=15)入驻千言，部分数据提供人工标注证据，欢迎大家使用。
 * 🔥 2022.8.29 [PaddleNLP分类系统](https://github.com/PaddlePaddle/PaddleNLP/tree/develop/applications/text_classification)已经接入TrustAI能力，欢迎大家试用。
 * 🔥 2022.8.20 TrustAI[发布](https://mp.weixin.qq.com/s/Ph3uzbUEUj1K7UALdM6OCA)可信增强能力及应用案例。
