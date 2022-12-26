@@ -121,14 +121,23 @@ class sim_data(DatasetBuilder):
             for line in f.readlines():
                 line = line.strip()
                 line = line.split('\t')
+                print(len(line))
                 if line[0] == 'text_a':
                     continue
-                else:
+                elif len(line) == 4:
                     yield{#'id': line[0],
                     'text_t': line[0],
                     'text_q': line[1],
                     'label': line[2],
                     's_label':line[3]}
+                elif len(line) == 3:
+                    yield{#'id': line[0],
+                    'text_t': line[0],
+                    'text_q': line[1],
+                    'label': line[2],
+                    's_label': "0"}
+                else:
+                    continue
                 
 def set_seed(seed):
     """sets random seed"""
@@ -219,7 +228,7 @@ def do_train():
 
     train_file = os.path.join(args.data_dir, args.train_set)
     dev_file = os.path.join(args.data_dir, args.dev_set)
-    train_ds = sim_data().read(train_file)
+    train_ds = sim_data().read(train_file) 
     dev_ds = sim_data().read(dev_file)
 
     tokenizer = AutoTokenizer.from_pretrained('ernie-3.0-base-zh')
