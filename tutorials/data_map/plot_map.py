@@ -6,7 +6,6 @@ import argparse
 
 input_path = "./outputs/"
 input_file = "output_data.json.result"
-input_file = "train_lcqmc_orig_238k_10ep.json.result.rpm_grdt.sparsity.low_bias"
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -295,6 +294,6 @@ if __name__ == "__main__":
 
     run_plot(in_path=input_path, in_file=input_file, dim1=attr1, dim2=attr2, 
         criterion=criterion, threshold=threshold, use_f_times=use_f_times, use_l_times=use_l_times)
-    run_plot(in_path=input_path, in_file=input_file, dim1=attr1, dim2=attr2, criterion="forgetting_times", threshold=1)
-    run_plot(in_path=input_path, in_file=input_file, dim1=attr1, dim2=attr2, use_f_times=0)
-    run_plot(in_path=input_path, in_file=input_file, dim1=attr1, dim2=attr2, use_l_times=0)
+    #run_plot(in_path=input_path, in_file=input_file, dim1=attr1, dim2=attr2, criterion="forgetting_times", threshold=1)
+    #run_plot(in_path=input_path, in_file=input_file, dim1=attr1, dim2=attr2, use_f_times=0)
+    #run_plot(in_path=input_path, in_file=input_file, dim1=attr1, dim2=attr2, use_l_times=0)

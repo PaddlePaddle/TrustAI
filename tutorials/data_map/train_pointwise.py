@@ -116,12 +116,10 @@ base_model = 'bert_base'
 class sim_data(DatasetBuilder):
     
     def _read(self, filename):
-        with open(filename, "r", encoding="utf8") as f:
-            i = 0
+        with open(filename, "r", encoding="utf8") as f:            
             for line in f.readlines():
                 line = line.strip()
-                line = line.split('\t')
-                print(len(line))
+                line = line.split('\t')                
                 if line[0] == 'text_a':
                     continue
                 elif len(line) == 4:
