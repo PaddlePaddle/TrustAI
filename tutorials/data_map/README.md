@@ -19,7 +19,7 @@ TrustAI提供了"训练信号收集 -> 数据地图绘制"方案。首先，在�
     "text_a" : xxx,              // 训练数据文本a
     "text_b" : xxx,              // 训练数据文本b
     "label" : xxx,               // 训练数据对应的label
-    "s_label" : xxx,             // 训练数据的构造label
+    "s_label" : xxx,             // 训练数据的构造label （可省略）
 ]
 ```
 注:
@@ -32,7 +32,7 @@ TrustAI提供了"训练信号收集 -> 数据地图绘制"方案。首先，在�
 # 训练模型并收集训练信号
 sh run_train_pointwise.sh
 ```
-所有训练数据的训练信号保存在`outputs`路径下。
+所有训练数据的训练信号按训练step保存在`outputs`路径下。
 
 注:
 1. 训练信号的收集代码可参考代码`train_pointwise.py`中Lines 199-218，针对用户自己的模型自行进行修改。
@@ -53,8 +53,7 @@ sh run_train_pointwise.sh
 ]
 ```
 
-**Step 2**：训练信号处理
-将训练过程中收集到的训练信号进行处理，生成针对每条数据的具体训练信号。
+**Step 2**：训练信号处理：将不同训练steps收集到的信号进行处理，生成基于每条训练数据的信号。
 
 ```shell
 # 训练信号处理
@@ -64,8 +63,9 @@ python -u sample_stat_summary.py
 
 <details>
     <summary> 训练信号详细信息 </summary>
-    ```shell
-    # tsv 格式数据, 每条训练数据的所有训练信号保存为一行, 信号之间用tab进行分隔, 每列分别表示:
+
+```shell
+# tsv 格式数据, 每条训练数据的所有训练信号保存为一行, 信号之间用tab进行分隔, 每列分别表示:
 [
     "id" : xxx,                  // 训练数据的id
     "label" : xxx,               // 训练数据对应的label
@@ -81,11 +81,10 @@ python -u sample_stat_summary.py
     "first_forget" : xxx,        // 多次预测中，第一次遗忘本数据  
     "first_learn" : xxx,         // 多次预测中，第一次学会本数据  
 ]
-    ```
+```
 </details>
-注：用户可根据此结构自行设计更多的训练信号，用tab分隔即可。
 
-**Step 3**：基于产出的训练信号，选择两个信号作为数据地图的两个维度，进行地图绘制。
+**Step 3**：基于产出的训练信号，选择两个信号作为数据地图的两个维度（默认为平均置信度与置信方差），并选择其他信号（如正确比例、正确次数、遗忘次数、学习次数等）以颜色、符号等进行区别并进行地图绘制。
 
 ```shell
 # 数据地图绘制
@@ -109,5 +108,5 @@ python -u plot_map.py --use_l_times 0                               # 图1右
 <img align="center" src="../../imgs/data_map_normal.png", width=300>
 <img align="center" src="../../imgs/data_map_criterion.png", width=300>
 <img align="center" src="../../imgs/data_map_lt.png", width=300><br>
-图1 数据地图样例。左: 无参数设置的数据地图；中：指定criterion为forgetting_times>=1的数据绘制地图；右：使用learnt_times(use_l_times)区分数据的颜色，其中左上和左下角数据分别使用correct_times做进一步区分。此数据地图根据全量LCQMC数据的训练信号绘制，而非提供的100条样例。
+图1 数据地图样例。左: 默认参数设置的数据地图；中：指定criterion为forgetting_times，threshold为1的数据绘制地图；右：使用learnt_times(use_l_times=0)区分数据的颜色，其中左上和左下角数据分别使用correct_times做进一步区分。此数据地图根据全量LCQMC数据的训练信号绘制，而非提供的100条样例。
 </p>

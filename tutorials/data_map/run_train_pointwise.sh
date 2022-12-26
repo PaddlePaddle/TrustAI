@@ -14,7 +14,7 @@ MAX_SEQ_LENGTH=256
 set -x
 
 train_file=sample_100.tsv
-dev_file=sample_100.tsv
+dev_file=$train_file
 train_size=100
 
 batch_size=32
@@ -33,6 +33,5 @@ python3 ./train_pointwise.py  \
     --dev_set ${dev_file} \
     --eval_step ${save_steps} \
     --warmup_proportion 0.1 \
-    --language $LANGUAGE \
     --save_dir saved_model/${timestamp} >> logs/log_${timestamp}
     
