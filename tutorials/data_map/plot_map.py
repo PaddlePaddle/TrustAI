@@ -55,10 +55,10 @@ variance_list = []
 def build_dict(header_list, init_dict={}, standard_dict={}, error_dict={}):
     for feature in header_list:
         init_dict[feature] = [[] for i in range(2)]
-    specical_dict_f = {"forgotten_times-+": [[] for i in range(2)], "forgotten_times-": [[] for i in range(2)], "forgotten_times0": [[] for i in range(2)], 
-                    "forgotten_times1": [[] for i in range(2)], "forgotten_times2": [[] for i in range(2)], "forgotten_times3": [[] for i in range(2)]}
-    specical_dict_l = {"learnt_times+-": [[] for i in range(2)], "learnt_times-": [[] for i in range(2)], "learnt_times0": [[] for i in range(2)], 
-                    "learnt_times1": [[] for i in range(2)], "learnt_times2": [[] for i in range(2)], "learnt_times3": [[] for i in range(2)]}
+    specical_dict_f = {"forgotten_times-+": [[] for i in range(2)], "forgotten_times-": [[] for i in range(2)], "forgotten_times=0": [[] for i in range(2)], 
+                    "forgotten_times=1": [[] for i in range(2)], "forgotten_times=2": [[] for i in range(2)], "forgotten_times>=3": [[] for i in range(2)]}
+    specical_dict_l = {"learnt_times+-": [[] for i in range(2)], "learnt_times-": [[] for i in range(2)], "learnt_times=0": [[] for i in range(2)], 
+                    "learnt_times=1": [[] for i in range(2)], "learnt_times=2": [[] for i in range(2)], "learnt_times>=3": [[] for i in range(2)]}
                     
     standard_dict = {"correct_ratio_0.0": [[] for i in range(2)], "correct_ratio_0.2": [[] for i in range(2)], "correct_ratio_0.4": [[] for i in range(2)], \
         "correct_ratio_0.6": [[] for i in range(2)], "correct_ratio_0.8": [[] for i in range(2)], "correct_ratio_1.0": [[] for i in range(2)]}
@@ -69,10 +69,10 @@ def build_dict(header_list, init_dict={}, standard_dict={}, error_dict={}):
 standard_marker_dict = {"correct_ratio_0.0": ["r", "X", 3], "correct_ratio_0.2": ["m", "v", 3], "correct_ratio_0.4": ["orange", "^", 3], 
                     "correct_ratio_0.6": ["g", "<", 3], "correct_ratio_0.8": ["c", ">", 3], "correct_ratio_1.0": ["b", "D", 3]}
 
-special_marker_dict = {"forgotten_times-+": ["black", "X", 3], "forgotten_times-": ["c", "v", 3], "forgotten_times0": ["b", ">", 3],  
-                        "forgotten_times1": ["r", "<", 3], "forgotten_times2": ["g", "D", 3], "forgotten_times3": ["orange", "^", 3], 
-                        "learnt_times+-": ["black", "X", 3], "learnt_times-": ["c", "v", 3], "learnt_times0": ["b", ">", 3], 
-                        "learnt_times1": ["r", "<", 3], "learnt_times2": ["g", "D", 3], "learnt_times3": ["orange", "^", 3]}
+special_marker_dict = {"forgotten_times-+": ["black", "X", 3], "forgotten_times-": ["c", "v", 3], "forgotten_times=0": ["b", ">", 3],  
+                        "forgotten_times=1": ["r", "<", 3], "forgotten_times=2": ["g", "D", 3], "forgotten_times>=3": ["orange", "^", 3], 
+                        "learnt_times+-": ["black", "X", 3], "learnt_times-": ["c", "v", 3], "learnt_times=0": ["b", ">", 3], 
+                        "learnt_times=1": ["r", "<", 3], "learnt_times=2": ["g", "D", 3], "learnt_times>=3": ["orange", "^", 3]}
 
 error_marker_dict = {"correct_ratio_0.0": ["deeppink", "X", 3], "correct_ratio_0.2": ["darkred", "v", 3], "correct_ratio_0.4": ["darkorange", "^", 3], 
                     "correct_ratio_0.6": ["darkgreen", "<", 3], "correct_ratio_0.8": ["deepskyblue", ">", 3], "correct_ratio_1.0": ["darkblue", "D", 3]}
@@ -115,20 +115,20 @@ def fill_in_specical_dict_f(specical_dict_f, cri_cnt, feature1, feature2, forgot
             specical_dict_f["forgotten_times-+"][1].append([feature2])
             cri_cnt[2] += 1
         else:
-            specical_dict_f["forgotten_times0"][0].append([feature1])
-            specical_dict_f["forgotten_times0"][1].append([feature2])
+            specical_dict_f["forgotten_times=0"][0].append([feature1])
+            specical_dict_f["forgotten_times=0"][1].append([feature2])
             cri_cnt[3] += 1
     elif forgotten_times == 1:
-        specical_dict_f["forgotten_times1"][0].append([feature1])
-        specical_dict_f["forgotten_times1"][1].append([feature2])
+        specical_dict_f["forgotten_times=1"][0].append([feature1])
+        specical_dict_f["forgotten_times=1"][1].append([feature2])
         cri_cnt[4] += 1
     elif forgotten_times == 2:
-        specical_dict_f["forgotten_times2"][0].append([feature1])
-        specical_dict_f["forgotten_times2"][1].append([feature2])
+        specical_dict_f["forgotten_times=2"][0].append([feature1])
+        specical_dict_f["forgotten_times=2"][1].append([feature2])
         cri_cnt[5] += 1
     else:
-        specical_dict_f["forgotten_times3"][0].append([feature1])
-        specical_dict_f["forgotten_times3"][1].append([feature2])
+        specical_dict_f["forgotten_times>=3"][0].append([feature1])
+        specical_dict_f["forgotten_times>=3"][1].append([feature2])
         cri_cnt[6] += 1
     return specical_dict_f, cri_cnt
 
@@ -143,20 +143,20 @@ def fill_in_specical_dict_l(specical_dict_l, cri_cnt, feature1, feature2, learnt
             specical_dict_l["learnt_times+-"][1].append([feature2])
             cri_cnt[2] += 1
         else:
-            specical_dict_l["learnt_times0"][0].append([feature1])
-            specical_dict_l["learnt_times0"][1].append([feature2])
+            specical_dict_l["learnt_times=0"][0].append([feature1])
+            specical_dict_l["learnt_times=0"][1].append([feature2])
             cri_cnt[3] += 1
     elif learnt_times == 1:
-        specical_dict_l["learnt_times1"][0].append([feature1])
-        specical_dict_l["learnt_times1"][1].append([feature2])
+        specical_dict_l["learnt_times=1"][0].append([feature1])
+        specical_dict_l["learnt_times=1"][1].append([feature2])
         cri_cnt[4] += 1
     elif learnt_times == 2:
-        specical_dict_l["learnt_times2"][0].append([feature1])
-        specical_dict_l["learnt_times2"][1].append([feature2])
+        specical_dict_l["learnt_times=2"][0].append([feature1])
+        specical_dict_l["learnt_times=2"][1].append([feature2])
         cri_cnt[5] += 1
     else:
-        specical_dict_l["learnt_times3"][0].append([feature1])
-        specical_dict_l["learnt_times3"][1].append([feature2])
+        specical_dict_l["learnt_times>=3"][0].append([feature1])
+        specical_dict_l["learnt_times>=3"][1].append([feature2])
         cri_cnt[6] += 1
     return specical_dict_l, cri_cnt
 
@@ -243,7 +243,7 @@ def run_plot(in_path, in_file, dim1, dim2, criterion=False, threshold=0, dirty_l
     else:
         print("sample number under criterion is: ", cri_cnt)
     
-
+    plt.figure(dpi=600) 
     if dirty_label:
         plt.scatter(error_dict["errors"][1], error_dict["errors"][0], marker = "X", c = "r")
         plt.scatter(error_dict["corrects"][1], error_dict["corrects"][0], marker = "D", c = "b")
@@ -295,6 +295,6 @@ if __name__ == "__main__":
 
     run_plot(in_path=input_path, in_file=input_file, dim1=attr1, dim2=attr2, 
         criterion=criterion, threshold=threshold, use_f_times=use_f_times, use_l_times=use_l_times)
-    #run_plot(in_path=input_path, in_file=input_file, dim1=attr1, dim2=attr2, criterion="forgetting_times", threshold=1)
-    #run_plot(in_path=input_path, in_file=input_file, dim1=attr1, dim2=attr2, use_f_times=0)
-    #run_plot(in_path=input_path, in_file=input_file, dim1=attr1, dim2=attr2, use_l_times=0)
+    run_plot(in_path=input_path, in_file=input_file, dim1=attr1, dim2=attr2, criterion="forgetting_times", threshold=1)
+    run_plot(in_path=input_path, in_file=input_file, dim1=attr1, dim2=attr2, use_f_times=0)
+    run_plot(in_path=input_path, in_file=input_file, dim1=attr1, dim2=attr2, use_l_times=0)

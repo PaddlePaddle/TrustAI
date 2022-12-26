@@ -25,3 +25,4 @@ repos:
     -   id: forbid-tabs
         files: \.md$
     -   id: remove-tabs
+        exclude: (\.tsv)$
