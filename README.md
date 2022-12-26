@@ -151,7 +151,7 @@ TrustAI提供了分布修正和权重修正两种策略，在不需要人工介�
 
 <p align="center">
 <img align="center" src="./imgs/redundancy_removal.png", width=400><br>
-图4 证据识别及基于证据预测的两阶段策略在阅读理解任务上的效果
+图 证据识别及基于证据预测的两阶段策略在阅读理解任务上的效果
 </p>
 
 应用示例见AI Studio - [证据识别及基于证据的预测示例-中文阅读理解任务](https://aistudio.baidu.com/aistudio/projectdetail/4525331)
