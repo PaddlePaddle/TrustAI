@@ -780,11 +780,11 @@ def IG_predict_fn(inputs, label, left=None, right=None, steps=None, paddle_model
     probas_end.stop_gradient = True
 
     probas =[]
-    for idx in range(len(probas_start)):#(preds_start.numpy(), preds_end.numpy())
+    for idx in range(len(probas_start)):    #(preds_start.numpy(), preds_end.numpy())
         probas.append([probas_start[idx].numpy(), probas_end[idx].numpy()])
     preds =[]
-    for idx in range(len(preds_start)):#(preds_start.numpy(), preds_end.numpy())
-        preds.append([preds_start[idx].numpy()[0],preds_end[idx].numpy()[0]])
+    for idx in range(len(preds_start)):     #(preds_start.numpy(), preds_end.numpy())
+        preds.append([int(preds_start[idx]), int(preds_end[idx])])
     preds = np.array(preds)
     return gradients, preds, target_feature_map[0].numpy(), probas
 
